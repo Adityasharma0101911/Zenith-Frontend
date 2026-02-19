@@ -7,6 +7,9 @@ import { useEffect, useState, useCallback } from "react";
 // import useRouter to redirect if not logged in
 import { useRouter } from "next/navigation";
 
+// import motion for stagger animations
+import { motion } from "framer-motion";
+
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
@@ -18,6 +21,23 @@ import PulseCheck from "@/components/PulseCheck";
 
 // this puts the ai brain at the top of the dashboard
 import AiInsight from "@/components/AiInsight";
+
+// this staggers the dashboard widgets loading in
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.15,
+        },
+    },
+};
+
+// each child slides up and fades in
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -72,7 +92,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <main className="min-h-screen bg-zenith-bg p-8">
+        <main className="min-h-screen p-8 pt-20 pb-24">
             {/* logout button at the top right */}
             <div className="flex justify-end">
                 <button
@@ -84,29 +104,38 @@ export default function DashboardPage() {
             </div>
 
             {/* show the user data once it loads */}
-            <div className="flex flex-col items-center mt-10">
+            <div className="flex flex-col items-center mt-6">
                 {userData ? (
-                    <>
-                        <h1 className="text-4xl font-bold">Welcome, {userData.username}</h1>
-                        <p className="text-xl mt-4 text-gray-600">Balance: ${userData.balance.toFixed(2)}</p>
-                        {userData.dosha && (
-                            <p className="text-lg mt-2 text-gray-500">Dosha: {userData.dosha}</p>
-                        )}
+                    // this staggers the dashboard widgets loading in
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="flex flex-col items-center w-full"
+                    >
+                        {/* welcome text slides in first */}
+                        <motion.div variants={itemVariants}>
+                            <h1 className="text-4xl font-bold text-center">Welcome, {userData.username}</h1>
+                            <p className="text-xl mt-4 text-gray-600 text-center">Balance: ${userData.balance.toFixed(2)}</p>
+                            {userData.dosha && (
+                                <p className="text-lg mt-2 text-gray-500 text-center">Dosha: {userData.dosha}</p>
+                            )}
+                        </motion.div>
 
-                        {/* ai insight at the top of the dashboard */}
-                        <div className="w-full max-w-2xl mt-8">
+                        {/* ai insight slides in second */}
+                        <motion.div variants={itemVariants} className="w-full max-w-2xl mt-8">
                             <AiInsight refreshTrigger={refreshTrigger} />
-                        </div>
+                        </motion.div>
 
-                        {/* dashboard grid with the widgets side by side */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        {/* dashboard grid slides in third */}
+                        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                             {/* pulse check on the left, triggers ai update when stress changes */}
                             <PulseCheck triggerRefresh={() => setRefreshTrigger(prev => prev + 1)} />
 
                             {/* shopping widget on the right, pass refreshData to update balance */}
                             <ShoppingWidget refreshData={fetchUserData} />
-                        </div>
-                    </>
+                        </motion.div>
+                    </motion.div>
                 ) : (
                     <h1 className="text-4xl font-bold">Loading...</h1>
                 )}

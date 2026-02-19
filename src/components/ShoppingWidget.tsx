@@ -1,8 +1,14 @@
-// this creates the fake store layout
+// this styles the store widget with material you rounding
 "use client";
 
 // import useState to track the response message
 import { useState } from "react";
+
+// import motion for button animations
+import { motion } from "framer-motion";
+
+// import shopping cart icon
+import { ShoppingCart } from "lucide-react";
 
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
@@ -56,7 +62,12 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
     }
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-6 w-80">
+        <div className="bg-white rounded-[2rem] shadow-lg p-6 w-80">
+            {/* placeholder product image */}
+            <div className="bg-gray-100 rounded-2xl h-36 flex items-center justify-center mb-4">
+                <ShoppingCart className="text-gray-300" size={48} />
+            </div>
+
             {/* product name */}
             <h2 className="text-xl font-bold">Noise Cancelling Headphones</h2>
 
@@ -66,13 +77,15 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
             {/* product description */}
             <p className="text-gray-500 text-sm mt-1">Premium wireless headphones with ANC</p>
 
-            {/* buy button with smooth animations */}
-            <button
+            {/* buy button with motion hover and tap effects */}
+            <motion.button
                 onClick={handleBuy}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
                 className="bg-zenith-teal text-white rounded-full p-4 w-full mt-4 hover:opacity-90 transition-all duration-300"
             >
                 Buy Now
-            </button>
+            </motion.button>
 
             {/* show the response message from the interceptor */}
             {message && (
