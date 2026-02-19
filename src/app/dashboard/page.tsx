@@ -38,6 +38,9 @@ export default function DashboardPage() {
                 // if we got an error, redirect to login
                 if (data.error) {
                     router.push("/login");
+                
+                } else if (!data.dosha) {
+                    router.push("/onboarding");
                 } else {
                     // save the user data to state
                     setUserData(data);

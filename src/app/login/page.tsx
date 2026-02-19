@@ -10,6 +10,9 @@ import { useRouter } from "next/navigation";
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
+// import Link for the login link
+import Link from "next/link";
+
 export default function LoginPage() {
     // these store the username and password the user types
     const [username, setUsername] = useState("");
@@ -73,6 +76,13 @@ export default function LoginPage() {
                 >
                     Login
                 </button>
+                {/* link to the register page */}
+                <p className="text-center text-sm text-gray-500">
+                    Don't have an account?{" "}
+                    <Link href="/register" className="text-zenith-teal underline">
+                        Sign Up
+                    </Link>
+                </p>
             </form>
         </main>
     );
