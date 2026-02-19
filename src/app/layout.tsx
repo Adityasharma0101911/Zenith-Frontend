@@ -6,6 +6,9 @@ import "./globals.css";
 // import the floating navbar
 import Navbar from "@/components/Navbar";
 
+// this adds smooth toast notifications
+import { Toaster } from "react-hot-toast";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -48,6 +51,9 @@ export default function RootLayout({
 
           {/* the floating navbar at the bottom */}
           <Navbar />
+
+          {/* this renders toast notifications */}
+          <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
         </div>
       </body>
     </html>
