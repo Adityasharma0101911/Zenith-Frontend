@@ -31,7 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* apply theme before paint to prevent flash */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('zenith-theme');if(t)document.documentElement.setAttribute('data-theme',t)})()` }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-m3-surface`}
       >
@@ -59,8 +63,8 @@ export default function RootLayout({
               duration: 2500,
               style: {
                 borderRadius: "16px",
-                background: "#191C1B",
-                color: "#E1E3E1",
+                background: "rgb(var(--m3-inverse-surface))",
+                color: "rgb(var(--m3-inverse-on-surface))",
                 fontSize: "14px",
                 fontWeight: "500",
               },

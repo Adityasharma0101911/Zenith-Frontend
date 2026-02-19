@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import SdgBadge from "@/components/SdgBadge";
+import ThemePicker from "@/components/ThemePicker";
 
 const m3Ease = [0.2, 0, 0, 1] as const;
 
@@ -180,6 +181,9 @@ export default function Sidebar() {
                         <SdgBadge />
                     </div>
                 )}
+
+                {/* theme picker */}
+                <ThemePicker expanded={expanded} />
 
                 {/* demo mode button */}
                 <motion.button

@@ -23,9 +23,9 @@ const STATS: StatDef[] = [
 
 // score rings derived from survey
 const RINGS: RingDef[] = [
-    { label: "Nutrition", key: "diet_quality", color: "#006B5E", score: (v) => ({ "Needs improvement": 20, "Moderate": 45, "Healthy": 75, "Very healthy": 95 }[String(v)] ?? 0) },
-    { label: "Exercise", key: "exercise_frequency", color: "#4A635D", score: (v) => ({ "Never": 10, "1-2 times/week": 35, "3-4 times/week": 60, "5+ times/week": 80, "Daily": 100 }[String(v)] ?? 0) },
-    { label: "Rest & Recovery", key: "sleep_quality", color: "#426278", score: (v) => ({ "Poor": 20, "Fair": 45, "Good": 70, "Excellent": 95 }[String(v)] ?? 0) },
+    { label: "Nutrition", key: "diet_quality", color: "var(--m3-primary-hex)", score: (v) => ({ "Needs improvement": 20, "Moderate": 45, "Healthy": 75, "Very healthy": 95 }[String(v)] ?? 0) },
+    { label: "Exercise", key: "exercise_frequency", color: "var(--m3-secondary-hex)", score: (v) => ({ "Never": 10, "1-2 times/week": 35, "3-4 times/week": 60, "5+ times/week": 80, "Daily": 100 }[String(v)] ?? 0) },
+    { label: "Rest & Recovery", key: "sleep_quality", color: "var(--m3-tertiary-hex)", score: (v) => ({ "Poor": 20, "Fair": 45, "Good": 70, "Excellent": 95 }[String(v)] ?? 0) },
 ];
 
 export default function VitalsPage() {

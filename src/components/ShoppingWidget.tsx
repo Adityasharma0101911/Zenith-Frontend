@@ -42,9 +42,13 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                 body: JSON.stringify({ item_name: itemName.trim(), amount: parseFloat(amount), reason: reason.trim() }),
             });
             const data = await res.json();
-            setVerdict(data);
+            if (data.error) {
+                setError(data.error);
+            } else {
+                setVerdict(data);
+            }
         } catch {
-            setError("Could not reach AI for evaluation.");
+            setError("Could not reach AI for evaluation. Check your connection.");
         } finally {
             setEvaluating(false);
         }

@@ -18,6 +18,11 @@ import {
     CheckCircle,
     ShieldX,
     Pencil,
+    Plus,
+    Briefcase,
+    TrendingUp,
+    Gift,
+    Banknote,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import PageTransition from "@/components/PageTransition";
@@ -60,6 +65,12 @@ export default function PurchasesPage() {
     // blocked modal
     const [showBlocked, setShowBlocked] = useState(false);
     const [blockedReason, setBlockedReason] = useState("");
+
+    // income form
+    const [incomeSource, setIncomeSource] = useState("Paycheck");
+    const [incomeAmount, setIncomeAmount] = useState("");
+    const [addingIncome, setAddingIncome] = useState(false);
+    const [incomeResult, setIncomeResult] = useState("");
 
     // redirect if not logged in
     useEffect(() => {
@@ -148,9 +159,14 @@ export default function PurchasesPage() {
                     reason: reason.trim(),
                 }),
             });
-            setVerdict(await res.json());
+            const data = await res.json();
+            if (data.error) {
+                setError(data.error);
+            } else {
+                setVerdict(data);
+            }
         } catch {
-            setError("Could not reach AI for evaluation.");
+            setError("Could not reach AI for evaluation. Check your connection.");
         } finally {
             setEvaluating(false);
         }
@@ -197,6 +213,37 @@ export default function PurchasesPage() {
         setVerdict(null);
         setResult("");
         setError("");
+    }
+
+    // add income
+    async function handleAddIncome(e: React.FormEvent) {
+        e.preventDefault();
+        const val = parseFloat(incomeAmount);
+        if (isNaN(val) || val <= 0) return;
+        setAddingIncome(true);
+        setIncomeResult("");
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${API_URL}/api/income`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ source: incomeSource, amount: val }),
+            });
+            const data = await res.json();
+            if (data.balance !== undefined) {
+                setBalance(data.balance);
+                setIncomeResult(`+$${val.toFixed(2)} added from ${incomeSource}`);
+                setIncomeAmount("");
+                fetchHistory();
+            }
+        } catch {
+            setIncomeResult("Failed to add income.");
+        } finally {
+            setAddingIncome(false);
+        }
     }
 
     function formatTime(ts: string) {
@@ -263,6 +310,82 @@ export default function PurchasesPage() {
                             >
                                 <Pencil size={18} />
                             </motion.button>
+                        )}
+                    </motion.div>
+
+                    {/* add income section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.15, ease: m3Ease }}
+                        className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-5"
+                    >
+                        <div className="flex items-center gap-2.5 mb-3">
+                            <div className="p-1.5 rounded-m3-full bg-m3-secondary-container">
+                                <Plus className="text-m3-on-secondary-container" size={16} />
+                            </div>
+                            <h2 className="text-base font-semibold text-m3-on-surface">Add Income</h2>
+                        </div>
+                        <form onSubmit={handleAddIncome} className="flex gap-2 items-end flex-wrap">
+                            <div className="flex-shrink-0">
+                                <label className="text-[10px] text-m3-on-surface-variant font-medium mb-1 block">Source</label>
+                                <div className="flex gap-1.5">
+                                    {[
+                                        { id: "Paycheck", icon: Briefcase },
+                                        { id: "Stocks", icon: TrendingUp },
+                                        { id: "Freelance", icon: Banknote },
+                                        { id: "Gift", icon: Gift },
+                                    ].map((s) => (
+                                        <button
+                                            key={s.id}
+                                            type="button"
+                                            onClick={() => setIncomeSource(s.id)}
+                                            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-m3-full text-xs font-medium transition-colors ${
+                                                incomeSource === s.id
+                                                    ? "bg-m3-secondary-container text-m3-on-secondary-container"
+                                                    : "bg-m3-surface-container text-m3-on-surface-variant hover:bg-m3-surface-container-high"
+                                            }`}
+                                        >
+                                            <s.icon size={12} />
+                                            {s.id}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex-1 min-w-[100px] relative">
+                                <label className="text-[10px] text-m3-on-surface-variant font-medium mb-1 block">Amount</label>
+                                <div className="relative">
+                                    <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-m3-on-surface-variant/50" />
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={incomeAmount}
+                                        onChange={(e) => setIncomeAmount(e.target.value)}
+                                        placeholder="0.00"
+                                        className="w-full pl-9 pr-3 py-2 rounded-m3-lg bg-m3-surface-container text-m3-on-surface text-sm outline-none border border-m3-outline-variant/30 focus:border-m3-primary transition-colors"
+                                    />
+                                </div>
+                            </div>
+                            <motion.button
+                                type="submit"
+                                disabled={addingIncome || !incomeAmount.trim()}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="m3-btn-tonal flex items-center gap-1.5 !py-2 disabled:opacity-60"
+                            >
+                                {addingIncome ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+                                Add
+                            </motion.button>
+                        </form>
+                        {incomeResult && (
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className={`mt-2 text-xs font-medium ${incomeResult.startsWith("+") ? "text-m3-primary" : "text-m3-error"}`}
+                            >
+                                {incomeResult}
+                            </motion.p>
                         )}
                     </motion.div>
 
@@ -413,11 +536,13 @@ export default function PurchasesPage() {
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ duration: 0.2, delay: i * 0.03 }}
-                                        className={`flex items-center justify-between p-3.5 rounded-m3-lg ${tx.status === "BLOCKED" ? "bg-m3-error-container/40" : "bg-m3-surface-container"}`}
+                                        className={`flex items-center justify-between p-3.5 rounded-m3-lg ${tx.status === "BLOCKED" ? "bg-m3-error-container/40" : tx.status === "INCOME" ? "bg-m3-secondary-container/40" : "bg-m3-surface-container"}`}
                                     >
                                         <div className="flex items-center gap-3">
                                             {tx.status === "BLOCKED" ? (
                                                 <ShieldX className="text-m3-error" size={20} />
+                                            ) : tx.status === "INCOME" ? (
+                                                <Plus className="text-m3-secondary" size={20} />
                                             ) : (
                                                 <CheckCircle className="text-m3-primary" size={20} />
                                             )}
@@ -427,8 +552,8 @@ export default function PurchasesPage() {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-semibold text-sm text-m3-on-surface">${tx.amount.toFixed(2)}</p>
-                                            <p className={`text-xs font-medium ${tx.status === "BLOCKED" ? "text-m3-error" : "text-m3-primary"}`}>{tx.status}</p>
+                                            <p className="font-semibold text-sm text-m3-on-surface">{tx.status === "INCOME" ? "+" : "-"}${tx.amount.toFixed(2)}</p>
+                                            <p className={`text-xs font-medium ${tx.status === "BLOCKED" ? "text-m3-error" : tx.status === "INCOME" ? "text-m3-secondary" : "text-m3-primary"}`}>{tx.status}</p>
                                         </div>
                                     </motion.div>
                                 ))}

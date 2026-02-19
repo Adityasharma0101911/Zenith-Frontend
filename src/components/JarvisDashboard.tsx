@@ -144,29 +144,38 @@ export default function JarvisDashboard({
     const fetchSurvey = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${API_URL}/api/survey`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await res.json();
-            if (data.completed && data.data) setSurvey(data.data);
+            // fetch survey and live user data in parallel
+            const [surveyRes, userRes] = await Promise.all([
+                fetch(`${API_URL}/api/survey`, { headers: { Authorization: `Bearer ${token}` } }),
+                fetch(`${API_URL}/api/user_data`, { headers: { Authorization: `Bearer ${token}` } }),
+            ]);
+            const surveyData = await surveyRes.json();
+            const userData = await userRes.json();
+            if (surveyData.completed && surveyData.data) {
+                // always use live balance from user_data
+                const merged = { ...surveyData.data };
+                if (userData.balance !== undefined) merged.balance = userData.balance;
+                setSurvey(merged);
+            }
         } catch {
             /* silent */
         }
     }, []);
 
-    // fetch proactive ai brief (force=true skips server cache)
+    // fetch proactive ai brief (force=true skips cache entirely)
     const fetchBrief = useCallback(async (force = false) => {
-        // try to show localStorage cache instantly while we fetch
         const cacheKey = `zenith_brief_${section}`;
+        // show localStorage cache and skip server call unless forced
         if (!force) {
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
                 setBrief(cached);
                 setBriefCached(true);
                 setBriefLoading(false);
+                return; // don't call server — use cached version
             }
         }
-        if (force) setBriefLoading(true);
+        setBriefLoading(true);
         try {
             const token = localStorage.getItem("token");
             const res = await fetch(`${API_URL}/api/ai/brief`, {

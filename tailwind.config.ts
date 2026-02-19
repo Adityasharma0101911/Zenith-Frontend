@@ -9,52 +9,39 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // material design 3 color tokens
+      // m3 color tokens — powered by css variables for theming
       colors: {
-        // primary tonal palette
-        "m3-primary": "#006B5E",
-        "m3-on-primary": "#FFFFFF",
-        "m3-primary-container": "#74F8DD",
-        "m3-on-primary-container": "#00201B",
-
-        // secondary tonal palette
-        "m3-secondary": "#4A635D",
-        "m3-on-secondary": "#FFFFFF",
-        "m3-secondary-container": "#CCE8DF",
-        "m3-on-secondary-container": "#06201A",
-
-        // tertiary tonal palette
-        "m3-tertiary": "#426278",
-        "m3-on-tertiary": "#FFFFFF",
-        "m3-tertiary-container": "#C7E7FF",
-        "m3-on-tertiary-container": "#001E2E",
-
-        // error palette
-        "m3-error": "#BA1A1A",
-        "m3-on-error": "#FFFFFF",
-        "m3-error-container": "#FFDAD6",
-        "m3-on-error-container": "#410002",
-
-        // surface and background
-        "m3-surface": "#F8FAF8",
-        "m3-surface-dim": "#D8DBD8",
-        "m3-surface-bright": "#F8FAF8",
-        "m3-surface-container-lowest": "#FFFFFF",
-        "m3-surface-container-low": "#F2F5F2",
-        "m3-surface-container": "#ECF0EC",
-        "m3-surface-container-high": "#E7EAE7",
-        "m3-surface-container-highest": "#E1E3E1",
-        "m3-on-surface": "#191C1B",
-        "m3-on-surface-variant": "#3F4946",
-        "m3-outline": "#6F7975",
-        "m3-outline-variant": "#BFC9C4",
-
-        // inverse surface for dark cards
-        "m3-inverse-surface": "#2D3130",
-        "m3-inverse-on-surface": "#E1E3E1",
-
-        // keep legacy alias working
-        "zenith-teal": "#006B5E",
+        "m3-primary": "rgb(var(--m3-primary) / <alpha-value>)",
+        "m3-on-primary": "rgb(var(--m3-on-primary) / <alpha-value>)",
+        "m3-primary-container": "rgb(var(--m3-primary-container) / <alpha-value>)",
+        "m3-on-primary-container": "rgb(var(--m3-on-primary-container) / <alpha-value>)",
+        "m3-secondary": "rgb(var(--m3-secondary) / <alpha-value>)",
+        "m3-on-secondary": "rgb(var(--m3-on-secondary) / <alpha-value>)",
+        "m3-secondary-container": "rgb(var(--m3-secondary-container) / <alpha-value>)",
+        "m3-on-secondary-container": "rgb(var(--m3-on-secondary-container) / <alpha-value>)",
+        "m3-tertiary": "rgb(var(--m3-tertiary) / <alpha-value>)",
+        "m3-on-tertiary": "rgb(var(--m3-on-tertiary) / <alpha-value>)",
+        "m3-tertiary-container": "rgb(var(--m3-tertiary-container) / <alpha-value>)",
+        "m3-on-tertiary-container": "rgb(var(--m3-on-tertiary-container) / <alpha-value>)",
+        "m3-error": "rgb(var(--m3-error) / <alpha-value>)",
+        "m3-on-error": "rgb(var(--m3-on-error) / <alpha-value>)",
+        "m3-error-container": "rgb(var(--m3-error-container) / <alpha-value>)",
+        "m3-on-error-container": "rgb(var(--m3-on-error-container) / <alpha-value>)",
+        "m3-surface": "rgb(var(--m3-surface) / <alpha-value>)",
+        "m3-surface-dim": "rgb(var(--m3-surface-dim) / <alpha-value>)",
+        "m3-surface-bright": "rgb(var(--m3-surface-bright) / <alpha-value>)",
+        "m3-surface-container-lowest": "rgb(var(--m3-surface-container-lowest) / <alpha-value>)",
+        "m3-surface-container-low": "rgb(var(--m3-surface-container-low) / <alpha-value>)",
+        "m3-surface-container": "rgb(var(--m3-surface-container) / <alpha-value>)",
+        "m3-surface-container-high": "rgb(var(--m3-surface-container-high) / <alpha-value>)",
+        "m3-surface-container-highest": "rgb(var(--m3-surface-container-highest) / <alpha-value>)",
+        "m3-on-surface": "rgb(var(--m3-on-surface) / <alpha-value>)",
+        "m3-on-surface-variant": "rgb(var(--m3-on-surface-variant) / <alpha-value>)",
+        "m3-outline": "rgb(var(--m3-outline) / <alpha-value>)",
+        "m3-outline-variant": "rgb(var(--m3-outline-variant) / <alpha-value>)",
+        "m3-inverse-surface": "rgb(var(--m3-inverse-surface) / <alpha-value>)",
+        "m3-inverse-on-surface": "rgb(var(--m3-inverse-on-surface) / <alpha-value>)",
+        "zenith-teal": "rgb(var(--m3-primary) / <alpha-value>)",
       },
       // material design 3 rounded corners
       borderRadius: {
@@ -122,8 +109,8 @@ const config: Config = {
           "100%": { transform: "scale(1)", opacity: "1" },
         },
         "glow-pulse": {
-          "0%, 100%": { boxShadow: "0 0 8px rgba(0,107,94,0.2)" },
-          "50%": { boxShadow: "0 0 24px rgba(0,107,94,0.4)" },
+          "0%, 100%": { boxShadow: "0 0 8px rgb(var(--m3-primary) / 0.2)" },
+          "50%": { boxShadow: "0 0 24px rgb(var(--m3-primary) / 0.4)" },
         },
       },
     },

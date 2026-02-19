@@ -28,9 +28,9 @@ const STATS: StatDef[] = [
 
 // score rings derived from survey
 const RINGS: RingDef[] = [
-    { label: "Academic Focus", key: "study_goals", color: "#426278", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 6) * 100)) : 0 },
-    { label: "Engagement", key: "subjects", color: "#006B5E", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 8) * 100)) : 0 },
-    { label: "Discipline", key: "education_level", color: "#4A635D", score: (v) => ({ "High School": 30, "Undergraduate": 55, "Graduate": 75, "Professional": 90, "Self-taught": 60 }[String(v)] ?? 0) },
+    { label: "Academic Focus", key: "study_goals", color: "var(--m3-tertiary-hex)", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 6) * 100)) : 0 },
+    { label: "Engagement", key: "subjects", color: "var(--m3-primary-hex)", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 8) * 100)) : 0 },
+    { label: "Discipline", key: "education_level", color: "var(--m3-secondary-hex)", score: (v) => ({ "High School": 30, "Undergraduate": 55, "Graduate": 75, "Professional": 90, "Self-taught": 60 }[String(v)] ?? 0) },
 ];
 
 export default function ScholarPage() {

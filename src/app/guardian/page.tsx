@@ -28,9 +28,9 @@ const STATS: StatDef[] = [
 
 // score rings derived from survey
 const RINGS: RingDef[] = [
-    { label: "Financial Security", key: "savings", color: "#006B5E", score: (v) => ({ "None": 10, "Under $1,000": 30, "$1,000-$10,000": 55, "$10,000-$50,000": 75, "$50,000+": 95 }[String(v)] ?? 0) },
-    { label: "Spending Habits", key: "spending_profile", color: "#4A635D", score: (v) => ({ "Cautious Saver": 90, "Balanced Planner": 65, "Impulse Spender": 30 }[String(v)] ?? 0) },
-    { label: "Goal Setting", key: "financial_goals", color: "#426278", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 6) * 100)) : 0 },
+    { label: "Financial Security", key: "savings", color: "var(--m3-primary-hex)", score: (v) => ({ "None": 10, "Under $1,000": 30, "$1,000-$10,000": 55, "$10,000-$50,000": 75, "$50,000+": 95 }[String(v)] ?? 0) },
+    { label: "Spending Habits", key: "spending_profile", color: "var(--m3-secondary-hex)", score: (v) => ({ "Cautious Saver": 90, "Balanced Planner": 65, "Impulse Spender": 30 }[String(v)] ?? 0) },
+    { label: "Goal Setting", key: "financial_goals", color: "var(--m3-tertiary-hex)", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 6) * 100)) : 0 },
 ];
 
 export default function GuardianPage() {
