@@ -7,6 +7,9 @@ import { useState } from "react";
 // import useRouter to redirect after finishing
 import { useRouter } from "next/navigation";
 
+// import motion for step transitions
+import { motion, AnimatePresence } from "framer-motion";
+
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
@@ -17,21 +20,21 @@ export default function OnboardingPage() {
     // this stores the user name from step 1
     const [name, setName] = useState("");
 
-    // this stores the dosha type from step 2
-    const [dosha, setDosha] = useState("");
+    // this stores the spending profile from step 2
+    const [spendingProfile, setSpendingProfile] = useState("");
 
     // this stores the bank balance from step 3
     const [balance, setBalance] = useState("");
 
     const router = useRouter();
 
-    // this sets the user dosha type and moves to the next step
-    function selectDosha(type: string) {
-        setDosha(type);
+    // this sets the spending profile and moves to the next step
+    function selectProfile(type: string) {
+        setSpendingProfile(type);
         setStep(3);
     }
 
-    // this sends the final data and finishes the survey
+    // this sends the final data and finishes the onboarding
     async function handleFinish() {
         // get the token from localStorage
         const token = localStorage.getItem("token");
@@ -44,8 +47,8 @@ export default function OnboardingPage() {
                 Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-                dosha: dosha,
-                stress_level: name,
+                name: name,
+                spending_profile: spendingProfile,
                 balance: parseFloat(balance),
             }),
         });
@@ -55,77 +58,108 @@ export default function OnboardingPage() {
     }
 
     return (
-        <main className="min-h-screen bg-white flex items-center justify-center">
+        <main className="min-h-screen flex items-center justify-center">
             <div className="flex flex-col gap-4 w-80">
+                <AnimatePresence mode="wait">
 
-                {/* step 1: ask for the user name */}
-                {step === 1 && (
-                    <>
-                        <h1 className="text-2xl font-bold text-center">Step 1: What is your name?</h1>
-                        <input
-                            type="text"
-                            placeholder="Enter your name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="border border-gray-300 rounded-xl p-3 w-full focus:outline-none focus:ring-2 focus:ring-zenith-teal"
-                        />
-                        {/* this button moves to step 2 */}
-                        <button
-                            onClick={() => setStep(2)}
-                            className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                    {/* step 1: ask for the user name */}
+                    {step === 1 && (
+                        <motion.div
+                            key="step1"
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -30 }}
+                            className="flex flex-col gap-4"
                         >
-                            Next
-                        </button>
-                    </>
-                )}
+                            <h1 className="text-2xl font-bold text-center">What is your name?</h1>
+                            <input
+                                type="text"
+                                placeholder="Enter your name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="border border-gray-300 rounded-full p-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all duration-300"
+                            />
+                            {/* this button moves to step 2 */}
+                            <motion.button
+                                onClick={() => setStep(2)}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                            >
+                                Next
+                            </motion.button>
+                        </motion.div>
+                    )}
 
-                {/* step 2: pick the dosha type */}
-                {step === 2 && (
-                    <>
-                        <h1 className="text-2xl font-bold text-center">Step 2: Choose Your Type</h1>
-                        {/* these buttons set the dosha and go to step 3 */}
-                        <button
-                            onClick={() => selectDosha("Vata")}
-                            className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                    {/* step 2: pick the spending profile */}
+                    {step === 2 && (
+                        <motion.div
+                            key="step2"
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -30 }}
+                            className="flex flex-col gap-4"
                         >
-                            Vata (Anxious)
-                        </button>
-                        <button
-                            onClick={() => selectDosha("Pitta")}
-                            className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
-                        >
-                            Pitta (Focused)
-                        </button>
-                        <button
-                            onClick={() => selectDosha("Kapha")}
-                            className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
-                        >
-                            Kapha (Calm)
-                        </button>
-                    </>
-                )}
+                            <h1 className="text-2xl font-bold text-center">Your Spending Style</h1>
+                            <p className="text-sm text-gray-500 text-center">This helps Zenith protect you better</p>
+                            {/* these buttons set the spending profile and go to step 3 */}
+                            <motion.button
+                                onClick={() => selectProfile("Cautious Saver")}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                            >
+                                Cautious Saver
+                            </motion.button>
+                            <motion.button
+                                onClick={() => selectProfile("Balanced Planner")}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                            >
+                                Balanced Planner
+                            </motion.button>
+                            <motion.button
+                                onClick={() => selectProfile("Impulse Spender")}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                            >
+                                Impulse Spender
+                            </motion.button>
+                        </motion.div>
+                    )}
 
-                {/* step 3: enter balance and finish */}
-                {step === 3 && (
-                    <>
-                        <h1 className="text-2xl font-bold text-center">Step 3: Current Bank Balance</h1>
-                        <input
-                            type="number"
-                            placeholder="Enter your balance"
-                            value={balance}
-                            onChange={(e) => setBalance(e.target.value)}
-                            className="border border-gray-300 rounded-xl p-3 w-full focus:outline-none focus:ring-2 focus:ring-zenith-teal"
-                        />
-                        {/* this sends the final data and finishes the survey */}
-                        <button
-                            onClick={handleFinish}
-                            className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                    {/* step 3: enter balance and finish */}
+                    {step === 3 && (
+                        <motion.div
+                            key="step3"
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -30 }}
+                            className="flex flex-col gap-4"
                         >
-                            Finish
-                        </button>
-                    </>
-                )}
+                            <h1 className="text-2xl font-bold text-center">Current Bank Balance</h1>
+                            <input
+                                type="number"
+                                placeholder="Enter your balance"
+                                value={balance}
+                                onChange={(e) => setBalance(e.target.value)}
+                                className="border border-gray-300 rounded-full p-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all duration-300"
+                            />
+                            {/* this sends the final data and finishes the onboarding */}
+                            <motion.button
+                                onClick={handleFinish}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition"
+                            >
+                                Finish
+                            </motion.button>
+                        </motion.div>
+                    )}
 
+                </AnimatePresence>
             </div>
         </main>
     );

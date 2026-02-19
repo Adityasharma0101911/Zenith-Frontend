@@ -49,7 +49,7 @@ export default function DashboardPage() {
     const router = useRouter();
 
     // this stores the user data from the backend
-    const [userData, setUserData] = useState<{ username: string; balance: number; dosha: string | null; wellness_score: number } | null>(null);
+    const [userData, setUserData] = useState<{ username: string; name: string; balance: number; spending_profile: string | null; stress_level: number; wellness_score: number } | null>(null);
 
     // this tells the ai to rethink when data changes
     const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -127,10 +127,10 @@ export default function DashboardPage() {
                     >
                         {/* welcome text slides in first */}
                         <motion.div variants={itemVariants} className="text-center">
-                            <h1 className="text-4xl font-bold">Welcome, {userData.username}</h1>
+                            <h1 className="text-4xl font-bold">Welcome, {userData.name}</h1>
                             <p className="text-xl mt-4 text-gray-600">Balance: ${userData.balance.toFixed(2)}</p>
-                            {userData.dosha && (
-                                <p className="text-lg mt-2 text-gray-500">Dosha: {userData.dosha}</p>
+                            {userData.spending_profile && (
+                                <p className="text-lg mt-2 text-gray-500">Profile: {userData.spending_profile}</p>
                             )}
 
                             {/* this shows the wellness score on the dashboard */}
