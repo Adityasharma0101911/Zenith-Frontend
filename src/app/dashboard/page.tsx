@@ -1,4 +1,4 @@
-// material design 3 dashboard with stagger animations
+// material design 3 dashboard with rich android-style stagger animations
 "use client";
 
 // import useEffect and useState to run code when the page loads
@@ -7,11 +7,11 @@ import { useEffect, useState, useCallback } from "react";
 // import useRouter to redirect if not logged in
 import { useRouter } from "next/navigation";
 
-// import motion for stagger animations
+// import motion for stagger and micro-interaction animations
 import { motion } from "framer-motion";
 
 // import icons for the wellness score and logout
-import { LogOut, Heart } from "lucide-react";
+import { LogOut, Heart, Wallet } from "lucide-react";
 
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
@@ -23,22 +23,44 @@ import AiInsight from "@/components/AiInsight";
 import HistoryLog from "@/components/HistoryLog";
 import MainframeLog from "@/components/MainframeLog";
 
+// import animation components
+import PageTransition from "@/components/PageTransition";
+import AnimatedCounter from "@/components/AnimatedCounter";
+
+// m3 standard easing
+const m3Ease = [0.2, 0, 0, 1] as const;
+
 // this staggers the dashboard widgets loading in
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.12,
+            staggerChildren: 0.1,
+            delayChildren: 0.15,
         },
     },
 };
 
-// each child slides up and fades in
+// each child slides up and fades in with scale
 const itemVariants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
+    hidden: { opacity: 0, y: 28, scale: 0.97 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: { duration: 0.45, ease: m3Ease },
+    },
 };
+
+// skeleton loading shimmer block
+function SkeletonCard({ className = "" }: { className?: string }) {
+    return (
+        <div className={`bg-m3-surface-container rounded-m3-xl overflow-hidden ${className}`}>
+            <div className="m3-shimmer h-full w-full" />
+        </div>
+    );
+}
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -99,89 +121,141 @@ export default function DashboardPage() {
     }
 
     return (
-        <main className="min-h-screen px-4 pt-20 pb-28 md:px-8">
-            {/* top bar with logout */}
-            <div className="flex justify-end max-w-2xl mx-auto">
-                <motion.button
-                    onClick={handleLogout}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-m3-full bg-m3-error-container text-m3-on-error-container text-sm font-medium transition-colors"
+        <PageTransition>
+            <main className="min-h-screen px-4 pt-20 pb-28 md:px-8">
+                {/* top bar with animated logout button */}
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: m3Ease }}
+                    className="flex justify-end max-w-2xl mx-auto"
                 >
-                    <LogOut size={16} />
-                    Logout
-                </motion.button>
-            </div>
-
-            {/* show the user data once it loads */}
-            <div className="flex flex-col items-center mt-4">
-                {userData ? (
-                    // stagger all dashboard widgets in
-                    <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="flex flex-col items-center w-full max-w-2xl"
+                    <motion.button
+                        onClick={handleLogout}
+                        whileHover={{ scale: 1.05, y: -1 }}
+                        whileTap={{ scale: 0.93 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-m3-full bg-m3-error-container text-m3-on-error-container text-sm font-medium transition-shadow hover:shadow-m3-1"
                     >
-                        {/* welcome header card */}
+                        <LogOut size={16} />
+                        Logout
+                    </motion.button>
+                </motion.div>
+
+                {/* show the user data once it loads */}
+                <div className="flex flex-col items-center mt-4">
+                    {userData ? (
+                        // stagger all dashboard widgets in
                         <motion.div
-                            variants={itemVariants}
-                            className="w-full bg-m3-primary-container rounded-m3-xl p-6 text-center"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                            className="flex flex-col items-center w-full max-w-2xl"
                         >
-                            <h1 className="text-3xl font-semibold text-m3-on-primary-container">
-                                Welcome, {userData.name}
-                            </h1>
-                            <p className="text-xl mt-2 text-m3-on-primary-container/80 font-medium">
-                                ${userData.balance.toFixed(2)}
-                            </p>
-                            {userData.spending_profile && (
-                                <span className="inline-block mt-2 px-3 py-1 rounded-m3-full bg-m3-surface text-m3-on-surface text-xs font-medium">
-                                    {userData.spending_profile}
-                                </span>
-                            )}
-
-                            {/* wellness score aligned with UN SDG #3 */}
-                            <div
-                                className="mt-3 flex items-center justify-center gap-2"
-                                title="Calculated using real-time stress data to align with UN SDG #3."
+                            {/* welcome header card with animated balance counter */}
+                            <motion.div
+                                variants={itemVariants}
+                                whileHover={{ y: -4, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                                className="w-full bg-m3-primary-container rounded-m3-xl p-6 text-center transition-shadow hover:shadow-m3-3"
                             >
-                                <Heart size={16} className="text-m3-on-primary-container/60" />
-                                <span className="text-sm text-m3-on-primary-container/60">Wellness</span>
-                                <span className={`text-xl font-bold ${userData.wellness_score < 50 ? "text-m3-error" : "text-m3-on-primary-container"}`}>
-                                    {userData.wellness_score}%
-                                </span>
+                                {/* greeting with bounce entrance */}
+                                <motion.h1
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                                    className="text-3xl font-semibold text-m3-on-primary-container"
+                                >
+                                    Welcome, {userData.name}
+                                </motion.h1>
+
+                                {/* animated balance counter */}
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="flex items-center justify-center gap-2 mt-2"
+                                >
+                                    <Wallet size={20} className="text-m3-on-primary-container/70" />
+                                    <AnimatedCounter
+                                        value={userData.balance}
+                                        prefix="$"
+                                        decimals={2}
+                                        className="text-xl text-m3-on-primary-container/80 font-medium"
+                                    />
+                                </motion.div>
+
+                                {/* spending profile badge with scale entrance */}
+                                {userData.spending_profile && (
+                                    <motion.span
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.5 }}
+                                        className="inline-block mt-2 px-3 py-1 rounded-m3-full bg-m3-surface text-m3-on-surface text-xs font-medium"
+                                    >
+                                        {userData.spending_profile}
+                                    </motion.span>
+                                )}
+
+                                {/* animated wellness score aligned with UN SDG #3 */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.6, duration: 0.3 }}
+                                    className="mt-3 flex items-center justify-center gap-2"
+                                    title="Calculated using real-time stress data to align with UN SDG #3."
+                                >
+                                    <motion.span
+                                        animate={{ scale: [1, 1.2, 1] }}
+                                        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" as const }}
+                                    >
+                                        <Heart size={16} className="text-m3-on-primary-container/60" />
+                                    </motion.span>
+                                    <span className="text-sm text-m3-on-primary-container/60">Wellness</span>
+                                    <AnimatedCounter
+                                        value={userData.wellness_score}
+                                        suffix="%"
+                                        decimals={0}
+                                        className={`text-xl font-bold ${userData.wellness_score < 50 ? "text-m3-error" : "text-m3-on-primary-container"}`}
+                                    />
+                                </motion.div>
+                            </motion.div>
+
+                            {/* ai insight card */}
+                            <motion.div variants={itemVariants} className="w-full mt-5">
+                                <AiInsight refreshTrigger={refreshTrigger} />
+                            </motion.div>
+
+                            {/* two-column grid for pulse check and shopping widget */}
+                            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 w-full">
+                                <PulseCheck triggerRefresh={() => setRefreshTrigger(prev => prev + 1)} />
+                                <ShoppingWidget refreshData={handleTransactionComplete} />
+                            </motion.div>
+
+                            {/* mainframe terminal */}
+                            <motion.div variants={itemVariants} className="w-full mt-5">
+                                <MainframeLog refreshTrigger={refreshTrigger} />
+                            </motion.div>
+
+                            {/* transaction history ledger */}
+                            <motion.div variants={itemVariants} className="w-full mt-5">
+                                <HistoryLog refreshTrigger={refreshTrigger} />
+                            </motion.div>
+                        </motion.div>
+                    ) : (
+                        // skeleton loading state with shimmer
+                        <div className="flex flex-col items-center w-full max-w-2xl gap-5 mt-4">
+                            <SkeletonCard className="w-full h-44" />
+                            <SkeletonCard className="w-full h-24" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                                <SkeletonCard className="h-40" />
+                                <SkeletonCard className="h-40" />
                             </div>
-                        </motion.div>
-
-                        {/* ai insight card */}
-                        <motion.div variants={itemVariants} className="w-full mt-5">
-                            <AiInsight refreshTrigger={refreshTrigger} />
-                        </motion.div>
-
-                        {/* two-column grid for pulse check and shopping widget */}
-                        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 w-full">
-                            <PulseCheck triggerRefresh={() => setRefreshTrigger(prev => prev + 1)} />
-                            <ShoppingWidget refreshData={handleTransactionComplete} />
-                        </motion.div>
-
-                        {/* mainframe terminal */}
-                        <motion.div variants={itemVariants} className="w-full mt-5">
-                            <MainframeLog refreshTrigger={refreshTrigger} />
-                        </motion.div>
-
-                        {/* transaction history ledger */}
-                        <motion.div variants={itemVariants} className="w-full mt-5">
-                            <HistoryLog refreshTrigger={refreshTrigger} />
-                        </motion.div>
-                    </motion.div>
-                ) : (
-                    // loading state
-                    <div className="flex flex-col items-center gap-3 mt-20">
-                        <div className="w-10 h-10 border-3 border-m3-primary border-t-transparent rounded-full animate-spin" />
-                        <p className="text-m3-on-surface-variant text-sm">Loading your vault...</p>
-                    </div>
-                )}
-            </div>
-        </main>
+                            <SkeletonCard className="w-full h-32" />
+                            <SkeletonCard className="w-full h-28" />
+                        </div>
+                    )}
+                </div>
+            </main>
+        </PageTransition>
     );
 }

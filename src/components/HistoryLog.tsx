@@ -1,14 +1,34 @@
-// material design 3 transaction history list
+// material design 3 transaction history list with staggered entrance animations
 "use client";
 
 // import hooks for fetching data
 import { useEffect, useState } from "react";
 
+// import motion for staggered list animations
+import { motion } from "framer-motion";
+
 // import status icons
-import { ShieldX, CheckCircle } from "lucide-react";
+import { ShieldX, CheckCircle, FileText } from "lucide-react";
 
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
+
+// m3 standard easing
+const m3Ease = [0.2, 0, 0, 1] as const;
+
+// stagger container for list items
+const listStagger = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.06 },
+    },
+};
+
+const listItem = {
+    hidden: { opacity: 0, x: -16 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: m3Ease } },
+};
 
 // define the shape of a transaction
 interface Transaction {
@@ -47,22 +67,46 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
     }
 
     return (
-        <div className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full">
-            {/* title */}
-            <h2 className="text-base font-semibold text-m3-on-surface mb-4">Transaction Ledger</h2>
+        <motion.div
+            whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+            className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full transition-shadow hover:shadow-m3-2"
+        >
+            {/* title with ledger icon */}
+            <div className="flex items-center gap-2.5 mb-4">
+                <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                    className="p-1.5 rounded-m3-full bg-m3-primary-container"
+                >
+                    <FileText className="text-m3-on-primary-container" size={16} />
+                </motion.div>
+                <h2 className="text-base font-semibold text-m3-on-surface">Transaction Ledger</h2>
+            </div>
 
             {/* empty state */}
             {transactions.length === 0 ? (
-                <p className="text-m3-on-surface-variant text-sm text-center py-4">
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-m3-on-surface-variant text-sm text-center py-4"
+                >
                     No recent transactions. Your vault is secure.
-                </p>
+                </motion.p>
             ) : (
-                // transaction list with m3 surface rows
-                <div className="space-y-2 max-h-64 overflow-y-auto">
+                // transaction list with staggered entrance
+                <motion.div
+                    variants={listStagger}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-2 max-h-64 overflow-y-auto"
+                >
                     {transactions.map((tx, index) => (
-                        <div
+                        <motion.div
                             key={index}
-                            className={`flex items-center justify-between p-3.5 rounded-m3-lg ${
+                            variants={listItem}
+                            whileHover={{ x: 3, transition: { duration: 0.15 } }}
+                            className={`flex items-center justify-between p-3.5 rounded-m3-lg transition-shadow hover:shadow-m3-1 ${
                                 tx.status === "BLOCKED"
                                     ? "bg-m3-error-container/40"
                                     : "bg-m3-surface-container"
@@ -71,7 +115,13 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                             {/* icon and item name */}
                             <div className="flex items-center gap-3">
                                 {tx.status === "BLOCKED" ? (
-                                    <ShieldX className="text-m3-error" size={20} />
+                                    <motion.div
+                                        initial={{ rotate: 0 }}
+                                        animate={{ rotate: [0, -10, 10, 0] }}
+                                        transition={{ duration: 0.4, delay: index * 0.1 }}
+                                    >
+                                        <ShieldX className="text-m3-error" size={20} />
+                                    </motion.div>
                                 ) : (
                                     <CheckCircle className="text-m3-primary" size={20} />
                                 )}
@@ -94,10 +144,10 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                                     {tx.status}
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             )}
-        </div>
+        </motion.div>
     );
 }

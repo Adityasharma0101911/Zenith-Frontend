@@ -1,4 +1,4 @@
-// material design 3 registration page
+// material design 3 registration page with rich android-style animations
 "use client";
 
 // import useState to track form inputs
@@ -10,14 +10,34 @@ import { useRouter } from "next/navigation";
 // import Link for the login link
 import Link from "next/link";
 
-// import motion for entrance animation
-import { motion } from "framer-motion";
+// import motion for entrance and micro-interaction animations
+import { motion, AnimatePresence } from "framer-motion";
 
-// import loader icon for the trust theater spinning effect
-import { Loader2 } from "lucide-react";
+// import icons for trust theater and visual feedback
+import { Loader2, UserPlus, Sparkles } from "lucide-react";
 
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
+
+// import page transition wrapper
+import PageTransition from "@/components/PageTransition";
+
+// m3 standard easing
+const m3Ease = [0.2, 0, 0, 1] as const;
+
+// stagger container for form fields cascade
+const formStagger = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.1, delayChildren: 0.3 },
+    },
+};
+
+const formItem = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: m3Ease } },
+};
 
 export default function RegisterPage() {
     // these store the username and password the user types
@@ -30,6 +50,9 @@ export default function RegisterPage() {
 
     // this changes text during the simulated key generation delay
     const [buttonText, setButtonText] = useState("Create Account");
+
+    // track success state for celebration animation
+    const [success, setSuccess] = useState(false);
 
     // this sends the new user data to the backend
     async function handleRegister(e: React.FormEvent) {
@@ -51,6 +74,9 @@ export default function RegisterPage() {
         const data = await res.json();
 
         if (data.message) {
+            setSuccess(true);
+            setButtonText("Vault Created!");
+
             // wait 1.5 seconds to simulate key generation
             setTimeout(() => {
                 // registration worked so redirect to login
@@ -67,79 +93,149 @@ export default function RegisterPage() {
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center px-6">
-            {/* material card container with entrance animation */}
-            <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="w-full max-w-sm"
-            >
-                {/* material card surface */}
-                <div className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2">
-                    {/* page title */}
-                    <h1 className="text-2xl font-semibold text-m3-on-surface text-center">
-                        Create your vault
-                    </h1>
-                    <p className="text-sm text-m3-on-surface-variant text-center mt-1">
-                        Set up your Zenith guardian account
-                    </p>
-
-                    {/* registration form */}
-                    <form onSubmit={handleRegister} className="flex flex-col gap-5 mt-8">
-                        {/* material outlined text field for username */}
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder=" "
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="m3-input-outlined peer"
-                                required
-                            />
-                            <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
-                                Username
-                            </label>
-                        </div>
-
-                        {/* material outlined text field for password */}
-                        <div className="relative">
-                            <input
-                                type="password"
-                                placeholder=" "
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="m3-input-outlined peer"
-                                required
-                            />
-                            <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
-                                Password
-                            </label>
-                        </div>
-
-                        {/* material filled button with trust theater */}
-                        <motion.button
-                            type="submit"
-                            disabled={loading}
-                            whileHover={{ scale: loading ? 1 : 1.02 }}
-                            whileTap={{ scale: loading ? 1 : 0.95 }}
-                            className="m3-btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-70"
+        <PageTransition>
+            <main className="min-h-screen flex items-center justify-center px-6">
+                {/* material card container with scale + fade entrance */}
+                <motion.div
+                    initial={{ opacity: 0, y: 32, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.5, ease: m3Ease }}
+                    className="w-full max-w-sm"
+                >
+                    {/* material card surface with hover lift */}
+                    <motion.div
+                        whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(0,0,0,0.12)" }}
+                        transition={{ duration: 0.25, ease: m3Ease }}
+                        className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2"
+                    >
+                        {/* user icon with bounce entrance */}
+                        <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 15, delay: 0.2 }}
+                            className="w-16 h-16 rounded-m3-full bg-m3-tertiary-container flex items-center justify-center mx-auto mb-5"
                         >
-                            {/* show spinner when loading */}
-                            {loading && <Loader2 size={18} className="animate-spin" />}
-                            {buttonText}
-                        </motion.button>
-                    </form>
+                            <AnimatePresence mode="wait">
+                                {success ? (
+                                    <motion.div
+                                        key="sparkle"
+                                        initial={{ scale: 0, rotate: -90 }}
+                                        animate={{ scale: 1, rotate: 0 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                                    >
+                                        <Sparkles className="text-m3-on-tertiary-container" size={28} />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="user"
+                                        exit={{ scale: 0, rotate: 90 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <UserPlus className="text-m3-on-tertiary-container" size={28} />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
 
-                    {/* link to login page */}
-                    <p className="text-center text-sm text-m3-on-surface-variant mt-6">
-                        Already have an account?{" "}
-                        <Link href="/login" className="text-m3-primary font-medium">
-                            Sign in
-                        </Link>
-                    </p>
-                </div>
-            </motion.div>
-        </main>
+                        {/* page title with fade */}
+                        <motion.h1
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3, duration: 0.4, ease: m3Ease }}
+                            className="text-2xl font-semibold text-m3-on-surface text-center"
+                        >
+                            Create your vault
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4, duration: 0.3 }}
+                            className="text-sm text-m3-on-surface-variant text-center mt-1"
+                        >
+                            Set up your Zenith guardian account
+                        </motion.p>
+
+                        {/* registration form with staggered field entrances */}
+                        <motion.form
+                            onSubmit={handleRegister}
+                            variants={formStagger}
+                            initial="hidden"
+                            animate="visible"
+                            className="flex flex-col gap-5 mt-8"
+                        >
+                            {/* material outlined text field for username */}
+                            <motion.div variants={formItem} className="relative">
+                                <input
+                                    type="text"
+                                    placeholder=" "
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="m3-input-outlined peer"
+                                    required
+                                />
+                                <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
+                                    Username
+                                </label>
+                            </motion.div>
+
+                            {/* material outlined text field for password */}
+                            <motion.div variants={formItem} className="relative">
+                                <input
+                                    type="password"
+                                    placeholder=" "
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="m3-input-outlined peer"
+                                    required
+                                />
+                                <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
+                                    Password
+                                </label>
+                            </motion.div>
+
+                            {/* material filled button with spring hover + trust theater */}
+                            <motion.div variants={formItem}>
+                                <motion.button
+                                    type="submit"
+                                    disabled={loading}
+                                    whileHover={{ scale: loading ? 1 : 1.03, y: loading ? 0 : -1 }}
+                                    whileTap={{ scale: loading ? 1 : 0.95 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                                    className="m3-btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-70"
+                                >
+                                    {/* show spinner when loading */}
+                                    <AnimatePresence mode="wait">
+                                        {loading && (
+                                            <motion.span
+                                                initial={{ opacity: 0, scale: 0 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                <Loader2 size={18} className="animate-spin" />
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                    {buttonText}
+                                </motion.button>
+                            </motion.div>
+                        </motion.form>
+
+                        {/* link to login page */}
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.7, duration: 0.3 }}
+                            className="text-center text-sm text-m3-on-surface-variant mt-6"
+                        >
+                            Already have an account?{" "}
+                            <Link href="/login" className="text-m3-primary font-medium hover:underline">
+                                Sign in
+                            </Link>
+                        </motion.p>
+                    </motion.div>
+                </motion.div>
+            </main>
+        </PageTransition>
     );
 }

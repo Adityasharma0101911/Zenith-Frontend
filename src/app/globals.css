@@ -7,6 +7,10 @@
   --md-sys-color-surface: #F8FAF8;
   --md-sys-color-on-surface: #191C1B;
   --md-sys-color-primary: #006B5E;
+  --m3-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --m3-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --m3-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+  --m3-easing-accelerated: cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 body {
@@ -30,38 +34,69 @@ body {
     focus:border-m3-primary focus:border-2 focus:outline-none transition-all duration-200;
 }
 
-/* material design 3 filled button */
+/* material design 3 filled button with ripple-ready surface */
 .m3-btn-filled {
   @apply px-6 py-3 rounded-m3-full bg-m3-primary text-m3-on-primary
     font-medium text-sm shadow-none hover:shadow-m3-1
-    active:shadow-none transition-all duration-200;
+    active:shadow-none transition-all duration-200
+    relative overflow-hidden;
 }
 
 /* material design 3 tonal button */
 .m3-btn-tonal {
   @apply px-6 py-3 rounded-m3-full bg-m3-secondary-container text-m3-on-secondary-container
     font-medium text-sm shadow-none hover:shadow-m3-1
-    active:shadow-none transition-all duration-200;
+    active:shadow-none transition-all duration-200
+    relative overflow-hidden;
 }
 
 /* material design 3 outlined button */
 .m3-btn-outlined {
   @apply px-6 py-3 rounded-m3-full border border-m3-outline bg-transparent
     text-m3-primary font-medium text-sm
-    hover:bg-[#006B5E14] transition-all duration-200;
+    hover:bg-[#006B5E14] transition-all duration-200
+    relative overflow-hidden;
 }
 
-/* material design 3 card styles */
+/* m3 interactive card with hover lift */
 .m3-card {
-  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-1;
+  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-1
+    transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)];
+}
+
+.m3-card:hover {
+  @apply shadow-m3-2 -translate-y-0.5;
 }
 
 .m3-card-elevated {
-  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-2;
+  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-2
+    transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)];
+}
+
+.m3-card-elevated:hover {
+  @apply shadow-m3-3 -translate-y-1;
 }
 
 .m3-card-filled {
-  @apply bg-m3-surface-container-highest rounded-m3-xl p-6;
+  @apply bg-m3-surface-container-highest rounded-m3-xl p-6
+    transition-all duration-300;
+}
+
+/* shimmer loading skeleton */
+.m3-shimmer {
+  background: linear-gradient(
+    90deg,
+    #E1E3E1 25%,
+    #ECF0EC 50%,
+    #E1E3E1 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* material 3 range slider */
@@ -72,6 +107,18 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
   @apply appearance-none w-5 h-5 rounded-full bg-m3-primary cursor-pointer
     shadow-m3-1;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 8px rgba(0, 107, 94, 0.12);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 12px rgba(0, 107, 94, 0.16);
 }
 
 /* smooth scrollbar for material feel */
@@ -85,4 +132,24 @@ input[type="range"]::-webkit-slider-thumb {
 
 ::-webkit-scrollbar-thumb {
   @apply bg-m3-outline-variant rounded-full;
+}
+
+/* m3 focus ring for accessibility */
+.m3-focus-ring:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+/* staggered list item entrance helper */
+.m3-stagger-item {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: slide-up 0.4s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+@keyframes slide-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

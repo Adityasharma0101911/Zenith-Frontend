@@ -69,10 +69,18 @@ const config: Config = {
         "m3-4": "0 6px 10px 4px rgba(0,0,0,0.15), 0 2px 3px rgba(0,0,0,0.3)",
         "m3-5": "0 8px 12px 6px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.3)",
       },
-      // custom animation for breathing pulse
+      // rich android-style animations
       animation: {
         "pulse-slow": "pulse-slow 6s ease-in-out infinite",
         "float": "float 4s ease-in-out infinite",
+        "shimmer": "shimmer 2s ease-in-out infinite",
+        "ripple": "ripple 0.6s ease-out forwards",
+        "slide-up": "slide-up 0.4s cubic-bezier(0.2,0,0,1) forwards",
+        "scale-in": "scale-in 0.3s cubic-bezier(0.2,0,0,1) forwards",
+        "fade-in": "fade-in 0.3s ease-out forwards",
+        "bounce-in": "bounce-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards",
+        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        "typewriter": "typewriter 0.05s steps(1) forwards",
       },
       keyframes: {
         "pulse-slow": {
@@ -82,6 +90,36 @@ const config: Config = {
         "float": {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-6px)" },
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "ripple": {
+          "0%": { transform: "scale(0)", opacity: "0.4" },
+          "100%": { transform: "scale(4)", opacity: "0" },
+        },
+        "slide-up": {
+          "0%": { transform: "translateY(16px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        "scale-in": {
+          "0%": { transform: "scale(0.85)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "bounce-in": {
+          "0%": { transform: "scale(0.3)", opacity: "0" },
+          "50%": { transform: "scale(1.05)" },
+          "70%": { transform: "scale(0.95)" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 8px rgba(0,107,94,0.2)" },
+          "50%": { boxShadow: "0 0 24px rgba(0,107,94,0.4)" },
         },
       },
     },
