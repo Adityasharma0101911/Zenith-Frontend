@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { HeartPulse, Dumbbell, Moon, Apple } from "lucide-react";
 import JarvisDashboard from "@/components/JarvisDashboard";
 import PageTransition from "@/components/PageTransition";
-import type { StatDef } from "@/components/JarvisDashboard";
+import type { StatDef, RingDef } from "@/components/JarvisDashboard";
 
 // stat cards derived from survey data
 const STATS: StatDef[] = [
@@ -19,6 +19,13 @@ const STATS: StatDef[] = [
         icon: HeartPulse,
         format: (v) => `${v}/10`,
     },
+];
+
+// score rings derived from survey
+const RINGS: RingDef[] = [
+    { label: "Nutrition", key: "diet_quality", color: "#006B5E", score: (v) => ({ "Needs improvement": 20, "Moderate": 45, "Healthy": 75, "Very healthy": 95 }[String(v)] ?? 0) },
+    { label: "Exercise", key: "exercise_frequency", color: "#4A635D", score: (v) => ({ "Never": 10, "1-2 times/week": 35, "3-4 times/week": 60, "5+ times/week": 80, "Daily": 100 }[String(v)] ?? 0) },
+    { label: "Rest & Recovery", key: "sleep_quality", color: "#426278", score: (v) => ({ "Poor": 20, "Fair": 45, "Good": 70, "Excellent": 95 }[String(v)] ?? 0) },
 ];
 
 export default function VitalsPage() {
@@ -41,6 +48,7 @@ export default function VitalsPage() {
                     accentText="text-m3-on-secondary-container"
                     accentBorder="border-m3-secondary"
                     stats={STATS}
+                    rings={RINGS}
                     placeholder="Ask Vitals about your health..."
                 />
             </main>

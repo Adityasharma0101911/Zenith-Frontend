@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { GraduationCap, Lightbulb, Target, Layers } from "lucide-react";
 import JarvisDashboard from "@/components/JarvisDashboard";
 import PageTransition from "@/components/PageTransition";
-import type { StatDef } from "@/components/JarvisDashboard";
+import type { StatDef, RingDef } from "@/components/JarvisDashboard";
 
 // stat cards derived from survey data
 const STATS: StatDef[] = [
@@ -24,6 +24,13 @@ const STATS: StatDef[] = [
         icon: Target,
         format: (v) => (Array.isArray(v) ? `${v.length} goals set` : String(v)),
     },
+];
+
+// score rings derived from survey
+const RINGS: RingDef[] = [
+    { label: "Academic Focus", key: "study_goals", color: "#426278", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 6) * 100)) : 0 },
+    { label: "Engagement", key: "subjects", color: "#006B5E", score: (v) => Array.isArray(v) ? Math.min(100, Math.round((v.length / 8) * 100)) : 0 },
+    { label: "Discipline", key: "education_level", color: "#4A635D", score: (v) => ({ "High School": 30, "Undergraduate": 55, "Graduate": 75, "Professional": 90, "Self-taught": 60 }[String(v)] ?? 0) },
 ];
 
 export default function ScholarPage() {
@@ -46,6 +53,7 @@ export default function ScholarPage() {
                     accentText="text-m3-on-tertiary-container"
                     accentBorder="border-m3-tertiary"
                     stats={STATS}
+                    rings={RINGS}
                     placeholder="Ask Scholar anything..."
                 />
             </main>

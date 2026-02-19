@@ -9,6 +9,7 @@ import { Shield, Brain, TrendingDown, ArrowRight, Sparkles } from "lucide-react"
 
 // import Link to navigate to registration
 import Link from "next/link";
+import Image from "next/image";
 
 // import page transition wrapper
 import PageTransition from "@/components/PageTransition";
@@ -74,13 +75,10 @@ export default function Home() {
                         AI-Powered Financial Wellness
                     </motion.div>
 
-                    {/* app name with scale entrance */}
-                    <motion.h1
-                        variants={fadeUp}
-                        className="text-6xl font-bold text-m3-on-surface tracking-tight"
-                    >
-                        Zenith
-                    </motion.h1>
+                    {/* logo */}
+                    <motion.div variants={fadeUp}>
+                        <Image src="/zenith-logo.png" alt="Zenith" width={288} height={192} className="mx-auto w-72" priority />
+                    </motion.div>
 
                     {/* tagline fades in after title */}
                     <motion.p

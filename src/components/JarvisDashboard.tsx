@@ -43,6 +43,14 @@ export interface StatDef {
     format?: (val: unknown) => string;
 }
 
+// circular progress ring definition
+export interface RingDef {
+    label: string;
+    key: string;
+    color: string;
+    score: (val: unknown) => number;
+}
+
 interface JarvisDashboardProps {
     section: "scholar" | "guardian" | "vitals";
     title: string;
@@ -52,6 +60,7 @@ interface JarvisDashboardProps {
     accentText: string; // e.g. "text-m3-on-primary-container"
     accentBorder: string; // e.g. "border-m3-primary"
     stats: StatDef[];
+    rings: RingDef[];
     placeholder?: string;
 }
 
@@ -82,6 +91,30 @@ function parseBrief(raw: string) {
     return { greeting: greeting.join(" "), recs, actions, closing };
 }
 
+// animated svg circular progress ring
+function ProgressRing({ percent, label, color, delay = 0 }: { percent: number; label: string; color: string; delay?: number }) {
+    const size = 80;
+    const sw = 6;
+    const r = (size - sw) / 2;
+    const circ = 2 * Math.PI * r;
+    const off = circ - (percent / 100) * circ;
+
+    return (
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, delay, ease: m3Ease }} className="flex flex-col items-center gap-1.5">
+            <div className="relative" style={{ width: size, height: size }}>
+                <svg width={size} height={size} className="-rotate-90">
+                    <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={sw} className="stroke-m3-surface-container-high" />
+                    <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeDasharray={circ} initial={{ strokeDashoffset: circ }} animate={{ strokeDashoffset: off }} transition={{ duration: 1.2, ease: [0.2, 0, 0, 1], delay: delay + 0.2 }} />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-sm font-bold text-m3-on-surface">{Math.round(percent)}%</span>
+                </div>
+            </div>
+            <span className="text-[11px] text-m3-on-surface-variant font-medium text-center leading-tight max-w-[72px]">{label}</span>
+        </motion.div>
+    );
+}
+
 export default function JarvisDashboard({
     section,
     title,
@@ -91,6 +124,7 @@ export default function JarvisDashboard({
     accentText,
     accentBorder,
     stats,
+    rings,
     placeholder = "Ask me anything...",
 }: JarvisDashboardProps) {
     // survey data from backend
@@ -209,6 +243,21 @@ export default function JarvisDashboard({
                         <p className="text-sm text-m3-on-surface-variant">{subtitle}</p>
                     </div>
                 </motion.div>
+
+                {/* wellness progress rings */}
+                {survey && rings.length > 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.15, ease: m3Ease }}
+                        className="flex justify-center gap-5 flex-wrap"
+                    >
+                        {rings.map((ring, i) => {
+                            const pct = ring.score(survey[ring.key]);
+                            return <ProgressRing key={ring.key} percent={pct} label={ring.label} color={ring.color} delay={0.2 + i * 0.15} />;
+                        })}
+                    </motion.div>
+                )}
 
                 {/* stat metric cards */}
                 {survey && (

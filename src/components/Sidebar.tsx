@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import {
     LayoutDashboard,
@@ -17,7 +18,6 @@ import {
     Menu,
     X,
     Terminal,
-    Sparkles,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import SdgBadge from "@/components/SdgBadge";
@@ -148,10 +148,8 @@ export default function Sidebar() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ duration: 0.2 }}
-                            className="flex items-center gap-2"
                         >
-                            <Sparkles size={20} className="text-m3-primary" />
-                            <span className="text-lg font-semibold text-m3-primary">Zenith</span>
+                            <Image src="/zenith-logo.png" alt="Zenith" width={120} height={80} className="h-9 w-auto" />
                         </motion.div>
                     )}
                 </AnimatePresence>
