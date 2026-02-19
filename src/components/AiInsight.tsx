@@ -1,7 +1,7 @@
-// this makes the ai box look like a glowing smart terminal
+// material design 3 ai insight card with floating animation
 "use client";
 
-// this fetches the custom ai advice from the backend
+// import hooks for fetching data
 import { useEffect, useState } from "react";
 
 // import motion for the floating animation
@@ -25,20 +25,15 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
 
         // try to fetch the advice from the backend
         try {
-            // send a get request with the auth token
             const res = await fetch(`${API_URL}/api/ai/insights`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
-            // parse the response
             const data = await res.json();
-
-            // set the advice text from the backend
             setAdvice(data.advice);
         } catch {
-            // if the fetch fails, show a fallback message
             setAdvice("Zenith AI is currently offline. Please try again later.");
         }
     }
@@ -49,20 +44,22 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
     }, [refreshTrigger]);
 
     return (
-        // this floats the card gently up and down like it's alive
+        // m3 inverse surface card with floating animation
         <motion.div
-            animate={{ y: [0, -5, 0] }}
+            animate={{ y: [0, -4, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="bg-slate-800 border border-teal-500/30 rounded-2xl shadow-[0_0_15px_rgba(20,184,166,0.15)] p-6 w-full"
+            className="bg-m3-inverse-surface rounded-m3-xl p-6 w-full shadow-m3-3"
         >
             {/* ai sparkles icon and title */}
-            <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="text-teal-400" size={22} />
-                <h2 className="text-lg font-bold text-white">Zenith AI Insight</h2>
+            <div className="flex items-center gap-2.5 mb-3">
+                <div className="p-2 rounded-m3-full bg-m3-primary-container">
+                    <Sparkles className="text-m3-on-primary-container" size={18} />
+                </div>
+                <h2 className="text-base font-semibold text-m3-inverse-on-surface">Zenith AI Insight</h2>
             </div>
 
             {/* the ai advice text */}
-            <p className="text-teal-100/80 text-sm leading-relaxed">{advice}</p>
+            <p className="text-m3-inverse-on-surface/75 text-sm leading-relaxed">{advice}</p>
         </motion.div>
     );
 }

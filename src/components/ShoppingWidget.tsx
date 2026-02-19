@@ -1,10 +1,10 @@
-// this styles the store widget with material you rounding
+// material design 3 shopping widget with interceptor modal
 "use client";
 
 // import useState to track the response message
 import { useState } from "react";
 
-// import motion and AnimatePresence for the dramatic blocked modal
+// import motion and AnimatePresence for the blocked modal
 import { motion, AnimatePresence } from "framer-motion";
 
 // import icons for the widget
@@ -15,26 +15,16 @@ import { API_URL } from "@/utils/api";
 
 // this takes a refreshData function so the dashboard can update the balance
 export default function ShoppingWidget({ refreshData }: { refreshData: () => void }) {
-    // this stores the response message from the backend
     const [message, setMessage] = useState("");
-
-    // this stores the error message if something goes wrong
     const [error, setError] = useState("");
-
-    // this stores the blocked reason for the dramatic popup
     const [blockedReason, setBlockedReason] = useState("");
-
-    // this controls whether the blocked modal is visible
     const [showBlocked, setShowBlocked] = useState(false);
 
     // this sends the buy request to the interceptor
     async function handleBuy() {
-        // get the token from localStorage
         const token = localStorage.getItem("token");
 
-        // this adds error catching in case the server is down
         try {
-            // send a post request with the item and amount
             const res = await fetch(`${API_URL}/api/transaction/attempt`, {
                 method: "POST",
                 headers: {
@@ -44,71 +34,63 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                 body: JSON.stringify({ amount: 150, item_name: "Headphones" }),
             });
 
-            // parse the response from the backend
             const data = await res.json();
-
-            // clear any old errors
             setError("");
 
-            // show the status and reason if blocked, or the allowed message
             if (data.status === "BLOCKED") {
-                // this creates the dramatic interceptor popup
                 setBlockedReason(data.reason);
                 setShowBlocked(true);
                 setMessage("");
             } else if (data.status === "ALLOWED") {
-                setMessage(`✅ Purchase allowed! New balance: $${data.new_balance.toFixed(2)}`);
-
-                // this updates the balance on the screen after buying
+                setMessage(`Purchase allowed! New balance: $${data.new_balance.toFixed(2)}`);
                 refreshData();
             } else {
                 setMessage("Something went wrong.");
             }
         } catch {
-            // this shows the error if the server is down
             setError("Could not connect to server.");
         }
     }
 
     return (
         <>
-            <div className="bg-white rounded-[2rem] shadow-lg p-6 w-80">
-                {/* placeholder product image */}
-                <div className="bg-gray-100 rounded-2xl h-36 flex items-center justify-center mb-4">
-                    <ShoppingCart className="text-gray-300" size={48} />
+            <div className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full">
+                {/* product image placeholder with m3 surface */}
+                <div className="bg-m3-surface-container-highest rounded-m3-lg h-36 flex items-center justify-center mb-4">
+                    <ShoppingCart className="text-m3-on-surface-variant/40" size={48} />
                 </div>
 
                 {/* product name */}
-                <h2 className="text-xl font-bold">Noise Cancelling Headphones</h2>
+                <h2 className="text-base font-semibold text-m3-on-surface">Noise Cancelling Headphones</h2>
 
                 {/* product price */}
-                <p className="text-2xl text-zenith-teal font-semibold mt-2">$150.00</p>
+                <p className="text-2xl text-m3-primary font-semibold mt-1">$150.00</p>
 
                 {/* product description */}
-                <p className="text-gray-500 text-sm mt-1">Premium wireless headphones with ANC</p>
+                <p className="text-m3-on-surface-variant text-sm mt-1">Premium wireless headphones with ANC</p>
 
-                {/* buy button with motion hover and tap effects */}
+                {/* buy button */}
                 <motion.button
                     onClick={handleBuy}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-zenith-teal text-white rounded-full p-4 w-full mt-4 hover:opacity-90 transition-all duration-300"
+                    className="m3-btn-filled w-full mt-4"
                 >
                     Buy Now
                 </motion.button>
 
-                {/* show the success message from the interceptor */}
+                {/* success message */}
                 {message && (
-                    <p className="mt-3 text-center text-sm font-medium">{message}</p>
+                    <p className="mt-3 text-center text-sm font-medium text-m3-primary">{message}</p>
                 )}
 
-                {/* this shows the error message in red if something broke */}
+                {/* error message */}
                 {error && (
-                    <p className="mt-3 text-center text-sm font-medium text-red-500">{error}</p>
+                    <p className="mt-3 text-center text-sm font-medium text-m3-error">{error}</p>
                 )}
             </div>
 
-            {/* this creates the dramatic interceptor popup when blocked */}
+            {/* m3 full-screen error modal when transaction is blocked */}
             <AnimatePresence>
                 {showBlocked && (
                     <motion.div
@@ -117,34 +99,36 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 flex items-center justify-center"
                     >
-                        {/* red tinted glass background */}
-                        <div className="absolute inset-0 bg-red-900/90 backdrop-blur-sm" />
+                        {/* m3 scrim overlay */}
+                        <div className="absolute inset-0 bg-m3-error/20 backdrop-blur-md" />
 
-                        {/* the blocked card drops down from the top */}
+                        {/* blocked modal card */}
                         <motion.div
-                            initial={{ y: -50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: -50, opacity: 0 }}
-                            transition={{ type: "spring", damping: 20 }}
-                            className="relative bg-white rounded-3xl p-8 max-w-sm mx-4 text-center shadow-2xl"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            className="relative bg-m3-error-container rounded-m3-xl p-8 max-w-sm mx-4 text-center shadow-m3-5"
                         >
-                            {/* shield alert icon */}
+                            {/* shield icon in error surface */}
                             <div className="flex justify-center mb-4">
-                                <ShieldAlert className="text-red-500" size={48} />
+                                <div className="p-3 rounded-m3-full bg-m3-error/15">
+                                    <ShieldAlert className="text-m3-on-error-container" size={40} />
+                                </div>
                             </div>
 
                             {/* blocked title */}
-                            <h2 className="text-2xl font-bold text-red-600">Transaction Blocked</h2>
+                            <h2 className="text-xl font-semibold text-m3-on-error-container">Transaction Blocked</h2>
 
                             {/* blocked reason */}
-                            <p className="text-gray-600 mt-3">{blockedReason}</p>
+                            <p className="text-m3-on-error-container/80 mt-3 text-sm">{blockedReason}</p>
 
                             {/* dismiss button */}
                             <motion.button
                                 onClick={() => setShowBlocked(false)}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="bg-red-500 text-white rounded-full px-8 py-3 mt-6 hover:bg-red-600 transition-all duration-300 flex items-center gap-2 mx-auto"
+                                className="mt-6 px-8 py-3 rounded-m3-full bg-m3-error text-m3-on-error font-medium text-sm flex items-center gap-2 mx-auto transition-colors"
                             >
                                 <X size={16} />
                                 Dismiss

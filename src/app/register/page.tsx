@@ -1,4 +1,4 @@
-// this adds smooth fade-ins and pill styling to the auth forms
+// material design 3 registration page
 "use client";
 
 // import useState to track form inputs
@@ -13,6 +13,9 @@ import Link from "next/link";
 // import motion for entrance animation
 import { motion } from "framer-motion";
 
+// import loader icon for the trust theater spinning effect
+import { Loader2 } from "lucide-react";
+
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
@@ -22,10 +25,10 @@ export default function RegisterPage() {
     const [password, setPassword] = useState("");
     const router = useRouter();
 
-    // this tracks the loading state for the encryption animation
+    // this tracks the loading state for the trust theater animation
     const [loading, setLoading] = useState(false);
 
-    // this simulates enterprise encryption delays for the user experience
+    // this changes text during the simulated key generation delay
     const [buttonText, setButtonText] = useState("Create Account");
 
     // this sends the new user data to the backend
@@ -64,53 +67,78 @@ export default function RegisterPage() {
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center">
-            {/* this wraps the form in a smooth entrance animation */}
+        <main className="min-h-screen flex items-center justify-center px-6">
+            {/* material card container with entrance animation */}
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="w-full max-w-sm"
             >
-                <form onSubmit={handleRegister} className="flex flex-col gap-4 w-80">
-                    <h1 className="text-2xl font-bold text-center">Create Account</h1>
+                {/* material card surface */}
+                <div className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2">
+                    {/* page title */}
+                    <h1 className="text-2xl font-semibold text-m3-on-surface text-center">
+                        Create your vault
+                    </h1>
+                    <p className="text-sm text-m3-on-surface-variant text-center mt-1">
+                        Set up your Zenith guardian account
+                    </p>
 
-                    {/* username input with pill shape */}
-                    <input
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="border border-gray-300 rounded-full p-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all duration-300"
-                    />
+                    {/* registration form */}
+                    <form onSubmit={handleRegister} className="flex flex-col gap-5 mt-8">
+                        {/* material outlined text field for username */}
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder=" "
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="m3-input-outlined peer"
+                                required
+                            />
+                            <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
+                                Username
+                            </label>
+                        </div>
 
-                    {/* password input with pill shape */}
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="border border-gray-300 rounded-full p-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all duration-300"
-                    />
+                        {/* material outlined text field for password */}
+                        <div className="relative">
+                            <input
+                                type="password"
+                                placeholder=" "
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="m3-input-outlined peer"
+                                required
+                            />
+                            <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
+                                Password
+                            </label>
+                        </div>
 
-                    {/* create account button with dynamic text */}
-                    <motion.button
-                        type="submit"
-                        disabled={loading}
-                        whileHover={{ scale: loading ? 1 : 1.02 }}
-                        whileTap={{ scale: loading ? 1 : 0.95 }}
-                        className="bg-zenith-teal text-white rounded-full p-4 hover:opacity-90 transition-all duration-300 disabled:opacity-70"
-                    >
-                        {buttonText}
-                    </motion.button>
+                        {/* material filled button with trust theater */}
+                        <motion.button
+                            type="submit"
+                            disabled={loading}
+                            whileHover={{ scale: loading ? 1 : 1.02 }}
+                            whileTap={{ scale: loading ? 1 : 0.95 }}
+                            className="m3-btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-70"
+                        >
+                            {/* show spinner when loading */}
+                            {loading && <Loader2 size={18} className="animate-spin" />}
+                            {buttonText}
+                        </motion.button>
+                    </form>
 
-                    {/* link to the login page */}
-                    <p className="text-center text-sm text-gray-500">
+                    {/* link to login page */}
+                    <p className="text-center text-sm text-m3-on-surface-variant mt-6">
                         Already have an account?{" "}
-                        <Link href="/login" className="text-zenith-teal underline">
-                            Login
+                        <Link href="/login" className="text-m3-primary font-medium">
+                            Sign in
                         </Link>
                     </p>
-                </form>
+                </div>
             </motion.div>
         </main>
     );

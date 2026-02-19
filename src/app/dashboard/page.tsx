@@ -1,4 +1,4 @@
-// this protects the page from logged out users
+// material design 3 dashboard with stagger animations
 "use client";
 
 // import useEffect and useState to run code when the page loads
@@ -10,22 +10,17 @@ import { useRouter } from "next/navigation";
 // import motion for stagger animations
 import { motion } from "framer-motion";
 
+// import icons for the wellness score and logout
+import { LogOut, Heart } from "lucide-react";
+
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
-// this adds the store widget to the main dashboard
+// import all dashboard widgets
 import ShoppingWidget from "@/components/ShoppingWidget";
-
-// this puts the pulse check on the dashboard
 import PulseCheck from "@/components/PulseCheck";
-
-// this puts the ai brain at the top of the dashboard
 import AiInsight from "@/components/AiInsight";
-
-// this puts the ledger at the bottom of the dashboard
 import HistoryLog from "@/components/HistoryLog";
-
-// this puts the mainframe terminal on the dashboard
 import MainframeLog from "@/components/MainframeLog";
 
 // this staggers the dashboard widgets loading in
@@ -34,15 +29,15 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.15,
+            staggerChildren: 0.12,
         },
     },
 };
 
 // each child slides up and fades in
 const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
 export default function DashboardPage() {
@@ -104,74 +99,87 @@ export default function DashboardPage() {
     }
 
     return (
-        <main className="min-h-screen p-8 pt-20 pb-24">
-            {/* logout button at the top right */}
-            <div className="flex justify-end">
-                <button
+        <main className="min-h-screen px-4 pt-20 pb-28 md:px-8">
+            {/* top bar with logout */}
+            <div className="flex justify-end max-w-2xl mx-auto">
+                <motion.button
                     onClick={handleLogout}
-                    className="bg-red-500 text-white rounded-full px-6 py-2 hover:opacity-90 transition-all duration-300"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-m3-full bg-m3-error-container text-m3-on-error-container text-sm font-medium transition-colors"
                 >
+                    <LogOut size={16} />
                     Logout
-                </button>
+                </motion.button>
             </div>
 
             {/* show the user data once it loads */}
-            <div className="flex flex-col items-center mt-6">
+            <div className="flex flex-col items-center mt-4">
                 {userData ? (
-                    // this staggers the dashboard widgets loading in
+                    // stagger all dashboard widgets in
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                         className="flex flex-col items-center w-full max-w-2xl"
                     >
-                        {/* welcome text slides in first */}
-                        <motion.div variants={itemVariants} className="text-center">
-                            <h1 className="text-4xl font-bold">Welcome, {userData.name}</h1>
-                            <p className="text-xl mt-4 text-gray-600">Balance: ${userData.balance.toFixed(2)}</p>
+                        {/* welcome header card */}
+                        <motion.div
+                            variants={itemVariants}
+                            className="w-full bg-m3-primary-container rounded-m3-xl p-6 text-center"
+                        >
+                            <h1 className="text-3xl font-semibold text-m3-on-primary-container">
+                                Welcome, {userData.name}
+                            </h1>
+                            <p className="text-xl mt-2 text-m3-on-primary-container/80 font-medium">
+                                ${userData.balance.toFixed(2)}
+                            </p>
                             {userData.spending_profile && (
-                                <p className="text-lg mt-2 text-gray-500">Profile: {userData.spending_profile}</p>
+                                <span className="inline-block mt-2 px-3 py-1 rounded-m3-full bg-m3-surface text-m3-on-surface text-xs font-medium">
+                                    {userData.spending_profile}
+                                </span>
                             )}
 
-                            {/* this shows the wellness score on the dashboard */}
+                            {/* wellness score aligned with UN SDG #3 */}
                             <div
-                                className="mt-3 inline-block"
+                                className="mt-3 flex items-center justify-center gap-2"
                                 title="Calculated using real-time stress data to align with UN SDG #3."
                             >
-                                <span className="text-sm text-gray-500 mr-2">Wellness Score:</span>
-                                {/* this adds an explanation for the judges */}
-                                <span className={`text-2xl font-bold ${userData.wellness_score < 50 ? "text-orange-500" : "text-zenith-teal"}`}>
+                                <Heart size={16} className="text-m3-on-primary-container/60" />
+                                <span className="text-sm text-m3-on-primary-container/60">Wellness</span>
+                                <span className={`text-xl font-bold ${userData.wellness_score < 50 ? "text-m3-error" : "text-m3-on-primary-container"}`}>
                                     {userData.wellness_score}%
                                 </span>
                             </div>
                         </motion.div>
 
-                        {/* ai insight slides in second */}
-                        <motion.div variants={itemVariants} className="w-full mt-8">
+                        {/* ai insight card */}
+                        <motion.div variants={itemVariants} className="w-full mt-5">
                             <AiInsight refreshTrigger={refreshTrigger} />
                         </motion.div>
 
-                        {/* dashboard grid slides in third */}
-                        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 w-full">
-                            {/* pulse check on the left, triggers ai update when stress changes */}
+                        {/* two-column grid for pulse check and shopping widget */}
+                        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 w-full">
                             <PulseCheck triggerRefresh={() => setRefreshTrigger(prev => prev + 1)} />
-
-                            {/* shopping widget on the right, pass refreshData to update balance and history */}
                             <ShoppingWidget refreshData={handleTransactionComplete} />
                         </motion.div>
 
-                        {/* mainframe terminal slides in fourth */}
-                        <motion.div variants={itemVariants} className="w-full mt-6">
+                        {/* mainframe terminal */}
+                        <motion.div variants={itemVariants} className="w-full mt-5">
                             <MainframeLog refreshTrigger={refreshTrigger} />
                         </motion.div>
 
-                        {/* transaction ledger at the bottom, spans full width */}
-                        <motion.div variants={itemVariants} className="w-full mt-6 col-span-1 md:col-span-2">
+                        {/* transaction history ledger */}
+                        <motion.div variants={itemVariants} className="w-full mt-5">
                             <HistoryLog refreshTrigger={refreshTrigger} />
                         </motion.div>
                     </motion.div>
                 ) : (
-                    <h1 className="text-4xl font-bold">Loading...</h1>
+                    // loading state
+                    <div className="flex flex-col items-center gap-3 mt-20">
+                        <div className="w-10 h-10 border-3 border-m3-primary border-t-transparent rounded-full animate-spin" />
+                        <p className="text-m3-on-surface-variant text-sm">Loading your vault...</p>
+                    </div>
                 )}
             </div>
         </main>

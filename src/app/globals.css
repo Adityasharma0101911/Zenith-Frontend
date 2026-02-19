@@ -2,26 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
+/* material design 3 surface tokens */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --md-sys-color-surface: #F8FAF8;
+  --md-sys-color-on-surface: #191C1B;
+  --md-sys-color-primary: #006B5E;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface);
+  font-family: "Google Sans", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* material design 3 filled text field styling */
+.m3-input {
+  @apply w-full px-4 pt-5 pb-3 rounded-t-m3-xs border-b-2 border-m3-outline
+    bg-m3-surface-container-highest text-m3-on-surface
+    focus:border-m3-primary focus:outline-none transition-all duration-200;
+}
+
+/* material design 3 outlined text field styling */
+.m3-input-outlined {
+  @apply w-full px-4 py-4 rounded-m3-sm border border-m3-outline
+    bg-transparent text-m3-on-surface
+    focus:border-m3-primary focus:border-2 focus:outline-none transition-all duration-200;
+}
+
+/* material design 3 filled button */
+.m3-btn-filled {
+  @apply px-6 py-3 rounded-m3-full bg-m3-primary text-m3-on-primary
+    font-medium text-sm shadow-none hover:shadow-m3-1
+    active:shadow-none transition-all duration-200;
+}
+
+/* material design 3 tonal button */
+.m3-btn-tonal {
+  @apply px-6 py-3 rounded-m3-full bg-m3-secondary-container text-m3-on-secondary-container
+    font-medium text-sm shadow-none hover:shadow-m3-1
+    active:shadow-none transition-all duration-200;
+}
+
+/* material design 3 outlined button */
+.m3-btn-outlined {
+  @apply px-6 py-3 rounded-m3-full border border-m3-outline bg-transparent
+    text-m3-primary font-medium text-sm
+    hover:bg-m3-primary/8 transition-all duration-200;
+}
+
+/* material design 3 card styles */
+.m3-card {
+  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-1;
+}
+
+.m3-card-elevated {
+  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-2;
+}
+
+.m3-card-filled {
+  @apply bg-m3-surface-container-highest rounded-m3-xl p-6;
+}
+
+/* material 3 range slider */
+input[type="range"] {
+  @apply appearance-none h-1 rounded-full bg-m3-surface-container-highest;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none w-5 h-5 rounded-full bg-m3-primary cursor-pointer
+    shadow-m3-1;
+}
+
+/* smooth scrollbar for material feel */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-m3-outline-variant rounded-full;
 }

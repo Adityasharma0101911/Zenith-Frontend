@@ -1,12 +1,12 @@
-// this creates the calming background gradient and blobs
+// root layout with material design 3 surface system
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
-// import the floating navbar
+// the floating material navigation bar
 import Navbar from "@/components/Navbar";
 
-// this adds smooth toast notifications
+// smooth toast notifications
 import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
@@ -33,27 +33,39 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-m3-surface`}
       >
-        {/* main wrapper with calming gradient background */}
-        <div className="relative min-h-screen bg-gradient-to-br from-slate-50 to-teal-50/30 overflow-hidden">
+        {/* material design 3 surface container */}
+        <div className="relative min-h-screen overflow-hidden">
 
-          {/* background blob 1 - light teal breathing circle */}
-          <div className="absolute top-20 -left-40 w-96 h-96 bg-teal-200 rounded-full opacity-40 blur-3xl animate-pulse-slow" />
+          {/* ambient tonal blob 1 - top left */}
+          <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-m3-primary-container rounded-full opacity-20 blur-[100px] animate-pulse-slow pointer-events-none" />
 
-          {/* background blob 2 - light blue breathing circle */}
-          <div className="absolute bottom-20 -right-40 w-96 h-96 bg-blue-200 rounded-full opacity-40 blur-3xl animate-pulse-slow" />
+          {/* ambient tonal blob 2 - bottom right */}
+          <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-m3-tertiary-container rounded-full opacity-20 blur-[100px] animate-pulse-slow pointer-events-none" />
 
-          {/* the page content sits on top of the blobs */}
+          {/* page content on top of the surface */}
           <div className="relative z-10">
             {children}
           </div>
 
-          {/* the floating navbar at the bottom */}
+          {/* the material navigation bar */}
           <Navbar />
 
-          {/* this renders toast notifications */}
-          <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
+          {/* toast notifications styled to match material 3 */}
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 2500,
+              style: {
+                borderRadius: "16px",
+                background: "#191C1B",
+                color: "#E1E3E1",
+                fontSize: "14px",
+                fontWeight: "500",
+              },
+            }}
+          />
         </div>
       </body>
     </html>

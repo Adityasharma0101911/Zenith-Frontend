@@ -1,6 +1,4 @@
-// reusable input field with rounded corners
-
-// this takes type, placeholder, and onChange to handle user input
+// material design 3 reusable outlined input
 export default function Input({
     type,
     placeholder,
@@ -15,7 +13,7 @@ export default function Input({
             type={type}
             placeholder={placeholder}
             onChange={onChange}
-            className="border border-gray-300 rounded-xl p-3 w-full focus:outline-none focus:ring-2 focus:ring-zenith-teal"
+            className="m3-input-outlined"
         />
     );
 }
