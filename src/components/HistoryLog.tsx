@@ -2,7 +2,7 @@
 "use client";
 
 // import hooks for fetching data
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // import motion for staggered list animations
 import { motion } from "framer-motion";
@@ -60,6 +60,13 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
     useEffect(() => {
         fetchHistory();
     }, [refreshTrigger]);
+
+    // poll every 5 seconds for real-time updates
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    useEffect(() => {
+        intervalRef.current = setInterval(fetchHistory, 5000);
+        return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    }, []);
 
     function formatTime(timestamp: string) {
         const date = new Date(timestamp);

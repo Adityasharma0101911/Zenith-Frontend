@@ -18,6 +18,7 @@ import {
     Menu,
     X,
     Terminal,
+    ShoppingCart,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import SdgBadge from "@/components/SdgBadge";
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/scholar", icon: GraduationCap, label: "Scholar" },
     { href: "/guardian", icon: Wallet, label: "Guardian" },
+    { href: "/guardian/purchases", icon: ShoppingCart, label: "Purchases" },
     { href: "/vitals", icon: HeartPulse, label: "Vitals" },
 ];
 
@@ -149,7 +151,7 @@ export default function Sidebar() {
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <Image src="/zenith-logo.png" alt="Zenith" width={120} height={80} className="h-9 w-auto" />
+                            <Image src="/zenith-logo.png" alt="Zenith" width={160} height={100} className="h-12 w-auto" />
                         </motion.div>
                     )}
                 </AnimatePresence>

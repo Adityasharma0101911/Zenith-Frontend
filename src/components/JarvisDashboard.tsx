@@ -133,6 +133,7 @@ export default function JarvisDashboard({
     // ai-generated brief
     const [brief, setBrief] = useState<string | null>(null);
     const [briefLoading, setBriefLoading] = useState(true);
+    const [briefCached, setBriefCached] = useState(false);
     // command bar state
     const [query, setQuery] = useState("");
     const [asking, setAsking] = useState(false);
@@ -153,9 +154,19 @@ export default function JarvisDashboard({
         }
     }, []);
 
-    // fetch proactive ai brief
-    const fetchBrief = useCallback(async () => {
-        setBriefLoading(true);
+    // fetch proactive ai brief (force=true skips server cache)
+    const fetchBrief = useCallback(async (force = false) => {
+        // try to show localStorage cache instantly while we fetch
+        const cacheKey = `zenith_brief_${section}`;
+        if (!force) {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                setBrief(cached);
+                setBriefCached(true);
+                setBriefLoading(false);
+            }
+        }
+        if (force) setBriefLoading(true);
         try {
             const token = localStorage.getItem("token");
             const res = await fetch(`${API_URL}/api/ai/brief`, {
@@ -164,16 +175,19 @@ export default function JarvisDashboard({
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ section }),
+                body: JSON.stringify({ section, force }),
             });
             const data = await res.json();
-            setBrief(data.brief || "Unable to generate brief.");
+            const text = data.brief || "Unable to generate brief.";
+            setBrief(text);
+            setBriefCached(!!data.cached);
+            localStorage.setItem(cacheKey, text);
         } catch {
-            setBrief("AI is temporarily unavailable. Please try again later.");
+            if (!brief) setBrief("AI is temporarily unavailable. Please try again later.");
         } finally {
             setBriefLoading(false);
         }
-    }, [section]);
+    }, [section, brief]);
 
     useEffect(() => {
         fetchSurvey();
@@ -189,7 +203,7 @@ export default function JarvisDashboard({
                 headers: { Authorization: `Bearer ${token}` },
             });
         } catch { /* ignore */ }
-        fetchBrief();
+        fetchBrief(true);
     }
 
     // handle ad-hoc question from the command bar
@@ -313,6 +327,7 @@ export default function JarvisDashboard({
                         <div className="flex items-center gap-2">
                             <Sparkles size={16} className={accentText} />
                             <span className={`text-sm font-semibold ${accentText}`}>AI Briefing</span>
+                            {briefCached && <span className="text-[10px] text-m3-on-surface-variant/50 ml-1">(cached)</span>}
                         </div>
                         {!briefLoading && (
                             <div className="flex items-center gap-1">
@@ -326,7 +341,7 @@ export default function JarvisDashboard({
                                     <RotateCcw size={13} />
                                 </motion.button>
                                 <motion.button
-                                    onClick={fetchBrief}
+                                    onClick={() => fetchBrief(true)}
                                     whileHover={{ rotate: 180 }}
                                     transition={{ duration: 0.5 }}
                                     className={`p-1.5 rounded-m3-full hover:bg-black/5 ${accentText}`}

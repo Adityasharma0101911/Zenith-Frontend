@@ -77,7 +77,7 @@ export default function Home() {
 
                     {/* logo */}
                     <motion.div variants={fadeUp}>
-                        <Image src="/zenith-logo.png" alt="Zenith" width={288} height={192} className="mx-auto w-72" priority />
+                        <Image src="/zenith-logo.png" alt="Zenith" width={400} height={260} className="mx-auto w-96" priority />
                     </motion.div>
 
                     {/* tagline fades in after title */}
