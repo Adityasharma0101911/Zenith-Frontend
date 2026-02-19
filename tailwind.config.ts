@@ -8,9 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // custom colors for the material theme
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "zenith-teal": "#0F766E",
+        "zenith-bg": "#F8FAFC",
       },
     },
   },
