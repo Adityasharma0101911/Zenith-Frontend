@@ -12,6 +12,8 @@ import {
     ArrowRight,
     RefreshCw,
     RotateCcw,
+    Wifi,
+    WifiOff,
     type LucideIcon,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
@@ -139,6 +141,31 @@ export default function JarvisDashboard({
     const [asking, setAsking] = useState(false);
     // responses from ad-hoc questions
     const [responses, setResponses] = useState<{ q: string; a: string }[]>([]);
+    // system status (no tokens spent)
+    const [serverOnline, setServerOnline] = useState<boolean | null>(null);
+    const [aiOnline, setAiOnline] = useState<boolean | null>(null);
+
+    // check server + ai health on mount (zero cost)
+    useEffect(() => {
+        let mounted = true;
+        async function checkHealth() {
+            try {
+                const res = await fetch(`${API_URL}/api/health`, { signal: AbortSignal.timeout(8000) });
+                const data = await res.json();
+                if (mounted) {
+                    setServerOnline(data.server ?? false);
+                    setAiOnline(data.ai ?? false);
+                }
+            } catch {
+                if (mounted) {
+                    setServerOnline(false);
+                    setAiOnline(false);
+                }
+            }
+        }
+        checkHealth();
+        return () => { mounted = false; };
+    }, []);
 
     // fetch survey data on mount
     const fetchSurvey = useCallback(async () => {
@@ -275,10 +302,47 @@ export default function JarvisDashboard({
                     <div className={`w-12 h-12 rounded-m3-lg ${accentContainer} flex items-center justify-center`}>
                         <HeaderIcon size={24} className={accentText} />
                     </div>
-                    <div>
+                    <div className="flex-1">
                         <h1 className="text-2xl font-semibold text-m3-on-surface">{title}</h1>
                         <p className="text-sm text-m3-on-surface-variant">{subtitle}</p>
                     </div>
+                    {/* system status indicators */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, delay: 0.3, ease: m3Ease }}
+                        className="flex items-center gap-3 ml-auto"
+                    >
+                        <div className="flex items-center gap-1.5" title={serverOnline ? "Server online" : serverOnline === false ? "Server offline" : "Checking..."}>
+                            {serverOnline === null ? (
+                                <Loader2 size={13} className="animate-spin text-m3-on-surface-variant" />
+                            ) : serverOnline ? (
+                                <Wifi size={13} className="text-green-500" />
+                            ) : (
+                                <WifiOff size={13} className="text-red-400" />
+                            )}
+                            <span className={`text-[11px] font-medium ${
+                                serverOnline === null ? "text-m3-on-surface-variant" : serverOnline ? "text-green-500" : "text-red-400"
+                            }`}>
+                                Server {serverOnline === null ? "..." : serverOnline ? "Online" : "Offline"}
+                            </span>
+                        </div>
+                        <div className="w-px h-3.5 bg-m3-outline-variant" />
+                        <div className="flex items-center gap-1.5" title={aiOnline ? "AI service online" : aiOnline === false ? "AI service offline" : "Checking..."}>
+                            {aiOnline === null ? (
+                                <Loader2 size={13} className="animate-spin text-m3-on-surface-variant" />
+                            ) : aiOnline ? (
+                                <Sparkles size={13} className="text-green-500" />
+                            ) : (
+                                <Sparkles size={13} className="text-red-400" />
+                            )}
+                            <span className={`text-[11px] font-medium ${
+                                aiOnline === null ? "text-m3-on-surface-variant" : aiOnline ? "text-green-500" : "text-red-400"
+                            }`}>
+                                AI {aiOnline === null ? "..." : aiOnline ? "Online" : "Offline"}
+                            </span>
+                        </div>
+                    </motion.div>
                 </motion.div>
 
                 {/* wellness progress rings */}
