@@ -33,15 +33,17 @@ export default function OnboardingPage() {
 
     // this sends the final data and finishes the survey
     async function handleFinish() {
-        // get the user id from localStorage
-        const userId = localStorage.getItem("user_id");
+        // get the token from localStorage
+        const token = localStorage.getItem("token");
 
-        // send a post request with all the collected data
+        // send a post request with all the collected data and the token
         await fetch(`${API_URL}/api/onboarding`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({
-                user_id: userId,
                 dosha: dosha,
                 stress_level: name,
                 balance: parseFloat(balance),
