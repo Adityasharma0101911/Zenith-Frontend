@@ -106,13 +106,13 @@ export default function PurchasesPage() {
         fetchHistory();
     }, [fetchBalance, fetchHistory]);
 
-    // poll transactions every 5s for real-time updates
+    // poll every 30s to save bandwidth
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     useEffect(() => {
         intervalRef.current = setInterval(() => {
             fetchHistory();
             fetchBalance();
-        }, 5000);
+        }, 30000);
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
         };

@@ -192,11 +192,12 @@ export default function JarvisDashboard({
             setBriefCached(!!data.cached);
             localStorage.setItem(cacheKey, text);
         } catch {
-            if (!brief) setBrief("AI is temporarily unavailable. Please try again later.");
+            setBrief((prev) => prev || "AI is temporarily unavailable. Please try again later.");
         } finally {
             setBriefLoading(false);
         }
-    }, [section, brief]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [section]);
 
     useEffect(() => {
         fetchSurvey();

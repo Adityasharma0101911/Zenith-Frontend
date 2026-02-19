@@ -45,8 +45,18 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
         }, 20);
     }
 
-    // this fetches the ai advice from the backend
+    // this fetches the ai advice from the backend (cached to save tokens)
     async function fetchAdvice() {
+        // check localStorage cache first
+        const cacheKey = "zenith_dashboard_insight";
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            setAdvice(cached);
+            setIsLoading(false);
+            typeText(cached);
+            return;
+        }
+
         // get the token from localStorage
         const token = localStorage.getItem("token");
         setIsLoading(true);
@@ -63,6 +73,8 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
             setAdvice(data.advice);
             setIsLoading(false);
             typeText(data.advice);
+            // cache for future loads
+            localStorage.setItem(cacheKey, data.advice);
         } catch {
             const fallback = "Zenith AI is currently offline. Please try again later.";
             setAdvice(fallback);

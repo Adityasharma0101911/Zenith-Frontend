@@ -61,10 +61,10 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
         fetchHistory();
     }, [refreshTrigger]);
 
-    // poll every 5 seconds for real-time updates
+    // poll every 30 seconds for real-time updates (saves bandwidth)
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     useEffect(() => {
-        intervalRef.current = setInterval(fetchHistory, 5000);
+        intervalRef.current = setInterval(fetchHistory, 30000);
         return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
     }, []);
 

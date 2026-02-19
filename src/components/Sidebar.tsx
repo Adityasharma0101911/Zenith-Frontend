@@ -143,7 +143,7 @@ export default function Sidebar() {
     const sidebarContent = (
         <div className="flex flex-col h-full py-4 px-3">
             {/* logo and collapse toggle */}
-            <div className="flex items-center justify-between mb-6 px-1">
+            <div className="flex items-center justify-center mb-6 px-1 gap-2">
                 <AnimatePresence>
                     {expanded && (
                         <motion.div
@@ -151,6 +151,7 @@ export default function Sidebar() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ duration: 0.2 }}
+                            className="flex-1 flex justify-center"
                         >
                             <Image src="/zenith-logo.png" alt="Zenith" width={160} height={100} className="h-12 w-auto" />
                         </motion.div>
