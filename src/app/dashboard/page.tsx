@@ -2,7 +2,7 @@
 "use client";
 
 // import useEffect and useState to run code when the page loads
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // import useRouter to redirect if not logged in
 import { useRouter } from "next/navigation";
@@ -10,14 +10,20 @@ import { useRouter } from "next/navigation";
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
+// this adds the store widget to the main dashboard
+import ShoppingWidget from "@/components/ShoppingWidget";
+
+// this puts the pulse check on the dashboard
+import PulseCheck from "@/components/PulseCheck";
+
 export default function DashboardPage() {
     const router = useRouter();
 
     // this stores the user data from the backend
     const [userData, setUserData] = useState<{ username: string; balance: number; dosha: string | null } | null>(null);
 
-    // this fetches and shows the user data
-    useEffect(() => {
+    // this function fetches user data from the backend
+    const fetchUserData = useCallback(() => {
         // get the token from localStorage
         const token = localStorage.getItem("token");
 
@@ -45,6 +51,11 @@ export default function DashboardPage() {
             });
     }, [router]);
 
+    // this fetches and shows the user data when the page loads
+    useEffect(() => {
+        fetchUserData();
+    }, [fetchUserData]);
+
     // this logs the user out by deleting their token
     function handleLogout() {
         // remove the token from localStorage
@@ -55,7 +66,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <main className="min-h-screen bg-white p-8">
+        <main className="min-h-screen bg-zenith-bg p-8">
             {/* logout button at the top right */}
             <div className="flex justify-end">
                 <button
@@ -67,7 +78,7 @@ export default function DashboardPage() {
             </div>
 
             {/* show the user data once it loads */}
-            <div className="flex flex-col items-center justify-center mt-20">
+            <div className="flex flex-col items-center mt-10">
                 {userData ? (
                     <>
                         <h1 className="text-4xl font-bold">Welcome, {userData.username}</h1>
@@ -75,6 +86,15 @@ export default function DashboardPage() {
                         {userData.dosha && (
                             <p className="text-lg mt-2 text-gray-500">Dosha: {userData.dosha}</p>
                         )}
+
+                        {/* dashboard grid with the widgets side by side */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+                            {/* pulse check on the left */}
+                            <PulseCheck />
+
+                            {/* shopping widget on the right, pass refreshData to update balance */}
+                            <ShoppingWidget refreshData={fetchUserData} />
+                        </div>
                     </>
                 ) : (
                     <h1 className="text-4xl font-bold">Loading...</h1>

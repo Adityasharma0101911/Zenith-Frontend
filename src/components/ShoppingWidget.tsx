@@ -7,7 +7,8 @@ import { useState } from "react";
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
-export default function ShoppingWidget() {
+// this takes a refreshData function so the dashboard can update the balance
+export default function ShoppingWidget({ refreshData }: { refreshData: () => void }) {
     // this stores the response message from the backend
     const [message, setMessage] = useState("");
 
@@ -34,6 +35,9 @@ export default function ShoppingWidget() {
             setMessage(`❌ ${data.status}: ${data.reason}`);
         } else if (data.status === "ALLOWED") {
             setMessage(`✅ Purchase allowed! New balance: $${data.new_balance.toFixed(2)}`);
+
+            // this updates the balance on the screen after buying
+            refreshData();
         } else {
             setMessage("Something went wrong.");
         }
