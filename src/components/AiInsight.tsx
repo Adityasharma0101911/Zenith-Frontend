@@ -116,7 +116,7 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
                 >
                     <Sparkles className="text-m3-on-primary-container" size={18} />
                 </motion.div>
-                <h2 className="text-base font-semibold text-m3-inverse-on-surface">Zenith AI Insight</h2>
+                <h2 className="text-m3-title-medium text-m3-inverse-on-surface">Zenith AI Insight</h2>
             </motion.div>
 
             {/* the ai advice text with typing reveal */}
@@ -139,14 +139,14 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
                                 />
                             ))}
                         </div>
-                        <span className="text-m3-inverse-on-surface/50 text-sm">Analyzing your vault...</span>
+                        <span className="text-m3-inverse-on-surface/50 text-m3-body-medium">Analyzing your vault...</span>
                     </motion.div>
                 ) : (
                     <motion.p
                         key="advice"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-m3-inverse-on-surface/75 text-sm leading-relaxed"
+                        className="text-m3-inverse-on-surface/75 text-m3-body-medium leading-relaxed"
                     >
                         {displayedText}
                         {displayedText.length < advice.length && (

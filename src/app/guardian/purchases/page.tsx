@@ -265,8 +265,8 @@ export default function PurchasesPage() {
                             <ShoppingCart size={24} className="text-m3-on-primary-container" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-semibold text-m3-on-surface">Purchases</h1>
-                            <p className="text-sm text-m3-on-surface-variant">AI-powered smart spending</p>
+                            <h1 className="text-m3-headline-small text-m3-on-surface">Purchases</h1>
+                            <p className="text-m3-body-medium text-m3-on-surface-variant">AI-powered smart spending</p>
                         </div>
                     </motion.div>
 
@@ -278,7 +278,7 @@ export default function PurchasesPage() {
                         className="bg-m3-primary-container rounded-m3-xl p-5 flex items-center justify-between"
                     >
                         <div>
-                            <p className="text-xs text-m3-on-primary-container/70 font-medium">Current Balance</p>
+                            <p className="text-m3-label-small text-m3-on-primary-container/70">Current Balance</p>
                             {editingBalance ? (
                                 <div className="flex items-center gap-2 mt-1">
                                     <span className="text-xl font-bold text-m3-on-primary-container">$</span>
@@ -295,7 +295,7 @@ export default function PurchasesPage() {
                                     <button onClick={() => setEditingBalance(false)} className="text-xs text-m3-on-primary-container/70">Cancel</button>
                                 </div>
                             ) : (
-                                <p className="text-2xl font-bold text-m3-on-primary-container">
+                                <p className="text-m3-headline-small text-m3-on-primary-container">
                                     ${balance !== null ? balance.toFixed(2) : "—"}
                                 </p>
                             )}
@@ -324,11 +324,11 @@ export default function PurchasesPage() {
                             <div className="p-1.5 rounded-m3-full bg-m3-secondary-container">
                                 <Plus className="text-m3-on-secondary-container" size={16} />
                             </div>
-                            <h2 className="text-base font-semibold text-m3-on-surface">Add Income</h2>
+                            <h2 className="text-m3-title-medium text-m3-on-surface">Add Income</h2>
                         </div>
                         <form onSubmit={handleAddIncome} className="flex gap-2 items-end flex-wrap">
                             <div className="flex-shrink-0">
-                                <label className="text-[10px] text-m3-on-surface-variant font-medium mb-1 block">Source</label>
+                                <label className="text-m3-label-small text-m3-on-surface-variant mb-1 block">Source</label>
                                 <div className="flex gap-1.5">
                                     {[
                                         { id: "Paycheck", icon: Briefcase },
@@ -353,7 +353,7 @@ export default function PurchasesPage() {
                                 </div>
                             </div>
                             <div className="flex-1 min-w-[100px] relative">
-                                <label className="text-[10px] text-m3-on-surface-variant font-medium mb-1 block">Amount</label>
+                                <label className="text-m3-label-small text-m3-on-surface-variant mb-1 block">Amount</label>
                                 <div className="relative">
                                     <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-m3-on-surface-variant/50" />
                                     <input
@@ -400,7 +400,7 @@ export default function PurchasesPage() {
                             <div className="p-1.5 rounded-m3-full bg-m3-primary-container">
                                 <Wallet className="text-m3-on-primary-container" size={16} />
                             </div>
-                            <h2 className="text-base font-semibold text-m3-on-surface">Smart Purchase</h2>
+                            <h2 className="text-m3-title-medium text-m3-on-surface">Smart Purchase</h2>
                         </div>
 
                         {!verdict ? (
@@ -521,8 +521,8 @@ export default function PurchasesPage() {
                             <div className="p-1.5 rounded-m3-full bg-m3-primary-container">
                                 <FileText className="text-m3-on-primary-container" size={16} />
                             </div>
-                            <h2 className="text-base font-semibold text-m3-on-surface">Transaction Ledger</h2>
-                            <span className="text-[10px] text-m3-on-surface-variant/50 ml-auto">Live</span>
+                            <h2 className="text-m3-title-medium text-m3-on-surface">Transaction Ledger</h2>
+                            <span className="text-m3-label-small text-m3-on-surface-variant/50 ml-auto">Live</span>
                             <span className="w-2 h-2 rounded-full bg-m3-primary animate-pulse" />
                         </div>
 
@@ -580,8 +580,8 @@ export default function PurchasesPage() {
                                     <ShieldAlert className="text-m3-on-error-container" size={40} />
                                 </div>
                             </div>
-                            <h2 className="text-xl font-semibold text-m3-on-error-container">Transaction Blocked</h2>
-                            <p className="text-m3-on-error-container/80 mt-3 text-sm">{blockedReason}</p>
+                            <h2 className="text-m3-title-large text-m3-on-error-container">Transaction Blocked</h2>
+                            <p className="text-m3-body-medium text-m3-on-error-container/80 mt-3">{blockedReason}</p>
                             <motion.button
                                 onClick={() => setShowBlocked(false)}
                                 whileHover={{ scale: 1.05 }}

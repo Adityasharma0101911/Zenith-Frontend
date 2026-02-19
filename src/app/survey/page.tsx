@@ -78,11 +78,11 @@ function OptionCard({
             <div className="flex items-center gap-3">
                 {Icon && <Icon size={20} className={selected ? "text-m3-primary" : "text-m3-on-surface-variant"} />}
                 <div className="flex-1">
-                    <p className={`text-sm font-medium ${selected ? "text-m3-on-primary-container" : "text-m3-on-surface"}`}>
+                    <p className={`text-m3-label-large ${selected ? "text-m3-on-primary-container" : "text-m3-on-surface"}`}>
                         {label}
                     </p>
                     {description && (
-                        <p className={`text-xs mt-0.5 ${selected ? "text-m3-on-primary-container/70" : "text-m3-on-surface-variant"}`}>
+                        <p className={`text-m3-body-small mt-0.5 ${selected ? "text-m3-on-primary-container/70" : "text-m3-on-surface-variant"}`}>
                             {description}
                         </p>
                     )}
@@ -108,7 +108,7 @@ function Chip({
             onClick={onClick}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`px-3 py-1.5 rounded-m3-full text-xs font-medium border transition-colors ${
+            className={`px-3 py-1.5 rounded-m3-full text-m3-label-medium border transition-colors ${
                 selected
                     ? "bg-m3-primary text-m3-on-primary border-m3-primary"
                     : "bg-m3-surface-container text-m3-on-surface-variant border-m3-outline-variant hover:bg-m3-surface-container-high"
@@ -220,9 +220,9 @@ export default function SurveyPage() {
                                 animate={{
                                     width: step === s ? 28 : 10,
                                     height: 10,
-                                    backgroundColor: step >= s ? "#006B5E" : "#C4C7C5",
                                     borderRadius: 999,
                                 }}
+                                className={step >= s ? "bg-m3-primary" : "bg-m3-outline-variant"}
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                             />
                         ))}
@@ -240,8 +240,8 @@ export default function SurveyPage() {
                             {step === 1 && (
                                 <motion.div key="s1" variants={stepStagger} initial="hidden" animate="visible" exit="exit" className="flex flex-col gap-4">
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-xl font-semibold text-m3-on-surface">{STEP_META[0].title}</h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">{STEP_META[0].sub}</p>
+                                        <h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[0].title}</h1>
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[0].sub}</p>
                                     </motion.div>
 
                                     <motion.div variants={stepItem} className="relative">
@@ -276,8 +276,8 @@ export default function SurveyPage() {
                             {step === 2 && (
                                 <motion.div key="s2" variants={stepStagger} initial="hidden" animate="visible" exit="exit" className="flex flex-col gap-4">
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-xl font-semibold text-m3-on-surface">{STEP_META[1].title}</h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">{STEP_META[1].sub}</p>
+                                        <h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[1].title}</h1>
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[1].sub}</p>
                                     </motion.div>
 
                                     <motion.div variants={stepItem}>
@@ -330,8 +330,8 @@ export default function SurveyPage() {
                             {step === 3 && (
                                 <motion.div key="s3" variants={stepStagger} initial="hidden" animate="visible" exit="exit" className="flex flex-col gap-4">
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-xl font-semibold text-m3-on-surface">{STEP_META[2].title}</h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">{STEP_META[2].sub}</p>
+                                        <h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[2].title}</h1>
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[2].sub}</p>
                                     </motion.div>
 
                                     <motion.div variants={stepItem}>
@@ -376,8 +376,8 @@ export default function SurveyPage() {
                             {step === 4 && (
                                 <motion.div key="s4" variants={stepStagger} initial="hidden" animate="visible" exit="exit" className="flex flex-col gap-4">
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-xl font-semibold text-m3-on-surface">{STEP_META[3].title}</h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">{STEP_META[3].sub}</p>
+                                        <h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[3].title}</h1>
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[3].sub}</p>
                                     </motion.div>
 
                                     <motion.div variants={stepItem}>
@@ -422,8 +422,8 @@ export default function SurveyPage() {
                             {step === 5 && (
                                 <motion.div key="s5" variants={stepStagger} initial="hidden" animate="visible" exit="exit" className="flex flex-col gap-4">
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-xl font-semibold text-m3-on-surface">{STEP_META[4].title}</h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">{STEP_META[4].sub}</p>
+                                        <h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[4].title}</h1>
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[4].sub}</p>
                                     </motion.div>
 
                                     <motion.div variants={stepItem}>

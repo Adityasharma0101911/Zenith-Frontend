@@ -74,24 +74,25 @@ function SidebarItem({
     return (
         <Link href={href}>
             <motion.div
-                whileHover={{ scale: 1.04, x: 2 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-m3-lg transition-colors relative ${
+                whileHover={{ scale: 1.02, x: 1 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                className={`flex items-center gap-3 px-3 rounded-m3-full transition-colors relative m3-state-layer ${
                     isActive
                         ? "bg-m3-secondary-container text-m3-on-secondary-container"
                         : "text-m3-on-surface-variant hover:bg-m3-surface-container-high"
                 }`}
+                style={{ height: 56, paddingLeft: expanded ? 16 : 16, paddingRight: expanded ? 24 : 16 }}
             >
-                {/* active indicator bar */}
+                {/* m3 active indicator pill */}
                 {isActive && (
                     <motion.div
                         layoutId="sidebarActive"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-m3-primary rounded-r-full"
+                        className="absolute inset-y-2 left-0 right-0 bg-m3-secondary-container rounded-m3-full -z-10"
                         transition={{ type: "spring", stiffness: 350, damping: 25 }}
                     />
                 )}
-                <Icon size={20} className="shrink-0" />
+                <Icon size={24} className="shrink-0" />
                 <AnimatePresence>
                     {expanded && (
                         <motion.span
@@ -99,7 +100,7 @@ function SidebarItem({
                             animate={{ opacity: 1, width: "auto" }}
                             exit={{ opacity: 0, width: 0 }}
                             transition={{ duration: 0.2, ease: m3Ease }}
-                            className="text-sm font-medium whitespace-nowrap overflow-hidden"
+                            className="text-m3-label-large whitespace-nowrap overflow-hidden"
                         >
                             {label}
                         </motion.span>
@@ -193,8 +194,8 @@ export default function Sidebar() {
                     whileTap={{ scale: 0.96 }}
                     className="flex items-center gap-3 px-3 py-2 rounded-m3-lg text-m3-on-surface-variant hover:bg-m3-surface-container-high transition-colors text-xs"
                 >
-                    <Terminal size={16} className="shrink-0" />
-                    {expanded && <span>Dev Mode</span>}
+                    <Terminal size={18} className="shrink-0" />
+                    {expanded && <span className="text-m3-label-medium">Dev Mode</span>}
                 </motion.button>
 
                 {/* logout button */}
@@ -202,7 +203,7 @@ export default function Sidebar() {
                     onClick={handleLogout}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-m3-lg text-m3-error hover:bg-m3-error-container transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-m3-full text-m3-error hover:bg-m3-error-container transition-colors"
                 >
                     <LogOut size={20} className="shrink-0" />
                     <AnimatePresence>
@@ -212,7 +213,7 @@ export default function Sidebar() {
                                 animate={{ opacity: 1, width: "auto" }}
                                 exit={{ opacity: 0, width: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="text-sm font-medium whitespace-nowrap overflow-hidden"
+                                className="text-m3-label-large whitespace-nowrap overflow-hidden"
                             >
                                 Logout
                             </motion.span>
@@ -269,9 +270,9 @@ export default function Sidebar() {
                 )}
             </AnimatePresence>
 
-            {/* desktop persistent sidebar */}
+            {/* desktop persistent sidebar — m3 nav rail: 80dp collapsed */}
             <motion.aside
-                animate={{ width: expanded ? 220 : 72 }}
+                animate={{ width: expanded ? 220 : 80 }}
                 transition={{ duration: 0.25, ease: m3Ease }}
                 className="fixed left-0 top-0 bottom-0 z-40 hidden md:flex bg-m3-surface-container-low border-r border-m3-outline-variant/30"
             >

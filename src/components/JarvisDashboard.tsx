@@ -110,10 +110,10 @@ function ProgressRing({ percent, label, color, delay = 0 }: { percent: number; l
                     <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeDasharray={circ} initial={{ strokeDashoffset: circ }} animate={{ strokeDashoffset: off }} transition={{ duration: 1.2, ease: [0.2, 0, 0, 1], delay: delay + 0.2 }} />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-sm font-bold text-m3-on-surface">{Math.round(percent)}%</span>
+                    <span className="text-m3-label-medium text-m3-on-surface">{Math.round(percent)}%</span>
                 </div>
             </div>
-            <span className="text-[11px] text-m3-on-surface-variant font-medium text-center leading-tight max-w-[72px]">{label}</span>
+            <span className="text-m3-label-small text-m3-on-surface-variant text-center leading-tight max-w-[72px]">{label}</span>
         </motion.div>
     );
 }
@@ -303,8 +303,8 @@ export default function JarvisDashboard({
                         <HeaderIcon size={24} className={accentText} />
                     </div>
                     <div className="flex-1">
-                        <h1 className="text-2xl font-semibold text-m3-on-surface">{title}</h1>
-                        <p className="text-sm text-m3-on-surface-variant">{subtitle}</p>
+                        <h1 className="text-m3-headline-small text-m3-on-surface">{title}</h1>
+                        <p className="text-m3-body-medium text-m3-on-surface-variant">{subtitle}</p>
                     </div>
                     {/* system status indicators */}
                     <motion.div
@@ -321,7 +321,7 @@ export default function JarvisDashboard({
                             ) : (
                                 <WifiOff size={13} className="text-red-400" />
                             )}
-                            <span className={`text-[11px] font-medium ${
+                            <span className={`text-m3-label-small ${
                                 serverOnline === null ? "text-m3-on-surface-variant" : serverOnline ? "text-green-500" : "text-red-400"
                             }`}>
                                 Server {serverOnline === null ? "..." : serverOnline ? "Online" : "Offline"}
@@ -336,7 +336,7 @@ export default function JarvisDashboard({
                             ) : (
                                 <Sparkles size={13} className="text-red-400" />
                             )}
-                            <span className={`text-[11px] font-medium ${
+                            <span className={`text-m3-label-small ${
                                 aiOnline === null ? "text-m3-on-surface-variant" : aiOnline ? "text-green-500" : "text-red-400"
                             }`}>
                                 AI {aiOnline === null ? "..." : aiOnline ? "Online" : "Offline"}
@@ -380,9 +380,9 @@ export default function JarvisDashboard({
                                 >
                                     <div className="flex items-center gap-2 mb-1.5">
                                         <s.icon size={14} className="text-m3-on-surface-variant" />
-                                        <span className="text-xs text-m3-on-surface-variant font-medium">{s.label}</span>
+                                        <span className="text-m3-label-small text-m3-on-surface-variant">{s.label}</span>
                                     </div>
-                                    <p className="text-sm font-semibold text-m3-on-surface truncate">{display}</p>
+                                    <p className="text-m3-title-small text-m3-on-surface truncate">{display}</p>
                                 </motion.div>
                             );
                         })}
@@ -400,8 +400,8 @@ export default function JarvisDashboard({
                     <div className={`${accentContainer}/60 px-5 py-3 flex items-center justify-between`}>
                         <div className="flex items-center gap-2">
                             <Sparkles size={16} className={accentText} />
-                            <span className={`text-sm font-semibold ${accentText}`}>AI Briefing</span>
-                            {briefCached && <span className="text-[10px] text-m3-on-surface-variant/50 ml-1">(cached)</span>}
+                            <span className={`text-m3-label-large ${accentText}`}>AI Briefing</span>
+                            {briefCached && <span className="text-m3-label-small text-m3-on-surface-variant/50 ml-1">(cached)</span>}
                         </div>
                         {!briefLoading && (
                             <div className="flex items-center gap-1">
@@ -434,7 +434,7 @@ export default function JarvisDashboard({
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
                                     <Loader2 size={16} className={`animate-spin ${accentText}`} />
-                                    <span className="text-sm text-m3-on-surface-variant">Analyzing your profile...</span>
+                                    <span className="text-m3-body-medium text-m3-on-surface-variant">Analyzing your profile...</span>
                                 </div>
                                 {[1, 2, 3].map((i) => (
                                     <div key={i} className="h-4 rounded-m3-full bg-m3-surface-container-high m3-shimmer" style={{ width: `${85 - i * 12}%` }} />
@@ -447,7 +447,7 @@ export default function JarvisDashboard({
                                     <motion.p
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        className="text-sm text-m3-on-surface leading-relaxed"
+                                        className="text-m3-body-medium text-m3-on-surface leading-relaxed"
                                     >
                                         {parsed.greeting}
                                     </motion.p>
@@ -456,7 +456,7 @@ export default function JarvisDashboard({
                                 {/* recommendations */}
                                 {parsed.recs.length > 0 && (
                                     <div className="space-y-2">
-                                        <p className="text-xs font-semibold text-m3-on-surface-variant uppercase tracking-wider">Recommendations</p>
+                                        <p className="text-m3-label-small text-m3-on-surface-variant uppercase tracking-wider">Recommendations</p>
                                         {parsed.recs.map((rec, i) => (
                                             <motion.div
                                                 key={i}
@@ -466,7 +466,7 @@ export default function JarvisDashboard({
                                                 className="flex gap-2.5 items-start"
                                             >
                                                 <ArrowRight size={14} className={`${accentText} mt-0.5 shrink-0`} />
-                                                <p className="text-sm text-m3-on-surface leading-relaxed">{rec}</p>
+                                                <p className="text-m3-body-medium text-m3-on-surface leading-relaxed">{rec}</p>
                                             </motion.div>
                                         ))}
                                     </div>
@@ -475,7 +475,7 @@ export default function JarvisDashboard({
                                 {/* action items */}
                                 {parsed.actions.length > 0 && (
                                     <div className="space-y-2">
-                                        <p className="text-xs font-semibold text-m3-on-surface-variant uppercase tracking-wider">This Week</p>
+                                        <p className="text-m3-label-small text-m3-on-surface-variant uppercase tracking-wider">This Week</p>
                                         {parsed.actions.map((act, i) => (
                                             <motion.div
                                                 key={i}
@@ -485,7 +485,7 @@ export default function JarvisDashboard({
                                                 className="flex gap-2.5 items-start"
                                             >
                                                 <CheckCircle2 size={14} className="text-m3-primary mt-0.5 shrink-0" />
-                                                <p className="text-sm text-m3-on-surface leading-relaxed">{act}</p>
+                                                <p className="text-m3-body-medium text-m3-on-surface leading-relaxed">{act}</p>
                                             </motion.div>
                                         ))}
                                     </div>
@@ -521,7 +521,7 @@ export default function JarvisDashboard({
                             className="rounded-m3-lg bg-m3-surface-container-high p-4 flex items-center gap-3"
                         >
                             <Loader2 size={16} className={`animate-spin ${accentText}`} />
-                            <span className="text-sm text-m3-on-surface-variant">Thinking...</span>
+                            <span className="text-m3-body-medium text-m3-on-surface-variant">Thinking...</span>
                         </motion.div>
                     )}
                     {responses.map((r, i) => (
@@ -535,8 +535,8 @@ export default function JarvisDashboard({
                         >
                             {/* user question */}
                             <div className="px-4 py-2.5 bg-m3-surface-container-high">
-                                <p className="text-xs text-m3-on-surface-variant font-medium">You asked</p>
-                                <p className="text-sm text-m3-on-surface">{r.q}</p>
+                                <p className="text-m3-label-small text-m3-on-surface-variant">You asked</p>
+                                <p className="text-m3-body-medium text-m3-on-surface">{r.q}</p>
                             </div>
                             {/* ai answer */}
                             <div className="px-4 py-3 bg-m3-surface-container-lowest">
@@ -544,7 +544,7 @@ export default function JarvisDashboard({
                                     <div className={`w-6 h-6 rounded-m3-full ${accentContainer} flex items-center justify-center shrink-0 mt-0.5`}>
                                         <Bot size={12} className={accentText} />
                                     </div>
-                                    <p className="text-sm text-m3-on-surface leading-relaxed whitespace-pre-wrap">{r.a}</p>
+                                    <p className="text-m3-body-medium text-m3-on-surface leading-relaxed whitespace-pre-wrap">{r.a}</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -563,7 +563,7 @@ export default function JarvisDashboard({
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={placeholder}
                             disabled={asking}
-                            className="flex-1 bg-transparent text-m3-on-surface text-sm outline-none placeholder:text-m3-on-surface-variant/60"
+                            className="flex-1 bg-transparent text-m3-on-surface text-m3-body-medium outline-none placeholder:text-m3-on-surface-variant/60"
                         />
                         <motion.button
                             type="submit"

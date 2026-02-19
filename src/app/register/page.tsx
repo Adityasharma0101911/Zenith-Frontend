@@ -143,7 +143,7 @@ export default function RegisterPage() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.4, ease: m3Ease }}
-                            className="text-2xl font-semibold text-m3-on-surface text-center"
+                            className="text-m3-headline-small text-m3-on-surface text-center"
                         >
                             Create your vault
                         </motion.h1>
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4, duration: 0.3 }}
-                            className="text-sm text-m3-on-surface-variant text-center mt-1"
+                            className="text-m3-body-medium text-m3-on-surface-variant text-center mt-1"
                         >
                             Set up your Zenith guardian account
                         </motion.p>
@@ -227,7 +227,7 @@ export default function RegisterPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.7, duration: 0.3 }}
-                            className="text-center text-sm text-m3-on-surface-variant mt-6"
+                            className="text-center text-m3-body-medium text-m3-on-surface-variant mt-6"
                         >
                             Already have an account?{" "}
                             <Link href="/login" className="text-m3-primary font-medium hover:underline">

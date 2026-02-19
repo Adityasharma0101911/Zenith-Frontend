@@ -41,7 +41,26 @@ const config: Config = {
         "m3-outline-variant": "rgb(var(--m3-outline-variant) / <alpha-value>)",
         "m3-inverse-surface": "rgb(var(--m3-inverse-surface) / <alpha-value>)",
         "m3-inverse-on-surface": "rgb(var(--m3-inverse-on-surface) / <alpha-value>)",
+        "m3-scrim": "rgb(var(--m3-scrim) / <alpha-value>)",
         "zenith-teal": "rgb(var(--m3-primary) / <alpha-value>)",
+      },
+      // m3 type scale — maps to fontSize utility classes
+      fontSize: {
+        "m3-display-large":  ["57px", { lineHeight: "64px", letterSpacing: "-0.25px", fontWeight: "400" }],
+        "m3-display-medium": ["45px", { lineHeight: "52px", letterSpacing: "0px",     fontWeight: "400" }],
+        "m3-display-small":  ["36px", { lineHeight: "44px", letterSpacing: "0px",     fontWeight: "400" }],
+        "m3-headline-large": ["32px", { lineHeight: "40px", letterSpacing: "0px",     fontWeight: "400" }],
+        "m3-headline-medium":["28px", { lineHeight: "36px", letterSpacing: "0px",     fontWeight: "400" }],
+        "m3-headline-small": ["24px", { lineHeight: "32px", letterSpacing: "0px",     fontWeight: "400" }],
+        "m3-title-large":    ["22px", { lineHeight: "28px", letterSpacing: "0px",     fontWeight: "400" }],
+        "m3-title-medium":   ["16px", { lineHeight: "24px", letterSpacing: "0.15px",  fontWeight: "500" }],
+        "m3-title-small":    ["14px", { lineHeight: "20px", letterSpacing: "0.1px",   fontWeight: "500" }],
+        "m3-body-large":     ["16px", { lineHeight: "24px", letterSpacing: "0.5px",   fontWeight: "400" }],
+        "m3-body-medium":    ["14px", { lineHeight: "20px", letterSpacing: "0.25px",  fontWeight: "400" }],
+        "m3-body-small":     ["12px", { lineHeight: "16px", letterSpacing: "0.4px",   fontWeight: "400" }],
+        "m3-label-large":    ["14px", { lineHeight: "20px", letterSpacing: "0.1px",   fontWeight: "500" }],
+        "m3-label-medium":   ["12px", { lineHeight: "16px", letterSpacing: "0.5px",   fontWeight: "500" }],
+        "m3-label-small":    ["11px", { lineHeight: "16px", letterSpacing: "0.5px",   fontWeight: "500" }],
       },
       // material design 3 rounded corners
       borderRadius: {

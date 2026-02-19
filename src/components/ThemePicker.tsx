@@ -31,7 +31,7 @@ export default function ThemePicker({ expanded = true }: { expanded?: boolean })
     return (
         <div className="px-2 py-1.5">
             {expanded && (
-                <p className="text-[10px] text-m3-on-surface-variant/60 font-medium mb-1.5 uppercase tracking-wider">
+                <p className="text-m3-label-small text-m3-on-surface-variant/60 uppercase tracking-wider mb-1.5">
                     Theme
                 </p>
             )}

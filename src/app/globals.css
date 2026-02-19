@@ -2,11 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================
-   ZENITH THEME SYSTEM — MATTE MATERIAL TOKENS
-   ============================================ */
+/* =============================================
+   ZENITH — MATERIAL DESIGN 3 TOKEN SYSTEM
+   Complete M3 color, typography, elevation,
+   shape, motion, and state layer foundation
+   ============================================= */
 
-/* default teal theme */
+/* ─── LIGHT THEME: Teal (default) ─── */
 :root,
 [data-theme="teal"] {
   --m3-primary: 0 107 94;
@@ -39,16 +41,17 @@
   --m3-outline-variant: 191 201 196;
   --m3-inverse-surface: 45 49 48;
   --m3-inverse-on-surface: 225 227 225;
+  --m3-scrim: 0 0 0;
   --m3-primary-hex: #006B5E;
   --m3-secondary-hex: #4A635D;
   --m3-tertiary-hex: #426278;
   --m3-easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --m3-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
-  --m3-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+  --m3-easing-decelerated: cubic-bezier(0.05, 0.7, 0.1, 1.0);
   --m3-easing-accelerated: cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
-/* charcoal — matte dark gray */
+/* ─── LIGHT THEME: Charcoal ─── */
 [data-theme="charcoal"] {
   --m3-primary: 88 88 88;
   --m3-on-primary: 255 255 255;
@@ -64,6 +67,7 @@
   --m3-on-tertiary-container: 24 24 24;
   --m3-surface: 250 250 248;
   --m3-surface-dim: 218 218 216;
+  --m3-surface-bright: 250 250 248;
   --m3-surface-container-lowest: 255 255 255;
   --m3-surface-container-low: 244 244 242;
   --m3-surface-container: 238 238 236;
@@ -75,12 +79,13 @@
   --m3-outline-variant: 196 196 196;
   --m3-inverse-surface: 48 48 46;
   --m3-inverse-on-surface: 226 226 224;
+  --m3-scrim: 0 0 0;
   --m3-primary-hex: #585858;
   --m3-secondary-hex: #646464;
   --m3-tertiary-hex: #737373;
 }
 
-/* timber — warm matte brown */
+/* ─── LIGHT THEME: Timber ─── */
 [data-theme="timber"] {
   --m3-primary: 109 76 46;
   --m3-on-primary: 255 255 255;
@@ -96,6 +101,7 @@
   --m3-on-tertiary-container: 24 28 4;
   --m3-surface: 252 249 244;
   --m3-surface-dim: 220 217 212;
+  --m3-surface-bright: 252 249 244;
   --m3-surface-container-lowest: 255 255 252;
   --m3-surface-container-low: 246 243 238;
   --m3-surface-container: 240 237 232;
@@ -107,12 +113,13 @@
   --m3-outline-variant: 210 198 188;
   --m3-inverse-surface: 50 46 42;
   --m3-inverse-on-surface: 228 225 220;
+  --m3-scrim: 0 0 0;
   --m3-primary-hex: #6D4C2E;
   --m3-secondary-hex: #756052;
   --m3-tertiary-hex: #5E6040;
 }
 
-/* forest — muted earthy green */
+/* ─── LIGHT THEME: Forest ─── */
 [data-theme="forest"] {
   --m3-primary: 59 107 59;
   --m3-on-primary: 255 255 255;
@@ -128,6 +135,7 @@
   --m3-on-tertiary-container: 4 30 40;
   --m3-surface: 248 252 248;
   --m3-surface-dim: 216 220 216;
+  --m3-surface-bright: 248 252 248;
   --m3-surface-container-lowest: 255 255 255;
   --m3-surface-container-low: 242 246 242;
   --m3-surface-container: 236 240 236;
@@ -139,12 +147,13 @@
   --m3-outline-variant: 192 206 188;
   --m3-inverse-surface: 44 48 44;
   --m3-inverse-on-surface: 224 228 224;
+  --m3-scrim: 0 0 0;
   --m3-primary-hex: #3B6B3B;
   --m3-secondary-hex: #546350;
   --m3-tertiary-hex: #3F6373;
 }
 
-/* crimson — deep matte red */
+/* ─── LIGHT THEME: Crimson ─── */
 [data-theme="crimson"] {
   --m3-primary: 140 58 58;
   --m3-on-primary: 255 255 255;
@@ -160,6 +169,7 @@
   --m3-on-tertiary-container: 34 16 38;
   --m3-surface: 254 248 248;
   --m3-surface-dim: 222 216 216;
+  --m3-surface-bright: 254 248 248;
   --m3-surface-container-lowest: 255 255 255;
   --m3-surface-container-low: 248 242 242;
   --m3-surface-container: 242 236 236;
@@ -171,12 +181,13 @@
   --m3-outline-variant: 212 198 198;
   --m3-inverse-surface: 50 46 46;
   --m3-inverse-on-surface: 230 224 224;
+  --m3-scrim: 0 0 0;
   --m3-primary-hex: #8C3A3A;
   --m3-secondary-hex: #775656;
   --m3-tertiary-hex: #6B5070;
 }
 
-/* slate — muted steel blue */
+/* ─── LIGHT THEME: Slate ─── */
 [data-theme="slate"] {
   --m3-primary: 70 90 140;
   --m3-on-primary: 255 255 255;
@@ -192,6 +203,7 @@
   --m3-on-tertiary-container: 34 16 44;
   --m3-surface: 248 250 254;
   --m3-surface-dim: 216 219 224;
+  --m3-surface-bright: 248 250 254;
   --m3-surface-container-lowest: 255 255 255;
   --m3-surface-container-low: 242 244 248;
   --m3-surface-container: 236 238 242;
@@ -203,148 +215,352 @@
   --m3-outline-variant: 191 196 206;
   --m3-inverse-surface: 45 47 50;
   --m3-inverse-on-surface: 224 226 230;
+  --m3-scrim: 0 0 0;
   --m3-primary-hex: #465A8C;
   --m3-secondary-hex: #586274;
   --m3-tertiary-hex: #6B5078;
 }
 
+/* ─── DARK THEME SUPPORT ───
+   Inverted tonal mappings per M3 spec.
+   Applied via [data-mode="dark"] on <html> */
+[data-mode="dark"] {
+  --m3-surface: 25 28 27;
+  --m3-surface-dim: 25 28 27;
+  --m3-surface-bright: 55 58 57;
+  --m3-surface-container-lowest: 20 23 22;
+  --m3-surface-container-low: 31 34 33;
+  --m3-surface-container: 35 38 37;
+  --m3-surface-container-high: 40 43 42;
+  --m3-surface-container-highest: 45 48 47;
+  --m3-on-surface: 225 227 225;
+  --m3-on-surface-variant: 191 201 196;
+  --m3-outline: 135 145 141;
+  --m3-outline-variant: 63 73 70;
+  --m3-inverse-surface: 225 227 225;
+  --m3-inverse-on-surface: 45 49 48;
+  --m3-scrim: 0 0 0;
+  --m3-error: 255 180 171;
+  --m3-on-error: 105 0 5;
+  --m3-error-container: 147 0 10;
+  --m3-on-error-container: 255 218 214;
+}
+[data-mode="dark"][data-theme="teal"],
+[data-mode="dark"]:root {
+  --m3-primary: 80 220 196;
+  --m3-on-primary: 0 55 48;
+  --m3-primary-container: 0 80 70;
+  --m3-on-primary-container: 116 248 221;
+  --m3-secondary: 176 204 195;
+  --m3-on-secondary: 28 53 47;
+  --m3-secondary-container: 50 76 69;
+  --m3-on-secondary-container: 204 232 223;
+  --m3-tertiary: 167 200 224;
+  --m3-on-tertiary: 14 51 68;
+  --m3-tertiary-container: 40 74 92;
+  --m3-on-tertiary-container: 199 231 255;
+  --m3-primary-hex: #50DCC4;
+  --m3-secondary-hex: #B0CCC3;
+  --m3-tertiary-hex: #A7C8E0;
+}
+[data-mode="dark"][data-theme="charcoal"] {
+  --m3-primary: 190 190 190;
+  --m3-on-primary: 42 42 42;
+  --m3-primary-container: 64 64 64;
+  --m3-on-primary-container: 210 210 210;
+  --m3-secondary: 200 200 200;
+  --m3-on-secondary: 48 48 48;
+  --m3-secondary-container: 72 72 72;
+  --m3-on-secondary-container: 224 224 224;
+  --m3-tertiary: 208 208 208;
+  --m3-on-tertiary: 38 38 38;
+  --m3-tertiary-container: 80 80 80;
+  --m3-on-tertiary-container: 230 230 230;
+  --m3-primary-hex: #BEBEBE;
+  --m3-secondary-hex: #C8C8C8;
+  --m3-tertiary-hex: #D0D0D0;
+}
+[data-mode="dark"][data-theme="timber"] {
+  --m3-primary: 218 190 160;
+  --m3-on-primary: 56 36 14;
+  --m3-primary-container: 82 56 28;
+  --m3-on-primary-container: 240 218 192;
+  --m3-secondary: 214 196 182;
+  --m3-on-secondary: 52 40 30;
+  --m3-secondary-container: 78 64 52;
+  --m3-on-secondary-container: 240 224 212;
+  --m3-tertiary: 196 200 160;
+  --m3-on-tertiary: 38 42 14;
+  --m3-tertiary-container: 66 68 38;
+  --m3-on-tertiary-container: 224 228 186;
+  --m3-primary-hex: #DABEa0;
+  --m3-secondary-hex: #D6C4B6;
+  --m3-tertiary-hex: #C4C8A0;
+}
+[data-mode="dark"][data-theme="forest"] {
+  --m3-primary: 164 204 164;
+  --m3-on-primary: 18 54 18;
+  --m3-primary-container: 38 80 38;
+  --m3-on-primary-container: 192 232 192;
+  --m3-secondary: 188 204 184;
+  --m3-on-secondary: 34 52 30;
+  --m3-secondary-container: 58 76 54;
+  --m3-on-secondary-container: 216 232 212;
+  --m3-tertiary: 168 204 220;
+  --m3-on-tertiary: 10 50 62;
+  --m3-tertiary-container: 36 72 86;
+  --m3-on-tertiary-container: 196 232 248;
+  --m3-primary-hex: #A4CCA4;
+  --m3-secondary-hex: #BCCCB8;
+  --m3-tertiary-hex: #A8CCDC;
+}
+[data-mode="dark"][data-theme="crimson"] {
+  --m3-primary: 255 180 174;
+  --m3-on-primary: 88 16 16;
+  --m3-primary-container: 112 36 36;
+  --m3-on-primary-container: 248 210 210;
+  --m3-secondary: 220 192 192;
+  --m3-on-secondary: 60 34 34;
+  --m3-secondary-container: 86 60 60;
+  --m3-on-secondary-container: 244 220 220;
+  --m3-tertiary: 210 186 214;
+  --m3-on-tertiary: 52 28 56;
+  --m3-tertiary-container: 78 54 82;
+  --m3-on-tertiary-container: 236 214 240;
+  --m3-primary-hex: #FFB4AE;
+  --m3-secondary-hex: #DCC0C0;
+  --m3-tertiary-hex: #D2BAD6;
+}
+[data-mode="dark"][data-theme="slate"] {
+  --m3-primary: 176 194 240;
+  --m3-on-primary: 22 40 86;
+  --m3-primary-container: 46 66 112;
+  --m3-on-primary-container: 204 218 248;
+  --m3-secondary: 190 198 214;
+  --m3-on-secondary: 36 44 58;
+  --m3-secondary-container: 60 70 88;
+  --m3-on-secondary-container: 218 226 240;
+  --m3-tertiary: 208 186 220;
+  --m3-on-tertiary: 52 28 64;
+  --m3-tertiary-container: 78 56 90;
+  --m3-on-tertiary-container: 232 212 244;
+  --m3-primary-hex: #B0C2F0;
+  --m3-secondary-hex: #BEC6D6;
+  --m3-tertiary-hex: #D0BADC;
+}
+
+/* ─── BASE STYLES ─── */
 body {
   color: rgb(var(--m3-on-surface));
   background: rgb(var(--m3-surface));
-  font-family: "Google Sans", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* material design 3 filled text field styling */
+/* ─── M3 TYPOGRAPHY SCALE ───
+   15 styles per https://m3.material.io/styles/typography/type-scale-tokens */
+
+.m3-display-large   { font-size: 57px; line-height: 64px; letter-spacing: -0.25px; font-weight: 400; }
+.m3-display-medium  { font-size: 45px; line-height: 52px; letter-spacing: 0;       font-weight: 400; }
+.m3-display-small   { font-size: 36px; line-height: 44px; letter-spacing: 0;       font-weight: 400; }
+
+.m3-headline-large  { font-size: 32px; line-height: 40px; letter-spacing: 0;       font-weight: 400; }
+.m3-headline-medium { font-size: 28px; line-height: 36px; letter-spacing: 0;       font-weight: 400; }
+.m3-headline-small  { font-size: 24px; line-height: 32px; letter-spacing: 0;       font-weight: 400; }
+
+.m3-title-large     { font-size: 22px; line-height: 28px; letter-spacing: 0;       font-weight: 400; }
+.m3-title-medium    { font-size: 16px; line-height: 24px; letter-spacing: 0.15px;  font-weight: 500; }
+.m3-title-small     { font-size: 14px; line-height: 20px; letter-spacing: 0.1px;   font-weight: 500; }
+
+.m3-body-large      { font-size: 16px; line-height: 24px; letter-spacing: 0.5px;   font-weight: 400; }
+.m3-body-medium     { font-size: 14px; line-height: 20px; letter-spacing: 0.25px;  font-weight: 400; }
+.m3-body-small      { font-size: 12px; line-height: 16px; letter-spacing: 0.4px;   font-weight: 400; }
+
+.m3-label-large     { font-size: 14px; line-height: 20px; letter-spacing: 0.1px;   font-weight: 500; }
+.m3-label-medium    { font-size: 12px; line-height: 16px; letter-spacing: 0.5px;   font-weight: 500; }
+.m3-label-small     { font-size: 11px; line-height: 16px; letter-spacing: 0.5px;   font-weight: 500; }
+
+/* ─── M3 STATE LAYERS ───
+   Per https://m3.material.io/foundations/interaction/states */
+
+.m3-state-layer {
+  position: relative;
+  overflow: hidden;
+}
+.m3-state-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  background-color: transparent;
+}
+.m3-state-layer:hover::after {
+  background-color: rgb(var(--m3-on-surface) / 0.08);
+}
+.m3-state-layer:focus-visible::after {
+  background-color: rgb(var(--m3-on-surface) / 0.1);
+}
+.m3-state-layer:active::after {
+  background-color: rgb(var(--m3-on-surface) / 0.1);
+}
+
+.m3-state-primary::after { background-color: transparent; }
+.m3-state-primary:hover::after { background-color: rgb(var(--m3-primary) / 0.08); }
+.m3-state-primary:focus-visible::after { background-color: rgb(var(--m3-primary) / 0.1); }
+.m3-state-primary:active::after { background-color: rgb(var(--m3-primary) / 0.1); }
+
+/* ─── M3 TEXT FIELDS ─── */
 .m3-input {
   @apply w-full px-4 pt-5 pb-3 rounded-t-m3-xs border-b-2 border-m3-outline
     bg-m3-surface-container-highest text-m3-on-surface
     focus:border-m3-primary focus:outline-none transition-all duration-200;
+  font-size: 16px; line-height: 24px; letter-spacing: 0.5px; min-height: 56px;
 }
-
-/* material design 3 outlined text field styling */
 .m3-input-outlined {
-  @apply w-full px-4 py-4 rounded-m3-sm border border-m3-outline
+  @apply w-full px-4 py-4 rounded-m3-xs border border-m3-outline
     bg-transparent text-m3-on-surface
     focus:border-m3-primary focus:border-2 focus:outline-none transition-all duration-200;
+  font-size: 16px; line-height: 24px; letter-spacing: 0.5px; min-height: 56px;
 }
 
-/* material design 3 filled button with ripple-ready surface */
+/* ─── M3 BUTTONS — 40dp height, full rounding, label-large ─── */
 .m3-btn-filled {
-  @apply px-6 py-3 rounded-m3-full bg-m3-primary text-m3-on-primary
-    font-medium text-sm shadow-none hover:shadow-m3-1
-    active:shadow-none transition-all duration-200
-    relative overflow-hidden;
+  @apply inline-flex items-center justify-center gap-2
+    rounded-m3-full bg-m3-primary text-m3-on-primary relative overflow-hidden;
+  font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
+  height: 40px; padding: 0 24px;
+  transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1), background-color 200ms cubic-bezier(0.2, 0, 0, 1);
 }
+.m3-btn-filled:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15); }
+.m3-btn-filled:active { box-shadow: none; }
+.m3-btn-filled:disabled { @apply bg-m3-on-surface/[0.12] text-m3-on-surface/[0.38]; box-shadow: none; }
 
-/* material design 3 tonal button */
 .m3-btn-tonal {
-  @apply px-6 py-3 rounded-m3-full bg-m3-secondary-container text-m3-on-secondary-container
-    font-medium text-sm shadow-none hover:shadow-m3-1
-    active:shadow-none transition-all duration-200
-    relative overflow-hidden;
+  @apply inline-flex items-center justify-center gap-2
+    rounded-m3-full bg-m3-secondary-container text-m3-on-secondary-container relative overflow-hidden;
+  font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
+  height: 40px; padding: 0 24px;
+  transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1), background-color 200ms cubic-bezier(0.2, 0, 0, 1);
 }
+.m3-btn-tonal:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15); }
+.m3-btn-tonal:active { box-shadow: none; }
 
-/* material design 3 outlined button */
 .m3-btn-outlined {
-  @apply px-6 py-3 rounded-m3-full border border-m3-outline bg-transparent
-    text-m3-primary font-medium text-sm
-    hover:bg-m3-primary/[0.08] transition-all duration-200
-    relative overflow-hidden;
+  @apply inline-flex items-center justify-center gap-2
+    rounded-m3-full border border-m3-outline bg-transparent text-m3-primary relative overflow-hidden;
+  font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
+  height: 40px; padding: 0 24px;
+  transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1);
 }
+.m3-btn-outlined:hover { background-color: rgb(var(--m3-primary) / 0.08); }
+.m3-btn-outlined:active { background-color: rgb(var(--m3-primary) / 0.1); }
 
-/* m3 interactive card with hover lift */
+.m3-btn-text {
+  @apply inline-flex items-center justify-center gap-2
+    rounded-m3-full bg-transparent text-m3-primary relative overflow-hidden;
+  font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
+  height: 40px; padding: 0 12px;
+  transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.m3-btn-text:hover { background-color: rgb(var(--m3-primary) / 0.08); }
+
+/* ─── M3 CARDS ─── */
 .m3-card {
-  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-1
-    transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)];
+  @apply bg-m3-surface-container-low rounded-m3-md p-5;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  transition: box-shadow 280ms cubic-bezier(0.2, 0, 0, 1);
 }
-
-.m3-card:hover {
-  @apply shadow-m3-2 -translate-y-0.5;
-}
+.m3-card:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); }
 
 .m3-card-elevated {
-  @apply bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-2
-    transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)];
-}
-
-.m3-card-elevated:hover {
-  @apply shadow-m3-3 -translate-y-1;
+  @apply bg-m3-surface-container-low rounded-m3-md p-5;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+  transition: box-shadow 280ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .m3-card-filled {
-  @apply bg-m3-surface-container-highest rounded-m3-xl p-6
-    transition-all duration-300;
+  @apply bg-m3-surface-container-highest rounded-m3-md p-5;
+  transition: background-color 280ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* shimmer loading skeleton */
+.m3-card-outlined {
+  @apply bg-m3-surface rounded-m3-md p-5 border border-m3-outline-variant;
+  transition: border-color 280ms cubic-bezier(0.2, 0, 0, 1);
+}
+.m3-card-outlined:hover { @apply border-m3-outline; }
+
+/* ─── M3 CHIPS — 32dp height, 8dp rounding ─── */
+.m3-chip {
+  @apply inline-flex items-center gap-1.5 rounded-m3-sm border border-m3-outline bg-transparent text-m3-on-surface-variant;
+  font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
+  height: 32px; padding: 0 16px;
+  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.m3-chip-selected {
+  @apply bg-m3-secondary-container text-m3-on-secondary-container border-transparent;
+}
+
+/* ─── SHIMMER ─── */
 .m3-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgb(var(--m3-surface-container-highest)) 25%,
-    rgb(var(--m3-surface-container)) 50%,
-    rgb(var(--m3-surface-container-highest)) 75%
-  );
+  background: linear-gradient(90deg, rgb(var(--m3-surface-container-highest)) 25%, rgb(var(--m3-surface-container)) 50%, rgb(var(--m3-surface-container-highest)) 75%);
   background-size: 200% 100%;
   animation: shimmer 2s ease-in-out infinite;
 }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* material 3 range slider */
-input[type="range"] {
-  @apply appearance-none h-1 rounded-full bg-m3-surface-container-highest;
-}
-
+/* ─── RANGE SLIDER ─── */
+input[type="range"] { @apply appearance-none h-1 rounded-full bg-m3-surface-container-highest; }
 input[type="range"]::-webkit-slider-thumb {
-  @apply appearance-none w-5 h-5 rounded-full bg-m3-primary cursor-pointer
-    shadow-m3-1;
-  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1),
-    box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1);
+  @apply appearance-none w-5 h-5 rounded-full bg-m3-primary cursor-pointer;
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1), box-shadow 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); box-shadow: 0 0 0 8px rgb(var(--m3-primary) / 0.12); }
+input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.2); box-shadow: 0 0 0 12px rgb(var(--m3-primary) / 0.16); }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-m3-outline-variant rounded-full; }
+
+/* ─── FOCUS ─── */
+.m3-focus-ring:focus-visible { outline: 2px solid rgb(var(--m3-primary)); outline-offset: 2px; }
+
+/* ─── STAGGER ─── */
+.m3-stagger-item { opacity: 0; transform: translateY(12px); animation: slide-up 0.4s cubic-bezier(0.2, 0, 0, 1) forwards; }
+@keyframes slide-up { to { opacity: 1; transform: translateY(0); } }
+
+/* ─── FAB ─── */
+.m3-fab {
+  @apply inline-flex items-center justify-center rounded-m3-lg bg-m3-primary-container text-m3-on-primary-container;
+  width: 56px; height: 56px;
+  box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+  transition: box-shadow 280ms cubic-bezier(0.2, 0, 0, 1);
+}
+.m3-fab:hover { box-shadow: 0 6px 10px 4px rgba(0,0,0,0.15), 0 2px 3px rgba(0,0,0,0.3); }
+
+/* ─── DIALOG ─── */
+.m3-dialog {
+  @apply bg-m3-surface-container-high rounded-m3-xl p-6;
+  box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+  min-width: 280px; max-width: 560px;
 }
 
-input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 0 8px rgb(var(--m3-primary) / 0.12);
-}
+/* ─── SCRIM ─── */
+.m3-scrim { background-color: rgb(var(--m3-scrim) / 0.32); }
 
-input[type="range"]::-webkit-slider-thumb:active {
-  transform: scale(1.3);
-  box-shadow: 0 0 0 12px rgb(var(--m3-primary) / 0.16);
+/* ─── NAVIGATION DRAWER ─── */
+.m3-nav-drawer {
+  @apply bg-m3-surface-container-low;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
 }
-
-/* smooth scrollbar for material feel */
-::-webkit-scrollbar {
-  width: 4px;
+.m3-nav-item {
+  @apply flex items-center gap-3 rounded-m3-full relative overflow-hidden;
+  height: 56px; padding: 0 24px 0 16px;
+  font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
+  transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1);
 }
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-m3-outline-variant rounded-full;
-}
-
-/* m3 focus ring for accessibility */
-.m3-focus-ring:focus-visible {
-  outline: 2px solid rgb(var(--m3-primary));
-  outline-offset: 2px;
-}
-
-/* staggered list item entrance helper */
-.m3-stagger-item {
-  opacity: 0;
-  transform: translateY(12px);
-  animation: slide-up 0.4s cubic-bezier(0.2, 0, 0, 1) forwards;
-}
-
-@keyframes slide-up {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.m3-nav-item-active {
+  @apply bg-m3-secondary-container text-m3-on-secondary-container;
 }

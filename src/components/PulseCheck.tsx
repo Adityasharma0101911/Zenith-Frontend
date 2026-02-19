@@ -83,7 +83,7 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
                 >
                     <Activity className="text-m3-on-secondary-container" size={18} />
                 </motion.div>
-                <h2 className="text-base font-semibold text-m3-on-surface">Pulse Check</h2>
+                <h2 className="text-m3-title-medium text-m3-on-surface">Pulse Check</h2>
             </div>
 
             {/* stress level number with animated transitions between values */}
@@ -109,7 +109,7 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className={`text-sm font-medium text-center mt-1 ${getStressColor(stress)}`}
+                        className={`text-m3-label-large text-center mt-1 ${getStressColor(stress)}`}
                     >
                         {getStressLabel(stress)}
                     </motion.p>
@@ -127,7 +127,7 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
             />
 
             {/* slider endpoint labels */}
-            <div className="flex justify-between text-xs text-m3-on-surface-variant mt-1">
+            <div className="flex justify-between text-m3-label-small text-m3-on-surface-variant mt-1">
                 <span>1</span>
                 <span>10</span>
             </div>

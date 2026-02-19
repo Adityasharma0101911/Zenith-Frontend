@@ -161,7 +161,7 @@ export default function LoginPage() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.4, ease: m3Ease }}
-                            className="text-2xl font-semibold text-m3-on-surface text-center"
+                            className="text-m3-headline-small text-m3-on-surface text-center"
                         >
                             Welcome back
                         </motion.h1>
@@ -169,7 +169,7 @@ export default function LoginPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4, duration: 0.3 }}
-                            className="text-sm text-m3-on-surface-variant text-center mt-1"
+                            className="text-m3-body-medium text-m3-on-surface-variant text-center mt-1"
                         >
                             Sign in to your Zenith vault
                         </motion.p>
@@ -245,7 +245,7 @@ export default function LoginPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.7, duration: 0.3 }}
-                            className="text-center text-sm text-m3-on-surface-variant mt-6"
+                            className="text-center text-m3-body-medium text-m3-on-surface-variant mt-6"
                         >
                             New to Zenith?{" "}
                             <Link href="/register" className="text-m3-primary font-medium hover:underline">

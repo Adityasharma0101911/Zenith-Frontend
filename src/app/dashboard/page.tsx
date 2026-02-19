@@ -138,7 +138,7 @@ export default function DashboardPage() {
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                                    className="text-3xl font-semibold text-m3-on-primary-container"
+                                    className="text-m3-headline-medium text-m3-on-primary-container"
                                 >
                                     Welcome, {userData.name}
                                 </motion.h1>
@@ -155,7 +155,7 @@ export default function DashboardPage() {
                                         value={userData.balance}
                                         prefix="$"
                                         decimals={2}
-                                        className="text-xl text-m3-on-primary-container/80 font-medium"
+                                        className="text-m3-title-large text-m3-on-primary-container/80"
                                     />
                                 </motion.div>
 
@@ -165,7 +165,7 @@ export default function DashboardPage() {
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
                                         transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.5 }}
-                                        className="inline-block mt-2 px-3 py-1 rounded-m3-full bg-m3-surface text-m3-on-surface text-xs font-medium"
+                                        className="inline-block mt-2 px-3 py-1 rounded-m3-full bg-m3-surface text-m3-on-surface text-m3-label-medium"
                                     >
                                         {userData.spending_profile}
                                     </motion.span>
@@ -185,12 +185,12 @@ export default function DashboardPage() {
                                     >
                                         <Heart size={16} className="text-m3-on-primary-container/60" />
                                     </motion.span>
-                                    <span className="text-sm text-m3-on-primary-container/60">Wellness</span>
+                                    <span className="text-m3-label-medium text-m3-on-primary-container/60">Wellness</span>
                                     <AnimatedCounter
                                         value={userData.wellness_score}
                                         suffix="%"
                                         decimals={0}
-                                        className={`text-xl font-bold ${userData.wellness_score < 50 ? "text-m3-error" : "text-m3-on-primary-container"}`}
+                                        className={`text-m3-title-large ${userData.wellness_score < 50 ? "text-m3-error" : "text-m3-on-primary-container"}`}
                                     />
                                 </motion.div>
                             </motion.div>

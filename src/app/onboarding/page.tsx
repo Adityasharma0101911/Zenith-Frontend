@@ -127,9 +127,9 @@ export default function OnboardingPage() {
                                 animate={{
                                     width: step === s ? 28 : 10,
                                     height: 10,
-                                    backgroundColor: step >= s ? "#006B5E" : "#C4C7C5",
                                     borderRadius: 999,
                                 }}
+                                className={step >= s ? "bg-m3-primary" : "bg-m3-outline-variant"}
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                             />
                         ))}
@@ -155,10 +155,10 @@ export default function OnboardingPage() {
                                     className="flex flex-col gap-5"
                                 >
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-2xl font-semibold text-m3-on-surface">
+                                        <h1 className="text-m3-headline-small text-m3-on-surface">
                                             What is your name?
                                         </h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">
                                             We&apos;ll personalize your experience
                                         </p>
                                     </motion.div>
@@ -205,10 +205,10 @@ export default function OnboardingPage() {
                                     className="flex flex-col gap-4"
                                 >
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-2xl font-semibold text-m3-on-surface">
+                                        <h1 className="text-m3-headline-small text-m3-on-surface">
                                             Your Spending Style
                                         </h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">
                                             This helps Zenith protect you better
                                         </p>
                                     </motion.div>
@@ -241,8 +241,8 @@ export default function OnboardingPage() {
                                                 <p.icon size={24} />
                                             </motion.div>
                                             <div className="flex-1">
-                                                <p className="font-medium text-sm">{p.label}</p>
-                                                <p className="text-xs opacity-80">{p.description}</p>
+                                                <p className="text-m3-label-large">{p.label}</p>
+                                                <p className="text-m3-body-small opacity-80">{p.description}</p>
                                             </div>
                                             <ChevronRight size={16} className="opacity-50" />
                                         </motion.button>
@@ -261,10 +261,10 @@ export default function OnboardingPage() {
                                     className="flex flex-col gap-5"
                                 >
                                     <motion.div variants={stepItem} className="text-center">
-                                        <h1 className="text-2xl font-semibold text-m3-on-surface">
+                                        <h1 className="text-m3-headline-small text-m3-on-surface">
                                             Current Balance
                                         </h1>
-                                        <p className="text-sm text-m3-on-surface-variant mt-1">
+                                        <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">
                                             Enter your bank balance to start tracking
                                         </p>
                                     </motion.div>

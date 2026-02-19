@@ -9,7 +9,7 @@ export default function SdgBadge() {
         <motion.div
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            className="bg-m3-tertiary-container text-m3-on-tertiary-container rounded-m3-sm px-3 py-1 flex items-center gap-1.5 text-xs font-medium animate-glow-pulse"
+            className="bg-m3-tertiary-container text-m3-on-tertiary-container rounded-m3-sm px-3 py-1 flex items-center gap-1.5 text-m3-label-medium animate-glow-pulse"
         >
             <span>🌍</span>
             <span>UN SDG #3: Good Health & Well-being</span>

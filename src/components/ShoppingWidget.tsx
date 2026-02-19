@@ -99,7 +99,7 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 15 }} className="p-1.5 rounded-m3-full bg-m3-primary-container">
                         <ShoppingCart className="text-m3-on-primary-container" size={16} />
                     </motion.div>
-                    <h2 className="text-base font-semibold text-m3-on-surface">Smart Purchase</h2>
+                    <h2 className="text-m3-title-medium text-m3-on-surface">Smart Purchase</h2>
                 </div>
 
                 {!verdict ? (
@@ -127,11 +127,11 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                         <div className={`rounded-m3-lg p-4 ${verdict.verdict === "approve" ? "bg-m3-primary-container/40" : "bg-m3-error-container/40"}`}>
                             <div className="flex items-center gap-2 mb-2">
                                 {verdict.verdict === "approve" ? <ShieldCheck size={18} className="text-m3-primary" /> : <ShieldAlert size={18} className="text-m3-error" />}
-                                <span className={`text-sm font-semibold ${verdict.verdict === "approve" ? "text-m3-primary" : "text-m3-error"}`}>
+                                <span className={`text-m3-label-large ${verdict.verdict === "approve" ? "text-m3-primary" : "text-m3-error"}`}>
                                     {verdict.verdict === "approve" ? "AI Approved" : "AI Suggests Holding"}
                                 </span>
                             </div>
-                            <p className="text-xs text-m3-on-surface leading-relaxed">{verdict.analysis}</p>
+                            <p className="text-m3-body-small text-m3-on-surface leading-relaxed">{verdict.analysis}</p>
                         </div>
                         <div className="flex gap-2">
                             {verdict.verdict === "approve" && (
@@ -165,8 +165,8 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                                     <ShieldAlert className="text-m3-on-error-container" size={40} />
                                 </div>
                             </div>
-                            <h2 className="text-xl font-semibold text-m3-on-error-container">Transaction Blocked</h2>
-                            <p className="text-m3-on-error-container/80 mt-3 text-sm">{blockedReason}</p>
+                            <h2 className="text-m3-title-large text-m3-on-error-container">Transaction Blocked</h2>
+                            <p className="text-m3-body-medium text-m3-on-error-container/80 mt-3">{blockedReason}</p>
                             <motion.button onClick={() => setShowBlocked(false)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.93 }} className="mt-6 px-8 py-3 rounded-m3-full bg-m3-error text-m3-on-error font-medium text-sm flex items-center gap-2 mx-auto">
                                 <X size={16} />Dismiss
                             </motion.button>

@@ -88,7 +88,7 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                 >
                     <FileText className="text-m3-on-primary-container" size={16} />
                 </motion.div>
-                <h2 className="text-base font-semibold text-m3-on-surface">Transaction Ledger</h2>
+                <h2 className="text-m3-title-medium text-m3-on-surface">Transaction Ledger</h2>
             </div>
 
             {/* empty state */}
@@ -96,7 +96,7 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                 <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-m3-on-surface-variant text-sm text-center py-4"
+                    className="text-m3-on-surface-variant text-m3-body-medium text-center py-4"
                 >
                     No recent transactions. Your vault is secure.
                 </motion.p>
@@ -133,19 +133,19 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                                     <CheckCircle className="text-m3-primary" size={20} />
                                 )}
                                 <div>
-                                    <p className={`font-medium text-sm ${
+                                    <p className={`text-m3-label-large ${
                                         tx.status === "BLOCKED" ? "text-m3-on-error-container" : "text-m3-on-surface"
                                     }`}>
                                         {tx.item_name}
                                     </p>
-                                    <p className="text-xs text-m3-on-surface-variant">{formatTime(tx.timestamp)}</p>
+                                    <p className="text-m3-label-small text-m3-on-surface-variant">{formatTime(tx.timestamp)}</p>
                                 </div>
                             </div>
 
                             {/* amount and status */}
                             <div className="text-right">
-                                <p className="font-semibold text-sm text-m3-on-surface">${tx.amount.toFixed(2)}</p>
-                                <p className={`text-xs font-medium ${
+                                <p className="text-m3-label-large text-m3-on-surface">${tx.amount.toFixed(2)}</p>
+                                <p className={`text-m3-label-small ${
                                     tx.status === "BLOCKED" ? "text-m3-error" : "text-m3-primary"
                                 }`}>
                                     {tx.status}
