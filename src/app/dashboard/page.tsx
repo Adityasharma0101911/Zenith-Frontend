@@ -116,7 +116,7 @@ export default function DashboardPage() {
 
     return (
         <PageTransition>
-            <main className="min-h-screen px-4 pt-16 pb-10 md:pl-[236px] md:pr-8 md:pt-6">
+            <main className="min-h-screen px-4 pt-16 pb-10 md:pl-[232px] md:pr-8 md:pt-6 overflow-y-auto">
                 {/* show the user data once it loads */}
                 <div className="flex flex-col items-center mt-4">
                     {userData ? (

@@ -36,7 +36,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-m3-surface`}
       >
         {/* material design 3 surface container */}
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen overflow-x-hidden">
 
           {/* ambient tonal blob 1 - top left */}
           <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-m3-primary-container rounded-full opacity-20 blur-[100px] animate-pulse-slow pointer-events-none" />

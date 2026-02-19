@@ -27,13 +27,13 @@ export default function VitalsPage() {
 
     return (
         <PageTransition>
-            <main className="min-h-screen flex flex-col pl-0 md:pl-[220px]">
+            <main className="h-screen flex flex-col pl-0 md:pl-[220px] overflow-hidden">
                 {/* header */}
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, ease: m3Ease }}
-                    className="px-6 pt-16 md:pt-6 pb-4"
+                    className="px-6 pt-16 md:pt-6 pb-4 shrink-0"
                 >
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-12 h-12 rounded-m3-lg bg-m3-secondary-container flex items-center justify-center">

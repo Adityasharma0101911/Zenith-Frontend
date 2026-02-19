@@ -210,7 +210,7 @@ export default function SurveyPage() {
 
     return (
         <PageTransition>
-            <main className="min-h-screen flex items-center justify-center px-4 py-10">
+            <main className="min-h-screen flex items-center justify-center px-4 py-10 overflow-y-auto">
                 <div className="w-full max-w-md">
                     {/* progress bar */}
                     <div className="flex items-center gap-2 mb-6 justify-center">
