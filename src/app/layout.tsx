@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
-// the floating material navigation bar
-import Navbar from "@/components/Navbar";
+// collapsible left sidebar navigation
+import Sidebar from "@/components/Sidebar";
 
 // smooth toast notifications
 import { Toaster } from "react-hot-toast";
@@ -49,8 +49,8 @@ export default function RootLayout({
             {children}
           </div>
 
-          {/* the material navigation bar */}
-          <Navbar />
+          {/* collapsible sidebar navigation */}
+          <Sidebar />
 
           {/* toast notifications styled to match material 3 */}
           <Toaster

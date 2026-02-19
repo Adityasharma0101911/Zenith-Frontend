@@ -2,7 +2,7 @@
 "use client";
 
 // import useState to track form inputs
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // import useRouter to redirect after login
 import { useRouter } from "next/navigation";
@@ -53,6 +53,21 @@ export default function LoginPage() {
 
     // track success state for celebration animation
     const [success, setSuccess] = useState(false);
+
+    // redirect to dashboard if already logged in
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            fetch(`${API_URL}/api/user_data`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (!data.error) router.push("/dashboard");
+                })
+                .catch(() => {});
+        }
+    }, [router]);
 
     // this sends login info to the backend
     async function handleLogin(e: React.FormEvent) {

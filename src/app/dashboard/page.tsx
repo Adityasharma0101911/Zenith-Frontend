@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 // import motion for stagger and micro-interaction animations
 import { motion } from "framer-motion";
 
-// import icons for the wellness score and logout
-import { LogOut, Heart, Wallet } from "lucide-react";
+// import icons for the wellness score
+import { Heart, Wallet } from "lucide-react";
 
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
@@ -93,6 +93,9 @@ export default function DashboardPage() {
                 // if we got an error, redirect to login
                 if (data.error) {
                     router.push("/login");
+                } else if (data.survey_completed === false) {
+                    // redirect to survey if not completed yet
+                    router.push("/survey");
                 } else {
                     // save the user data to state
                     setUserData(data);
@@ -105,15 +108,6 @@ export default function DashboardPage() {
         fetchUserData();
     }, [fetchUserData]);
 
-    // this logs the user out by deleting their token
-    function handleLogout() {
-        // remove the token from localStorage
-        localStorage.removeItem("token");
-
-        // redirect back to the login page
-        router.push("/login");
-    }
-
     // this triggers a refresh for both the history and the balance
     function handleTransactionComplete() {
         fetchUserData();
@@ -122,26 +116,7 @@ export default function DashboardPage() {
 
     return (
         <PageTransition>
-            <main className="min-h-screen px-4 pt-20 pb-28 md:px-8">
-                {/* top bar with animated logout button */}
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, ease: m3Ease }}
-                    className="flex justify-end max-w-2xl mx-auto"
-                >
-                    <motion.button
-                        onClick={handleLogout}
-                        whileHover={{ scale: 1.05, y: -1 }}
-                        whileTap={{ scale: 0.93 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-m3-full bg-m3-error-container text-m3-on-error-container text-sm font-medium transition-shadow hover:shadow-m3-1"
-                    >
-                        <LogOut size={16} />
-                        Logout
-                    </motion.button>
-                </motion.div>
-
+            <main className="min-h-screen px-4 pt-16 pb-10 md:pl-[236px] md:pr-8 md:pt-6">
                 {/* show the user data once it loads */}
                 <div className="flex flex-col items-center mt-4">
                     {userData ? (

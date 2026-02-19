@@ -49,6 +49,10 @@ const config: Config = {
         "m3-outline": "#6F7975",
         "m3-outline-variant": "#BFC9C4",
 
+        // inverse surface for dark cards
+        "m3-inverse-surface": "#2D3130",
+        "m3-inverse-on-surface": "#E1E3E1",
+
         // keep legacy alias working
         "zenith-teal": "#006B5E",
       },

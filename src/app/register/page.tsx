@@ -74,13 +74,14 @@ export default function RegisterPage() {
         const data = await res.json();
 
         if (data.message) {
+            // save the token so the survey page can use it
+            if (data.token) localStorage.setItem("token", data.token);
             setSuccess(true);
             setButtonText("Vault Created!");
 
-            // wait 1.5 seconds to simulate key generation
+            // redirect to the survey to complete profile
             setTimeout(() => {
-                // registration worked so redirect to login
-                router.push("/login");
+                router.push("/survey");
             }, 1500);
         } else {
             // reset the button if registration failed
