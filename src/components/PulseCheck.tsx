@@ -4,8 +4,28 @@
 // import useState to track the slider value and saved message
 import { useState } from "react";
 
+// import activity icon for the pulse branding
+import { Activity } from "lucide-react";
+
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
+
+// this makes the stress slider change colors based on the value
+function getStressColor(level: number) {
+    // green/teal for calm levels 1-4
+    if (level <= 4) return "text-teal-600";
+    // orange for medium stress levels 5-7
+    if (level <= 7) return "text-orange-500";
+    // red for high stress levels 8-10
+    return "text-red-600";
+}
+
+// this gets a label based on stress level
+function getStressLabel(level: number) {
+    if (level <= 4) return "Calm";
+    if (level <= 7) return "Moderate";
+    return "High Stress";
+}
 
 // this accepts triggerRefresh so it can tell the ai to update
 export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => void }) {
@@ -53,27 +73,37 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
     }
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-6 w-80">
-            {/* title */}
-            <h2 className="text-xl font-bold">Current Stress Level</h2>
+        <div className="bg-white rounded-[2rem] shadow-lg p-6 w-80">
+            {/* title with activity icon */}
+            <div className="flex items-center gap-2">
+                <Activity className="text-zenith-teal" size={22} />
+                <h2 className="text-xl font-bold">Pulse Check</h2>
+            </div>
 
-            {/* show the current stress number */}
-            <p className="text-4xl text-zenith-teal font-semibold mt-2 text-center">{stress}</p>
+            {/* show the current stress number with dynamic color */}
+            <p className={`text-5xl font-bold mt-4 text-center transition-colors duration-300 ${getStressColor(stress)}`}>
+                {stress}
+            </p>
 
-            {/* the range slider from 1 to 10 */}
+            {/* dynamic label that changes with stress level */}
+            <p className={`text-sm font-medium text-center mt-1 transition-colors duration-300 ${getStressColor(stress)}`}>
+                {getStressLabel(stress)}
+            </p>
+
+            {/* the range slider from 1 to 10 with modern teal accent */}
             <input
                 type="range"
                 min={1}
                 max={10}
                 value={stress}
                 onChange={(e) => setStress(Number(e.target.value))}
-                className="w-full mt-4 accent-zenith-teal"
+                className="w-full mt-4 accent-teal-600 h-2 rounded-full"
             />
 
             {/* labels for the slider */}
             <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>Calm</span>
-                <span>Stressed</span>
+                <span>1</span>
+                <span>10</span>
             </div>
 
             {/* log pulse button with smooth animations */}
