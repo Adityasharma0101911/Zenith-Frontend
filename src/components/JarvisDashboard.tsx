@@ -11,6 +11,7 @@ import {
     CheckCircle2,
     ArrowRight,
     RefreshCw,
+    RotateCcw,
     type LucideIcon,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
@@ -179,6 +180,18 @@ export default function JarvisDashboard({
         fetchBrief();
     }, [fetchSurvey, fetchBrief]);
 
+    // reset cached ai assistants and threads then re-fetch brief
+    async function handleResetAI() {
+        try {
+            const token = localStorage.getItem("token");
+            await fetch(`${API_URL}/api/ai/reset`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+        } catch { /* ignore */ }
+        fetchBrief();
+    }
+
     // handle ad-hoc question from the command bar
     async function handleAsk(e: React.FormEvent) {
         e.preventDefault();
@@ -226,7 +239,7 @@ export default function JarvisDashboard({
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-16 md:pt-6 pb-32 space-y-5">
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-6 pt-16 md:pt-6 pb-4 space-y-5">
 
                 {/* header */}
                 <motion.div
@@ -302,15 +315,26 @@ export default function JarvisDashboard({
                             <span className={`text-sm font-semibold ${accentText}`}>AI Briefing</span>
                         </div>
                         {!briefLoading && (
-                            <motion.button
-                                onClick={fetchBrief}
-                                whileHover={{ rotate: 180 }}
-                                transition={{ duration: 0.5 }}
-                                className={`p-1.5 rounded-m3-full hover:bg-black/5 ${accentText}`}
-                                title="Refresh briefing"
-                            >
-                                <RefreshCw size={14} />
-                            </motion.button>
+                            <div className="flex items-center gap-1">
+                                <motion.button
+                                    onClick={handleResetAI}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    className={`p-1.5 rounded-m3-full hover:bg-black/5 text-m3-on-surface-variant`}
+                                    title="Reset AI (clear cache)"
+                                >
+                                    <RotateCcw size={13} />
+                                </motion.button>
+                                <motion.button
+                                    onClick={fetchBrief}
+                                    whileHover={{ rotate: 180 }}
+                                    transition={{ duration: 0.5 }}
+                                    className={`p-1.5 rounded-m3-full hover:bg-black/5 ${accentText}`}
+                                    title="Refresh briefing"
+                                >
+                                    <RefreshCw size={14} />
+                                </motion.button>
+                            </div>
                         )}
                     </div>
 
@@ -439,8 +463,8 @@ export default function JarvisDashboard({
                 </AnimatePresence>
             </div>
 
-            {/* command bar — fixed at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 px-4 md:px-6 pb-4 pt-2 bg-gradient-to-t from-m3-surface via-m3-surface/95 to-transparent">
+            {/* command bar — flex child pinned to bottom */}
+            <div className="shrink-0 px-4 md:px-6 pb-4 pt-3 bg-m3-surface border-t border-m3-outline-variant/20">
                 <form onSubmit={handleAsk}>
                     <div className={`flex gap-2 items-center bg-m3-surface-container-high rounded-m3-full px-4 py-2.5 border border-m3-outline-variant/30 focus-within:border-m3-primary transition-colors shadow-m3-2`}>
                         <Bot size={18} className={`${accentText} opacity-60`} />
