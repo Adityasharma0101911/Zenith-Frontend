@@ -48,7 +48,7 @@ body {
 .m3-btn-outlined {
   @apply px-6 py-3 rounded-m3-full border border-m3-outline bg-transparent
     text-m3-primary font-medium text-sm
-    hover:bg-m3-primary/8 transition-all duration-200;
+    hover:bg-[#006B5E14] transition-all duration-200;
 }
 
 /* material design 3 card styles */
