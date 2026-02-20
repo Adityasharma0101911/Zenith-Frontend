@@ -22,6 +22,9 @@ import { API_URL } from "@/utils/api";
 // import page transition wrapper
 import PageTransition from "@/components/PageTransition";
 
+import InteractiveCard from "@/components/InteractiveCard";
+import MotionButton from "@/components/MotionButton";
+
 // m3 standard easing
 const m3Ease = [0.2, 0, 0, 1] as const;
 
@@ -65,7 +68,7 @@ export default function LoginPage() {
                 .then((data) => {
                     if (!data.error) router.push("/dashboard");
                 })
-                .catch(() => {});
+                .catch(() => { });
         }
     }, [router]);
 
@@ -121,11 +124,10 @@ export default function LoginPage() {
                     transition={{ duration: 0.5, ease: m3Ease }}
                     className="w-full max-w-sm"
                 >
-                    {/* material card surface with hover lift */}
-                    <motion.div
-                        whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(0,0,0,0.12)" }}
-                        transition={{ duration: 0.25, ease: m3Ease }}
-                        className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2"
+                    {/* material card surface with hover lift tracking */}
+                    <InteractiveCard
+                        className="bg-m3-surface-container-low p-8 shadow-m3-2"
+                        glowColor="rgba(var(--m3-primary), 0.15)"
                     >
                         {/* lock icon with bounce entrance */}
                         <motion.div
@@ -214,13 +216,10 @@ export default function LoginPage() {
 
                             {/* material filled button with spring hover + trust theater */}
                             <motion.div variants={formItem}>
-                                <motion.button
+                                <MotionButton
                                     type="submit"
                                     disabled={loading}
-                                    whileHover={{ scale: loading ? 1 : 1.03, y: loading ? 0 : -1 }}
-                                    whileTap={{ scale: loading ? 1 : 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                                    className="m3-btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-70"
+                                    className="w-full"
                                 >
                                     {/* show spinner when loading */}
                                     <AnimatePresence mode="wait">
@@ -230,13 +229,14 @@ export default function LoginPage() {
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 exit={{ opacity: 0, scale: 0 }}
                                                 transition={{ duration: 0.2 }}
+                                                className="mr-2"
                                             >
                                                 <Loader2 size={18} className="animate-spin" />
                                             </motion.span>
                                         )}
                                     </AnimatePresence>
                                     {buttonText}
-                                </motion.button>
+                                </MotionButton>
                             </motion.div>
                         </motion.form>
 
@@ -252,7 +252,7 @@ export default function LoginPage() {
                                 Create account
                             </Link>
                         </motion.p>
-                    </motion.div>
+                    </InteractiveCard>
                 </motion.div>
             </main>
         </PageTransition>
