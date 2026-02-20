@@ -1,66 +1,62 @@
-// material design 3 styled terminal log with typewriter animations
+// material design 3 terminal log with gsap typewriter animations
 "use client";
 
-// import hooks for managing the log entries
 import { useEffect, useState, useRef } from "react";
+import gsap from "gsap";
 
-// import motion for log line entrance animations
-import { motion } from "framer-motion";
-
-// m3 standard easing
-const m3Ease = [0.2, 0, 0, 1] as const;
-
-// this simulates backend processing logs
 export default function MainframeLog({ refreshTrigger }: { refreshTrigger: number }) {
     const [logs, setLogs] = useState<string[]>([
         "[SYS_Z_ENCLAVE] Zenith Mainframe Online.",
         "[SYS_Z_ENCLAVE] Encrypted channel established.",
     ]);
-
     const bottomRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const cursorRef = useRef<HTMLSpanElement>(null);
 
-    // append a new log every time refreshTrigger changes
+    // append new log on trigger
     useEffect(() => {
         if (refreshTrigger === 0) return;
         const now = new Date().toLocaleTimeString();
-        setLogs(prev => [
-            ...prev,
-            `[${now}] [SYS_Z_ENCLAVE] Transaction Intercepted. Evaluating Policy...`,
-        ]);
+        setLogs(prev => [...prev, `[${now}] [SYS_Z_ENCLAVE] Transaction Intercepted. Evaluating Policy...`]);
     }, [refreshTrigger]);
 
-    // auto-scroll to bottom when new logs arrive
+    // auto-scroll + animate new log line
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (containerRef.current) {
+            const lines = containerRef.current.querySelectorAll(".log-line");
+            const last = lines[lines.length - 1];
+            if (last) gsap.from(last, { opacity: 0, x: -15, duration: 0.4, ease: "power3.out" });
+        }
     }, [logs]);
 
+    // blinking cursor
+    useEffect(() => {
+        if (!cursorRef.current) return;
+        gsap.to(cursorRef.current, { opacity: 0, duration: 0.4, repeat: -1, yoyo: true, ease: "steps(1)" });
+    }, []);
+
+    // hover lift
+    const cardRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const el = cardRef.current;
+        if (!el) return;
+        const onEnter = () => gsap.to(el, { y: -2, duration: 0.25, ease: "power3.out" });
+        const onLeave = () => gsap.to(el, { y: 0, duration: 0.25, ease: "power3.out" });
+        el.addEventListener("mouseenter", onEnter);
+        el.addEventListener("mouseleave", onLeave);
+        return () => { el.removeEventListener("mouseenter", onEnter); el.removeEventListener("mouseleave", onLeave); };
+    }, []);
+
     return (
-        <motion.div
-            whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-            className="bg-m3-inverse-surface text-m3-primary-container font-mono text-xs p-5 rounded-m3-xl shadow-m3-2 h-36 overflow-y-auto w-full transition-shadow hover:shadow-m3-3"
-        >
-            {/* render each log line with slide-in animation */}
-            {logs.map((line, i) => (
-                <motion.p
-                    key={`${i}-${line}`}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 0.85, x: 0 }}
-                    transition={{ duration: 0.3, ease: m3Ease, delay: i === logs.length - 1 ? 0.1 : 0 }}
-                    className="leading-relaxed"
-                >
-                    {line}
-                </motion.p>
-            ))}
-
-            {/* blinking cursor at the end */}
-            <motion.span
-                animate={{ opacity: [0, 1] }}
-                transition={{ repeat: Infinity, duration: 0.8 }}
-                className="inline-block w-1.5 h-3 bg-m3-primary-container/60 ml-0.5"
-            />
-
-            {/* invisible div to auto-scroll to */}
+        <div ref={cardRef} className="bg-m3-inverse-surface text-m3-primary-container font-mono text-xs p-5 rounded-m3-xl shadow-m3-2 h-36 overflow-y-auto w-full transition-shadow hover:shadow-m3-3">
+            <div ref={containerRef}>
+                {logs.map((line, i) => (
+                    <p key={`${i}-${line}`} className="log-line leading-relaxed" style={{ opacity: 0.85 }}>{line}</p>
+                ))}
+            </div>
+            <span ref={cursorRef} className="inline-block w-1.5 h-3 bg-m3-primary-container/60 ml-0.5" />
             <div ref={bottomRef} />
-        </motion.div>
+        </div>
     );
 }

@@ -1,259 +1,131 @@
-// material design 3 login page with rich android-style animations
+// material design 3 login page with gsap animations
 "use client";
 
-// import useState to track form inputs
-import { useState, useEffect } from "react";
-
-// import useRouter to redirect after login
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-
-// import motion for entrance and micro-interaction animations
-import { motion, AnimatePresence } from "framer-motion";
-
-// import icons for trust theater and visual feedback
+import gsap from "gsap";
 import { Loader2, Lock, ShieldCheck } from "lucide-react";
-
-// import Link for register link
 import Link from "next/link";
-
-// import the api url from our utils
 import { API_URL } from "@/utils/api";
-
-// import page transition wrapper
 import PageTransition from "@/components/PageTransition";
 
-// m3 standard easing
-const m3Ease = [0.2, 0, 0, 1] as const;
-
-// stagger container for form fields cascade
-const formStagger = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-    },
-};
-
-const formItem = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: m3Ease } },
-};
-
 export default function LoginPage() {
-    // these store the username and password the user types
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
-
-    // this tracks the loading state for the trust theater animation
     const [loading, setLoading] = useState(false);
-
-    // this changes text during the simulated encryption delay
     const [buttonText, setButtonText] = useState("Sign in");
-
-    // track success state for celebration animation
     const [success, setSuccess] = useState(false);
 
-    // redirect to dashboard if already logged in
+    const cardRef = useRef<HTMLDivElement>(null);
+    const innerRef = useRef<HTMLDivElement>(null);
+    const iconContainerRef = useRef<HTMLDivElement>(null);
+    const lockRef = useRef<HTMLDivElement>(null);
+    const checkRef = useRef<HTMLDivElement>(null);
+    const titleRef = useRef<HTMLHeadingElement>(null);
+    const subtitleRef = useRef<HTMLParagraphElement>(null);
+    const formRef = useRef<HTMLFormElement>(null);
+    const submitBtnRef = useRef<HTMLButtonElement>(null);
+    const footerRef = useRef<HTMLParagraphElement>(null);
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
-            fetch(`${API_URL}/api/user_data`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    if (!data.error) router.push("/dashboard");
-                })
-                .catch(() => {});
+            fetch(`${API_URL}/api/user_data`, { headers: { Authorization: `Bearer ${token}` } })
+                .then(res => res.json()).then(data => { if (!data.error) router.push("/dashboard"); }).catch(() => {});
         }
     }, [router]);
 
-    // this sends login info to the backend
+    // entrance animations
+    useEffect(() => {
+        if (cardRef.current) gsap.from(cardRef.current, { opacity: 0, y: 32, scale: 0.95, duration: 0.5, ease: "power3.out" });
+        if (iconContainerRef.current) gsap.from(iconContainerRef.current, { scale: 0, rotation: -180, duration: 0.6, delay: 0.2, ease: "back.out(1.5)" });
+        if (titleRef.current) gsap.from(titleRef.current, { opacity: 0, y: 10, duration: 0.4, delay: 0.3, ease: "power3.out" });
+        if (subtitleRef.current) gsap.from(subtitleRef.current, { opacity: 0, duration: 0.3, delay: 0.4 });
+        if (formRef.current) {
+            gsap.from(formRef.current.querySelectorAll(".form-item"), { opacity: 0, y: 20, scale: 0.95, duration: 0.4, stagger: 0.1, delay: 0.4, ease: "power3.out" });
+        }
+        if (footerRef.current) gsap.from(footerRef.current, { opacity: 0, duration: 0.3, delay: 0.7 });
+    }, []);
+
+    // card hover
+    useEffect(() => {
+        const el = innerRef.current;
+        if (!el) return;
+        const enter = () => gsap.to(el, { y: -2, boxShadow: "0 6px 16px rgba(0,0,0,0.12)", duration: 0.25, ease: "power3.out" });
+        const leave = () => gsap.to(el, { y: 0, boxShadow: "var(--m3-shadow-2)", duration: 0.25, ease: "power3.out" });
+        el.addEventListener("mouseenter", enter); el.addEventListener("mouseleave", leave);
+        return () => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); };
+    }, []);
+
+    // submit button hover
+    useEffect(() => {
+        const el = submitBtnRef.current;
+        if (!el) return;
+        const enter = () => !loading && gsap.to(el, { scale: 1.03, y: -1, duration: 0.2, ease: "power3.out" });
+        const leave = () => gsap.to(el, { scale: 1, y: 0, duration: 0.2, ease: "power3.out" });
+        const down = () => !loading && gsap.to(el, { scale: 0.95, duration: 0.1 });
+        const up = () => !loading && gsap.to(el, { scale: 1.03, duration: 0.15 });
+        el.addEventListener("mouseenter", enter); el.addEventListener("mouseleave", leave);
+        el.addEventListener("mousedown", down); el.addEventListener("mouseup", up);
+        return () => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); el.removeEventListener("mousedown", down); el.removeEventListener("mouseup", up); };
+    }, [loading]);
+
+    // success icon swap animation
+    useEffect(() => {
+        if (success && checkRef.current) {
+            gsap.from(checkRef.current, { scale: 0, rotation: -90, duration: 0.4, ease: "back.out(1.5)" });
+        }
+    }, [success]);
+
     async function handleLogin(e: React.FormEvent) {
-        // stop the page from refreshing
         e.preventDefault();
-
-        // start the loading animation
-        setLoading(true);
-        setButtonText("Authenticating...");
-
-        // send a post request with the username and password
-        const res = await fetch(`${API_URL}/api/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-        });
-
-        // parse the response from the backend
+        setLoading(true); setButtonText("Authenticating...");
+        const res = await fetch(`${API_URL}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
         const data = await res.json();
-
         if (data.success) {
-            // save the secure token to the browser
-            localStorage.setItem("token", data.token);
-
-            // simulate decrypting the vault before redirecting
-            setButtonText("Decrypting Vault...");
-            setSuccess(true);
-
-            // wait 1.5 seconds to simulate enterprise encryption
-            setTimeout(() => {
-                // redirect to the dashboard page
-                router.push("/dashboard");
-            }, 1500);
+            localStorage.setItem("token", data.token); setButtonText("Decrypting Vault..."); setSuccess(true);
+            setTimeout(() => router.push("/dashboard"), 1500);
         } else {
-            // reset the button if login failed
-            setLoading(false);
-            setButtonText("Sign in");
-
-            // show an alert if login failed
-            alert("Login failed. Check your username and password.");
+            setLoading(false); setButtonText("Sign in"); alert("Login failed. Check your username and password.");
         }
     }
 
     return (
         <PageTransition>
             <main className="min-h-screen flex items-center justify-center px-6">
-                {/* material card container with scale + fade entrance */}
-                <motion.div
-                    initial={{ opacity: 0, y: 32, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.5, ease: m3Ease }}
-                    className="w-full max-w-sm"
-                >
-                    {/* material card surface with hover lift */}
-                    <motion.div
-                        whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(0,0,0,0.12)" }}
-                        transition={{ duration: 0.25, ease: m3Ease }}
-                        className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2"
-                    >
-                        {/* lock icon with bounce entrance */}
-                        <motion.div
-                            initial={{ scale: 0, rotate: -180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            transition={{ type: "spring", stiffness: 260, damping: 15, delay: 0.2 }}
-                            className="w-16 h-16 rounded-m3-full bg-m3-primary-container flex items-center justify-center mx-auto mb-5"
-                        >
-                            <AnimatePresence mode="wait">
-                                {success ? (
-                                    <motion.div
-                                        key="check"
-                                        initial={{ scale: 0, rotate: -90 }}
-                                        animate={{ scale: 1, rotate: 0 }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                                    >
-                                        <ShieldCheck className="text-m3-on-primary-container" size={28} />
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        key="lock"
-                                        exit={{ scale: 0, rotate: 90 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        <Lock className="text-m3-on-primary-container" size={28} />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </motion.div>
-
-                        {/* page title with fade */}
-                        <motion.h1
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3, duration: 0.4, ease: m3Ease }}
-                            className="text-m3-headline-small text-m3-on-surface text-center"
-                        >
-                            Welcome back
-                        </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.4, duration: 0.3 }}
-                            className="text-m3-body-medium text-m3-on-surface-variant text-center mt-1"
-                        >
-                            Sign in to your Zenith vault
-                        </motion.p>
-
-                        {/* login form with staggered field entrances */}
-                        <motion.form
-                            onSubmit={handleLogin}
-                            variants={formStagger}
-                            initial="hidden"
-                            animate="visible"
-                            className="flex flex-col gap-5 mt-8"
-                        >
-                            {/* material outlined text field for username */}
-                            <motion.div variants={formItem} className="relative">
-                                <input
-                                    type="text"
-                                    placeholder=" "
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    className="m3-input-outlined peer"
-                                    required
-                                />
-                                <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
-                                    Username
-                                </label>
-                            </motion.div>
-
-                            {/* material outlined text field for password */}
-                            <motion.div variants={formItem} className="relative">
-                                <input
-                                    type="password"
-                                    placeholder=" "
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="m3-input-outlined peer"
-                                    required
-                                />
-                                <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">
-                                    Password
-                                </label>
-                            </motion.div>
-
-                            {/* material filled button with spring hover + trust theater */}
-                            <motion.div variants={formItem}>
-                                <motion.button
-                                    type="submit"
-                                    disabled={loading}
-                                    whileHover={{ scale: loading ? 1 : 1.03, y: loading ? 0 : -1 }}
-                                    whileTap={{ scale: loading ? 1 : 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                                    className="m3-btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-70"
-                                >
-                                    {/* show spinner when loading */}
-                                    <AnimatePresence mode="wait">
-                                        {loading && (
-                                            <motion.span
-                                                initial={{ opacity: 0, scale: 0 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0 }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                <Loader2 size={18} className="animate-spin" />
-                                            </motion.span>
-                                        )}
-                                    </AnimatePresence>
+                <div ref={cardRef} className="w-full max-w-sm">
+                    <div ref={innerRef} className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2">
+                        <div ref={iconContainerRef} className="w-16 h-16 rounded-m3-full bg-m3-primary-container flex items-center justify-center mx-auto mb-5">
+                            {success ? (
+                                <div ref={checkRef}><ShieldCheck className="text-m3-on-primary-container" size={28} /></div>
+                            ) : (
+                                <div ref={lockRef}><Lock className="text-m3-on-primary-container" size={28} /></div>
+                            )}
+                        </div>
+                        <h1 ref={titleRef} className="text-m3-headline-small text-m3-on-surface text-center">Welcome back</h1>
+                        <p ref={subtitleRef} className="text-m3-body-medium text-m3-on-surface-variant text-center mt-1">Sign in to your Zenith vault</p>
+                        <form ref={formRef} onSubmit={handleLogin} className="flex flex-col gap-5 mt-8">
+                            <div className="form-item relative">
+                                <input type="text" placeholder=" " value={username} onChange={e => setUsername(e.target.value)} className="m3-input-outlined peer" required />
+                                <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">Username</label>
+                            </div>
+                            <div className="form-item relative">
+                                <input type="password" placeholder=" " value={password} onChange={e => setPassword(e.target.value)} className="m3-input-outlined peer" required />
+                                <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">Password</label>
+                            </div>
+                            <div className="form-item">
+                                <button ref={submitBtnRef} type="submit" disabled={loading} className="m3-btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-70">
+                                    {loading && <Loader2 size={18} className="animate-spin" />}
                                     {buttonText}
-                                </motion.button>
-                            </motion.div>
-                        </motion.form>
-
-                        {/* link to register page */}
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.7, duration: 0.3 }}
-                            className="text-center text-m3-body-medium text-m3-on-surface-variant mt-6"
-                        >
-                            New to Zenith?{" "}
-                            <Link href="/register" className="text-m3-primary font-medium hover:underline">
-                                Create account
-                            </Link>
-                        </motion.p>
-                    </motion.div>
-                </motion.div>
+                                </button>
+                            </div>
+                        </form>
+                        <p ref={footerRef} className="text-center text-m3-body-medium text-m3-on-surface-variant mt-6">
+                            New to Zenith? <Link href="/register" className="text-m3-primary font-medium hover:underline">Create account</Link>
+                        </p>
+                    </div>
+                </div>
             </main>
         </PageTransition>
     );

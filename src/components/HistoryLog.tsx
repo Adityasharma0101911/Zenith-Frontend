@@ -1,36 +1,11 @@
-// material design 3 transaction history list with staggered entrance animations
+// material design 3 transaction history with gsap stagger animations
 "use client";
 
-// import hooks for fetching data
 import { useEffect, useState, useRef } from "react";
-
-// import motion for staggered list animations
-import { motion } from "framer-motion";
-
-// import status icons
+import gsap from "gsap";
 import { ShieldX, CheckCircle, FileText } from "lucide-react";
-
-// import the api url from our utils
 import { API_URL } from "@/utils/api";
 
-// m3 standard easing
-const m3Ease = [0.2, 0, 0, 1] as const;
-
-// stagger container for list items
-const listStagger = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.06 },
-    },
-};
-
-const listItem = {
-    hidden: { opacity: 0, x: -16 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: m3Ease } },
-};
-
-// define the shape of a transaction
 interface Transaction {
     item_name: string;
     amount: number;
@@ -38,123 +13,93 @@ interface Transaction {
     timestamp: string;
 }
 
-// this makes the history update instantly via refreshTrigger
 export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number }) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const cardRef = useRef<HTMLDivElement>(null);
+    const iconRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLDivElement>(null);
 
-    // fetch transaction history
     async function fetchHistory() {
         const token = localStorage.getItem("token");
-
         try {
-            const res = await fetch(`${API_URL}/api/history`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await fetch(`${API_URL}/api/history`, { headers: { Authorization: `Bearer ${token}` } });
             const data = await res.json();
             setTransactions(data.transactions || []);
-        } catch {
-            setTransactions([]);
-        }
+        } catch { setTransactions([]); }
     }
 
-    useEffect(() => {
-        fetchHistory();
-    }, [refreshTrigger]);
+    useEffect(() => { fetchHistory(); }, [refreshTrigger]);
 
-    // poll every 30 seconds for real-time updates (saves bandwidth)
+    // poll every 30s
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     useEffect(() => {
         intervalRef.current = setInterval(fetchHistory, 30000);
         return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
     }, []);
 
+    // card hover
+    useEffect(() => {
+        const el = cardRef.current;
+        if (!el) return;
+        const enter = () => gsap.to(el, { y: -2, duration: 0.25, ease: "power3.out" });
+        const leave = () => gsap.to(el, { y: 0, duration: 0.25, ease: "power3.out" });
+        el.addEventListener("mouseenter", enter);
+        el.addEventListener("mouseleave", leave);
+        return () => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); };
+    }, []);
+
+    // icon bounce
+    useEffect(() => {
+        if (!iconRef.current) return;
+        gsap.from(iconRef.current, { scale: 0, duration: 0.5, ease: "back.out(2)" });
+    }, []);
+
+    // stagger list items on data change
+    useEffect(() => {
+        if (!listRef.current || transactions.length === 0) return;
+        gsap.from(listRef.current.querySelectorAll(".tx-item"), {
+            opacity: 0, x: -16, duration: 0.3, stagger: 0.06, ease: "power3.out",
+        });
+    }, [transactions]);
+
     function formatTime(timestamp: string) {
-        const date = new Date(timestamp);
-        return date.toLocaleString();
+        return new Date(timestamp).toLocaleString();
     }
 
     return (
-        <motion.div
-            whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-            className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full transition-shadow hover:shadow-m3-2"
-        >
-            {/* title with ledger icon */}
+        <div ref={cardRef} className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full transition-shadow hover:shadow-m3-2">
             <div className="flex items-center gap-2.5 mb-4">
-                <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                    className="p-1.5 rounded-m3-full bg-m3-primary-container"
-                >
+                <div ref={iconRef} className="p-1.5 rounded-m3-full bg-m3-primary-container">
                     <FileText className="text-m3-on-primary-container" size={16} />
-                </motion.div>
+                </div>
                 <h2 className="text-m3-title-medium text-m3-on-surface">Transaction Ledger</h2>
             </div>
 
-            {/* empty state */}
             {transactions.length === 0 ? (
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-m3-on-surface-variant text-m3-body-medium text-center py-4"
-                >
-                    No recent transactions. Your vault is secure.
-                </motion.p>
+                <p className="text-m3-on-surface-variant text-m3-body-medium text-center py-4">No recent transactions. Your vault is secure.</p>
             ) : (
-                // transaction list with staggered entrance
-                <motion.div
-                    variants={listStagger}
-                    initial="hidden"
-                    animate="visible"
-                    className="space-y-2 max-h-64 overflow-y-auto"
-                >
+                <div ref={listRef} className="space-y-2 max-h-64 overflow-y-auto">
                     {transactions.map((tx, index) => (
-                        <motion.div
-                            key={index}
-                            variants={listItem}
-                            whileHover={{ x: 3, transition: { duration: 0.15 } }}
-                            className={`flex items-center justify-between p-3.5 rounded-m3-lg transition-shadow hover:shadow-m3-1 ${
-                                tx.status === "BLOCKED"
-                                    ? "bg-m3-error-container/40"
-                                    : "bg-m3-surface-container"
-                            }`}
-                        >
-                            {/* icon and item name */}
+                        <div key={index} className={`tx-item flex items-center justify-between p-3.5 rounded-m3-lg transition-all hover:translate-x-[3px] hover:shadow-m3-1 ${tx.status === "BLOCKED" ? "bg-m3-error-container/40" : "bg-m3-surface-container"}`}>
                             <div className="flex items-center gap-3">
                                 {tx.status === "BLOCKED" ? (
-                                    <motion.div
-                                        initial={{ rotate: 0 }}
-                                        animate={{ rotate: [0, -10, 10, 0] }}
-                                        transition={{ duration: 0.4, delay: index * 0.1 }}
-                                    >
-                                        <ShieldX className="text-m3-error" size={20} />
-                                    </motion.div>
+                                    <ShieldX className="text-m3-error" size={20} />
                                 ) : (
                                     <CheckCircle className="text-m3-primary" size={20} />
                                 )}
                                 <div>
-                                    <p className={`text-m3-label-large ${
-                                        tx.status === "BLOCKED" ? "text-m3-on-error-container" : "text-m3-on-surface"
-                                    }`}>
-                                        {tx.item_name}
-                                    </p>
+                                    <p className={`text-m3-label-large ${tx.status === "BLOCKED" ? "text-m3-on-error-container" : "text-m3-on-surface"}`}>{tx.item_name}</p>
                                     <p className="text-m3-label-small text-m3-on-surface-variant">{formatTime(tx.timestamp)}</p>
                                 </div>
                             </div>
-
-                            {/* amount and status */}
                             <div className="text-right">
                                 <p className="text-m3-label-large text-m3-on-surface">${tx.amount.toFixed(2)}</p>
-                                <p className={`text-m3-label-small ${
-                                    tx.status === "BLOCKED" ? "text-m3-error" : "text-m3-primary"
-                                }`}>
-                                    {tx.status}
-                                </p>
+                                <p className={`text-m3-label-small ${tx.status === "BLOCKED" ? "text-m3-error" : "text-m3-primary"}`}>{tx.status}</p>
                             </div>
-                        </motion.div>
+                        </div>
                     ))}
-                </motion.div>
+                </div>
             )}
-        </motion.div>
+        </div>
     );
 }

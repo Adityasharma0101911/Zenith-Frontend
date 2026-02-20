@@ -221,6 +221,158 @@
   --m3-tertiary-hex: #6B5078;
 }
 
+/* ─── LIGHT THEME: Midnight Opulence ─── */
+[data-theme="midnight"] {
+  --m3-primary: 15 52 96;
+  --m3-on-primary: 255 255 255;
+  --m3-primary-container: 180 210 248;
+  --m3-on-primary-container: 0 24 56;
+  --m3-secondary: 22 33 62;
+  --m3-on-secondary: 255 255 255;
+  --m3-secondary-container: 190 200 224;
+  --m3-on-secondary-container: 6 12 28;
+  --m3-tertiary: 239 192 123;
+  --m3-on-tertiary: 56 34 0;
+  --m3-tertiary-container: 255 234 196;
+  --m3-on-tertiary-container: 40 24 0;
+  --m3-surface: 248 249 252;
+  --m3-surface-dim: 216 218 224;
+  --m3-surface-bright: 248 249 252;
+  --m3-surface-container-lowest: 255 255 255;
+  --m3-surface-container-low: 242 243 248;
+  --m3-surface-container: 236 237 242;
+  --m3-surface-container-high: 230 231 236;
+  --m3-surface-container-highest: 224 225 230;
+  --m3-on-surface: 26 26 46;
+  --m3-on-surface-variant: 58 62 80;
+  --m3-outline: 100 106 130;
+  --m3-outline-variant: 186 192 210;
+  --m3-inverse-surface: 26 26 46;
+  --m3-inverse-on-surface: 224 225 240;
+  --m3-scrim: 0 0 0;
+  --m3-primary-hex: #0F3460;
+  --m3-secondary-hex: #16213E;
+  --m3-tertiary-hex: #EFC07B;
+  --m3-error: 186 26 26;
+  --m3-on-error: 255 255 255;
+  --m3-error-container: 255 218 214;
+  --m3-on-error-container: 65 0 2;
+}
+
+/* ─── LIGHT THEME: Emerald Sophistication ─── */
+[data-theme="emerald"] {
+  --m3-primary: 13 76 60;
+  --m3-on-primary: 255 255 255;
+  --m3-primary-container: 172 228 208;
+  --m3-on-primary-container: 0 34 24;
+  --m3-secondary: 45 90 74;
+  --m3-on-secondary: 255 255 255;
+  --m3-secondary-container: 196 232 216;
+  --m3-on-secondary-container: 10 36 26;
+  --m3-tertiary: 123 160 91;
+  --m3-on-tertiary: 255 255 255;
+  --m3-tertiary-container: 210 240 188;
+  --m3-on-tertiary-container: 24 40 8;
+  --m3-surface: 244 241 235;
+  --m3-surface-dim: 212 210 204;
+  --m3-surface-bright: 244 241 235;
+  --m3-surface-container-lowest: 255 255 255;
+  --m3-surface-container-low: 248 246 240;
+  --m3-surface-container: 242 240 234;
+  --m3-surface-container-high: 236 234 228;
+  --m3-surface-container-highest: 230 228 222;
+  --m3-on-surface: 20 30 24;
+  --m3-on-surface-variant: 56 72 64;
+  --m3-outline: 100 118 108;
+  --m3-outline-variant: 184 200 192;
+  --m3-inverse-surface: 36 48 42;
+  --m3-inverse-on-surface: 224 232 228;
+  --m3-scrim: 0 0 0;
+  --m3-primary-hex: #0D4C3C;
+  --m3-secondary-hex: #2D5A4A;
+  --m3-tertiary-hex: #7BA05B;
+  --m3-error: 186 26 26;
+  --m3-on-error: 255 255 255;
+  --m3-error-container: 255 218 214;
+  --m3-on-error-container: 65 0 2;
+}
+
+/* ─── LIGHT THEME: Golden Hour Elite ─── */
+[data-theme="golden"] {
+  --m3-primary: 44 24 16;
+  --m3-on-primary: 255 255 255;
+  --m3-primary-container: 248 218 172;
+  --m3-on-primary-container: 24 12 0;
+  --m3-secondary: 120 96 56;
+  --m3-on-secondary: 255 255 255;
+  --m3-secondary-container: 255 240 200;
+  --m3-on-secondary-container: 36 24 8;
+  --m3-tertiary: 180 164 100;
+  --m3-on-tertiary: 40 32 8;
+  --m3-tertiary-container: 254 244 213;
+  --m3-on-tertiary-container: 48 36 0;
+  --m3-surface: 254 250 240;
+  --m3-surface-dim: 228 224 214;
+  --m3-surface-bright: 254 250 240;
+  --m3-surface-container-lowest: 255 255 255;
+  --m3-surface-container-low: 252 248 236;
+  --m3-surface-container: 248 244 232;
+  --m3-surface-container-high: 244 240 228;
+  --m3-surface-container-highest: 240 236 224;
+  --m3-on-surface: 44 24 16;
+  --m3-on-surface-variant: 80 64 44;
+  --m3-outline: 128 112 88;
+  --m3-outline-variant: 212 200 180;
+  --m3-inverse-surface: 52 40 28;
+  --m3-inverse-on-surface: 248 240 228;
+  --m3-scrim: 0 0 0;
+  --m3-primary-hex: #2C1810;
+  --m3-secondary-hex: #786038;
+  --m3-tertiary-hex: #B4A464;
+  --m3-error: 186 26 26;
+  --m3-on-error: 255 255 255;
+  --m3-error-container: 255 218 214;
+  --m3-on-error-container: 65 0 2;
+}
+
+/* ─── LIGHT THEME: Cherry Lacquer ─── */
+[data-theme="cherry"] {
+  --m3-primary: 81 44 58;
+  --m3-on-primary: 255 255 255;
+  --m3-primary-container: 240 200 216;
+  --m3-on-primary-container: 36 8 22;
+  --m3-secondary: 96 68 78;
+  --m3-on-secondary: 255 255 255;
+  --m3-secondary-container: 240 216 224;
+  --m3-on-secondary-container: 32 16 24;
+  --m3-tertiary: 120 80 64;
+  --m3-on-tertiary: 255 255 255;
+  --m3-tertiary-container: 248 216 200;
+  --m3-on-tertiary-container: 40 20 10;
+  --m3-surface: 252 248 250;
+  --m3-surface-dim: 222 218 220;
+  --m3-surface-bright: 252 248 250;
+  --m3-surface-container-lowest: 255 255 255;
+  --m3-surface-container-low: 248 244 246;
+  --m3-surface-container: 242 238 240;
+  --m3-surface-container-high: 236 232 234;
+  --m3-surface-container-highest: 230 226 228;
+  --m3-on-surface: 30 24 26;
+  --m3-on-surface-variant: 72 60 66;
+  --m3-outline: 120 108 114;
+  --m3-outline-variant: 200 190 196;
+  --m3-inverse-surface: 48 40 44;
+  --m3-inverse-on-surface: 240 232 236;
+  --m3-scrim: 0 0 0;
+  --m3-primary-hex: #512C3A;
+  --m3-secondary-hex: #60444E;
+  --m3-tertiary-hex: #785040;
+  --m3-error: 186 26 26;
+  --m3-on-error: 255 255 255;
+  --m3-error-container: 255 218 214;
+  --m3-on-error-container: 65 0 2;
+}
+
 /* ─── DARK THEME SUPPORT ───
    Inverted tonal mappings per M3 spec.
    Applied via [data-mode="dark"] on <html> */
@@ -347,6 +499,82 @@
   --m3-primary-hex: #B0C2F0;
   --m3-secondary-hex: #BEC6D6;
   --m3-tertiary-hex: #D0BADC;
+}
+
+/* ─── DARK: Midnight Opulence ─── */
+[data-mode="dark"][data-theme="midnight"] {
+  --m3-primary: 180 210 248;
+  --m3-on-primary: 0 32 72;
+  --m3-primary-container: 15 52 96;
+  --m3-on-primary-container: 204 224 255;
+  --m3-secondary: 190 200 224;
+  --m3-on-secondary: 12 20 42;
+  --m3-secondary-container: 22 33 62;
+  --m3-on-secondary-container: 216 224 240;
+  --m3-tertiary: 255 224 168;
+  --m3-on-tertiary: 56 34 0;
+  --m3-tertiary-container: 80 56 16;
+  --m3-on-tertiary-container: 255 236 200;
+  --m3-primary-hex: #B4D2F8;
+  --m3-secondary-hex: #BEC8E0;
+  --m3-tertiary-hex: #FFE0A8;
+}
+
+/* ─── DARK: Emerald Sophistication ─── */
+[data-mode="dark"][data-theme="emerald"] {
+  --m3-primary: 172 228 208;
+  --m3-on-primary: 0 42 30;
+  --m3-primary-container: 13 76 60;
+  --m3-on-primary-container: 196 248 228;
+  --m3-secondary: 196 232 216;
+  --m3-on-secondary: 16 44 32;
+  --m3-secondary-container: 45 90 74;
+  --m3-on-secondary-container: 220 248 236;
+  --m3-tertiary: 210 240 188;
+  --m3-on-tertiary: 28 48 12;
+  --m3-tertiary-container: 72 104 52;
+  --m3-on-tertiary-container: 230 255 210;
+  --m3-primary-hex: #ACE4D0;
+  --m3-secondary-hex: #C4E8D8;
+  --m3-tertiary-hex: #D2F0BC;
+}
+
+/* ─── DARK: Golden Hour Elite ─── */
+[data-mode="dark"][data-theme="golden"] {
+  --m3-primary: 248 218 172;
+  --m3-on-primary: 32 16 0;
+  --m3-primary-container: 64 44 16;
+  --m3-on-primary-container: 255 236 200;
+  --m3-secondary: 240 224 184;
+  --m3-on-secondary: 44 32 12;
+  --m3-secondary-container: 80 64 32;
+  --m3-on-secondary-container: 255 244 216;
+  --m3-tertiary: 230 216 168;
+  --m3-on-tertiary: 44 36 8;
+  --m3-tertiary-container: 80 68 28;
+  --m3-on-tertiary-container: 255 240 200;
+  --m3-primary-hex: #F8DAAC;
+  --m3-secondary-hex: #F0E0B8;
+  --m3-tertiary-hex: #E6D8A8;
+}
+
+/* ─── DARK: Cherry Lacquer ─── */
+[data-mode="dark"][data-theme="cherry"] {
+  --m3-primary: 240 200 216;
+  --m3-on-primary: 44 12 28;
+  --m3-primary-container: 81 44 58;
+  --m3-on-primary-container: 255 220 236;
+  --m3-secondary: 240 216 224;
+  --m3-on-secondary: 40 24 32;
+  --m3-secondary-container: 72 48 58;
+  --m3-on-secondary-container: 255 236 244;
+  --m3-tertiary: 248 216 200;
+  --m3-on-tertiary: 48 24 14;
+  --m3-tertiary-container: 88 56 40;
+  --m3-on-tertiary-container: 255 232 216;
+  --m3-primary-hex: #F0C8D8;
+  --m3-secondary-hex: #F0D8E0;
+  --m3-tertiary-hex: #F8D8C8;
 }
 
 /* ─── BASE STYLES ─── */
