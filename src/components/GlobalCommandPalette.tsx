@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Sparkles, X, Loader2, Bot } from "lucide-react";
+import { Sparkles, X, Loader2, Bot } from "lucide-react";
 import { API_URL } from "@/utils/api";
 
 export default function GlobalCommandPalette() {

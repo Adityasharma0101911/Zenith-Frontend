@@ -1,8 +1,8 @@
 // animated number counter that smoothly rolls between values
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useSpring, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function AnimatedCounter({
     value,

@@ -13,7 +13,6 @@ interface InteractiveCardProps {
 export default function InteractiveCard({ children, className = "", glowColor = "rgba(var(--m3-primary), 0.15)" }: InteractiveCardProps) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
 
     function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
         if (!cardRef.current) return;
@@ -27,8 +26,6 @@ export default function InteractiveCard({ children, className = "", glowColor = 
         <motion.div
             ref={cardRef}
             onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             whileHover={{ y: -4, transition: { type: "spring", stiffness: 300, damping: 20 } }}
             className={`relative overflow-hidden group rounded-m3-xl bg-m3-surface-container-low border border-white/5 shadow-m3-2 hover:shadow-m3-4 transition-all duration-300 ${className}`}
         >

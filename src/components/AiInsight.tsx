@@ -87,7 +87,6 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
     }
 
     // this runs the fetch when the page loads or when refreshTrigger changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         fetchAdvice();
 
@@ -95,6 +94,7 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
         return () => {
             if (typingRef.current) clearInterval(typingRef.current);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refreshTrigger]);
 
     return (
