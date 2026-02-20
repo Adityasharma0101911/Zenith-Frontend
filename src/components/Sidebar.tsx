@@ -23,6 +23,7 @@ import {
 import { API_URL } from "@/utils/api";
 import SdgBadge from "@/components/SdgBadge";
 import ThemePicker from "@/components/ThemePicker";
+import MotionButton from "@/components/MotionButton";
 
 const m3Ease = [0.2, 0, 0, 1] as const;
 
@@ -72,18 +73,18 @@ function SidebarItem({
     const isActive = pathname === href;
 
     return (
-        <Link href={href}>
+        <Link href={href} className="block">
             <motion.div
                 whileHover={{ scale: 1.02, x: 1 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className={`flex items-center gap-3 px-3 rounded-m3-full transition-colors relative m3-state-layer ${
-                    isActive
+                className={`flex items-center gap-3 px-3 rounded-m3-full transition-colors relative m3-state-layer group overflow-hidden ${isActive
                         ? "bg-m3-secondary-container text-m3-on-secondary-container"
                         : "text-m3-on-surface-variant hover:bg-m3-surface-container-high"
-                }`}
+                    }`}
                 style={{ height: 56, paddingLeft: expanded ? 16 : 16, paddingRight: expanded ? 24 : 16 }}
             >
+                {/* Haptic Ripple base (handled by CSS active/focus state + framer in parent, or manually here) */}
                 {/* m3 active indicator pill */}
                 {isActive && (
                     <motion.div
@@ -188,22 +189,20 @@ export default function Sidebar() {
                 <ThemePicker expanded={expanded} />
 
                 {/* demo mode button */}
-                <motion.button
+                <MotionButton
+                    magnetic={false}
                     onClick={handleDemoMode}
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="flex items-center gap-3 px-3 py-2 rounded-m3-lg text-m3-on-surface-variant hover:bg-m3-surface-container-high transition-colors text-xs"
+                    className="flex justify-start items-center gap-3 px-3 py-2 rounded-m3-lg text-m3-on-surface-variant hover:bg-m3-surface-container-high transition-colors text-xs bg-transparent shadow-none w-full"
                 >
                     <Terminal size={18} className="shrink-0" />
                     {expanded && <span className="text-m3-label-medium">Dev Mode</span>}
-                </motion.button>
+                </MotionButton>
 
                 {/* logout button */}
-                <motion.button
+                <MotionButton
+                    magnetic={false}
                     onClick={handleLogout}
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-m3-full text-m3-error hover:bg-m3-error-container transition-colors"
+                    className="flex justify-start items-center gap-3 px-3 py-2.5 rounded-m3-full text-m3-error hover:bg-m3-error-container transition-colors bg-transparent shadow-none w-full"
                 >
                     <LogOut size={20} className="shrink-0" />
                     <AnimatePresence>
@@ -219,7 +218,7 @@ export default function Sidebar() {
                             </motion.span>
                         )}
                     </AnimatePresence>
-                </motion.button>
+                </MotionButton>
             </div>
         </div>
     );
