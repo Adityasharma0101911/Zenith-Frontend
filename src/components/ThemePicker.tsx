@@ -40,10 +40,10 @@ export default function ThemePicker({ expanded = true }: { expanded?: boolean })
                     <motion.button
                         key={theme.id}
                         onClick={() => switchTheme(theme.id)}
-                        whileHover={{ scale: 1.2 }}
-                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.15, transition: { type: "spring", stiffness: 400, damping: 10 } }}
+                        whileTap={{ scale: 0.85, transition: { type: "spring", stiffness: 400, damping: 10 } }}
                         title={theme.label}
-                        className="relative flex items-center justify-center"
+                        className="relative flex items-center justify-center p-1 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-m3-primary"
                     >
                         <div
                             className="w-5 h-5 rounded-full transition-all duration-200"
