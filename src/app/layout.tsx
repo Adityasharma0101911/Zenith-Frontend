@@ -21,6 +21,7 @@ const geistMono = localFont({
 });
 
 import GlobalCommandPalette from "@/components/GlobalCommandPalette";
+import FloatingDarkMode from "@/components/FloatingDarkMode";
 
 export const metadata: Metadata = {
   title: "Zenith",
@@ -50,6 +51,9 @@ export default function RootLayout({
 
           {/* collapsible sidebar navigation */}
           <Sidebar />
+
+          {/* floating dark mode toggle for pages without sidebar */}
+          <FloatingDarkMode />
 
           {/* Idea #18: The Global Jarvis CMD+K Command Palette */}
           <GlobalCommandPalette />
