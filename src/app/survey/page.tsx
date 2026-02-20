@@ -14,7 +14,6 @@ import {
 import { API_URL } from "@/utils/api";
 import toast from "react-hot-toast";
 import PageTransition from "@/components/PageTransition";
-import FallingLeaves from "@/components/FallingLeaves";
 
 // tab definitions for each survey section
 const TABS = [
@@ -385,9 +384,6 @@ export default function SurveyPage() {
 
     return (
         <PageTransition>
-            {/* reactive falling leaf background */}
-            <FallingLeaves count={24} />
-
             <main className="min-h-screen flex items-center justify-center px-4 py-6 relative z-10">
 
                 {/* minimized taskbar pill */}

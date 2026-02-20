@@ -22,6 +22,7 @@ const geistMono = localFont({
 
 import GlobalCommandPalette from "@/components/GlobalCommandPalette";
 import FloatingDarkMode from "@/components/FloatingDarkMode";
+import WeatherManager from "@/components/WeatherManager";
 
 export const metadata: Metadata = {
   title: "Zenith",
@@ -43,6 +44,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-m3-surface text-m3-on-surface`}
       >
         <div className="relative min-h-screen overflow-x-hidden">
+
+          {/* randomised ambient weather effect behind all content */}
+          <WeatherManager />
 
           {/* page content on top of the surface */}
           <div className="relative z-10 min-h-screen">
