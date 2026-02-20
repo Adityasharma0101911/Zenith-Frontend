@@ -69,11 +69,10 @@ function OptionCard({
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className={`w-full text-left px-4 py-3 rounded-m3-lg border-2 transition-colors ${
-                selected
+            className={`w-full text-left px-4 py-3 rounded-m3-lg border-2 transition-colors ${selected
                     ? `${color || "bg-m3-primary-container"} border-m3-primary`
                     : "bg-m3-surface-container border-transparent hover:bg-m3-surface-container-high"
-            }`}
+                }`}
         >
             <div className="flex items-center gap-3">
                 {Icon && <Icon size={20} className={selected ? "text-m3-primary" : "text-m3-on-surface-variant"} />}
@@ -108,11 +107,10 @@ function Chip({
             onClick={onClick}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`px-3 py-1.5 rounded-m3-full text-m3-label-medium border transition-colors ${
-                selected
+            className={`px-3 py-1.5 rounded-m3-full text-m3-label-medium border transition-colors ${selected
                     ? "bg-m3-primary text-m3-on-primary border-m3-primary"
                     : "bg-m3-surface-container text-m3-on-surface-variant border-m3-outline-variant hover:bg-m3-surface-container-high"
-            }`}
+                }`}
         >
             {label}
         </motion.button>
@@ -193,7 +191,7 @@ export default function SurveyPage() {
         };
 
         try {
-            await fetch(`${API_URL}/api/survey`, {
+            const res = await fetch(`${API_URL}/api/survey`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -201,11 +199,16 @@ export default function SurveyPage() {
                 },
                 body: JSON.stringify(surveyData),
             });
+            if (res.ok) {
+                setTimeout(() => router.push("/dashboard"), 1200);
+            } else {
+                setLaunching(false);
+                alert("Failed to save survey. Please try again.");
+            }
         } catch {
-            // still redirect even if save fails
+            setLaunching(false);
+            alert("Network error. Please try again.");
         }
-
-        setTimeout(() => router.push("/dashboard"), 1200);
     }
 
     return (

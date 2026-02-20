@@ -49,12 +49,15 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
     async function fetchAdvice() {
         // check localStorage cache first
         const cacheKey = "zenith_dashboard_insight";
-        const cached = localStorage.getItem(cacheKey);
-        if (cached) {
-            setAdvice(cached);
-            setIsLoading(false);
-            typeText(cached);
-            return;
+
+        if (refreshTrigger === 0) {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                setAdvice(cached);
+                setIsLoading(false);
+                typeText(cached);
+                return;
+            }
         }
 
         // get the token from localStorage
