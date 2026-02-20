@@ -260,7 +260,11 @@ export function useMountAnim(vars: gsap.TweenVars) {
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!ref.current) return;
-        gsap.from(ref.current, { ease: M3_EASE, duration: 0.5, ...vars });
+        const ctx = gsap.context(() => {
+            gsap.from(ref.current!, { ease: M3_EASE, duration: 0.5, ...vars });
+        });
+        return () => ctx.revert();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return ref;
 }

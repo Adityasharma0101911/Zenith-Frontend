@@ -178,6 +178,7 @@ export default function JarvisDashboard({
                 fetch(`${API_URL}/api/survey`, { headers: { Authorization: `Bearer ${token}` } }),
                 fetch(`${API_URL}/api/user_data`, { headers: { Authorization: `Bearer ${token}` } }),
             ]);
+            if (!surveyRes.ok || !userRes.ok) throw new Error("Request failed");
             const surveyData = await surveyRes.json(); const userData = await userRes.json();
             if (surveyData.completed && surveyData.data) {
                 const merged = { ...surveyData.data };
@@ -201,6 +202,7 @@ export default function JarvisDashboard({
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ section, force }),
             });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             const text = data.brief || "Unable to generate brief.";
             setBrief(text); setBriefCached(!!data.cached); localStorage.setItem(cacheKey, text);
@@ -227,6 +229,7 @@ export default function JarvisDashboard({
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ section, message: q }),
             });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             setResponses(prev => [{ q, a: data.response || "No response." }, ...prev]);
         } catch { setResponses(prev => [{ q, a: "Could not reach the AI. Please try again." }, ...prev]); }

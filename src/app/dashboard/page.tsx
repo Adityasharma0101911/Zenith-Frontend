@@ -35,11 +35,13 @@ export default function DashboardPage() {
         const token = localStorage.getItem("token");
         if (!token) { router.push("/login"); return; }
         fetch(`${API_URL}/api/user_data`, { headers: { Authorization: `Bearer ${token}` } })
-            .then(res => res.json()).then(data => {
+            .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+            .then(data => {
                 if (data.error) router.push("/login");
                 else if (data.survey_completed === false) router.push("/survey");
                 else setUserData(data);
-            });
+            })
+            .catch(() => { router.push("/login"); });
     }, [router]);
 
     useEffect(() => { fetchUserData(); }, [fetchUserData]);
@@ -63,8 +65,10 @@ export default function DashboardPage() {
 
     // heart pulse
     useEffect(() => {
-        if (heartRef.current) gsap.to(heartRef.current, { scale: 1.2, duration: 1, repeat: -1, yoyo: true, ease: "sine.inOut" });
-    }, [userData]);
+        if (!heartRef.current) return;
+        const pulse = gsap.to(heartRef.current, { scale: 1.2, duration: 1, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        return () => { pulse.kill(); };
+    }, []);
 
     function handleTransactionComplete() { fetchUserData(); setRefreshTrigger(prev => prev + 1); }
 
@@ -78,7 +82,7 @@ export default function DashboardPage() {
                                 <h1 ref={greetingRef} className="text-m3-headline-medium text-m3-on-primary-container">Welcome, {userData.name}</h1>
                                 <div ref={balanceRef} className="flex items-center justify-center gap-2 mt-2">
                                     <Wallet size={20} className="text-m3-on-primary-container/70" />
-                                    <span className="text-m3-title-large text-m3-on-primary-container/80">${userData.balance.toFixed(2)}</span>
+                                    <span className="text-m3-title-large text-m3-on-primary-container/80">${(Number(userData.balance) || 0).toFixed(2)}</span>
                                 </div>
                                 {userData.spending_profile && (
                                     <span ref={badgeRef} className="inline-block mt-2 px-3 py-1 rounded-m3-full bg-m3-surface text-m3-on-surface text-m3-label-medium">{userData.spending_profile}</span>

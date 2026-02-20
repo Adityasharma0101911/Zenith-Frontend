@@ -1,7 +1,10 @@
 // material design 3 reusable filled button
-export default function Button({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+"use client";
+
+export default function Button({ onClick, children, type = "button" }: { onClick?: () => void; children: React.ReactNode; type?: "button" | "submit" | "reset" }) {
     return (
         <button
+            type={type}
             onClick={onClick}
             className="m3-btn-filled"
         >

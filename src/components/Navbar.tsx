@@ -14,6 +14,7 @@ async function handleDemoMode() {
     const token = localStorage.getItem("token");
     try {
         const res = await fetch(`${API_URL}/api/demo_mode`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) throw new Error("Request failed");
         const data = await res.json();
         if (data.message) { toast.success("Enterprise Sandbox Activated"); setTimeout(() => window.location.reload(), 500); }
     } catch { toast.error("Could not activate demo mode"); }

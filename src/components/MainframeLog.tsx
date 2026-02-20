@@ -13,11 +13,11 @@ export default function MainframeLog({ refreshTrigger }: { refreshTrigger: numbe
     const containerRef = useRef<HTMLDivElement>(null);
     const cursorRef = useRef<HTMLSpanElement>(null);
 
-    // append new log on trigger
+    // append new log on trigger (capped at 100)
     useEffect(() => {
         if (refreshTrigger === 0) return;
         const now = new Date().toLocaleTimeString();
-        setLogs(prev => [...prev, `[${now}] [SYS_Z_ENCLAVE] Transaction Intercepted. Evaluating Policy...`]);
+        setLogs(prev => [...prev.slice(-99), `[${now}] [SYS_Z_ENCLAVE] Transaction Intercepted. Evaluating Policy...`]);
     }, [refreshTrigger]);
 
     // auto-scroll + animate new log line
@@ -33,7 +33,8 @@ export default function MainframeLog({ refreshTrigger }: { refreshTrigger: numbe
     // blinking cursor
     useEffect(() => {
         if (!cursorRef.current) return;
-        gsap.to(cursorRef.current, { opacity: 0, duration: 0.4, repeat: -1, yoyo: true, ease: "steps(1)" });
+        const blink = gsap.to(cursorRef.current, { opacity: 0, duration: 0.4, repeat: -1, yoyo: true, ease: "steps(1)" });
+        return () => { blink.kill(); };
     }, []);
 
     // hover lift

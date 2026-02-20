@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ShieldCheck, Scale, Zap, Rocket, ChevronRight } from "lucide-react";
+import toast from "react-hot-toast";
 import { API_URL } from "@/utils/api";
 import PageTransition from "@/components/PageTransition";
 
@@ -26,6 +27,9 @@ export default function OnboardingPage() {
         { label: "Balanced Planner", description: "You budget wisely and stick to plans", icon: Scale, color: "bg-m3-secondary-container text-m3-on-secondary-container", ring: "ring-m3-secondary" },
         { label: "Impulse Spender", description: "You buy now and think later", icon: Zap, color: "bg-m3-tertiary-container text-m3-on-tertiary-container", ring: "ring-m3-tertiary" },
     ];
+
+    // auth guard
+    useEffect(() => { if (!localStorage.getItem("token")) router.push("/login"); }, [router]);
 
     // card entrance
     useEffect(() => {
@@ -55,7 +59,8 @@ export default function OnboardingPage() {
     // rocket bounce when launching
     useEffect(() => {
         if (launching && rocketRef.current) {
-            gsap.to(rocketRef.current, { y: -4, duration: 0.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
+            const tween = gsap.to(rocketRef.current, { y: -4, duration: 0.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
+            return () => { tween.kill(); };
         }
     }, [launching]);
 
@@ -63,12 +68,18 @@ export default function OnboardingPage() {
 
     async function handleFinish() {
         setLaunching(true);
-        const token = localStorage.getItem("token");
-        await fetch(`${API_URL}/api/onboarding`, {
-            method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ name, spending_profile: spendingProfile, balance: parseFloat(balance) }),
-        });
-        setTimeout(() => router.push("/dashboard"), 1200);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${API_URL}/api/onboarding`, {
+                method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ name, spending_profile: spendingProfile, balance: parseFloat(balance) || 0 }),
+            });
+            if (!res.ok) throw new Error("Request failed");
+            setTimeout(() => router.push("/dashboard"), 1200);
+        } catch {
+            toast.error("Could not complete onboarding. Please try again.");
+            setLaunching(false);
+        }
     }
 
     return (

@@ -50,11 +50,11 @@ export default function PurchasesPage() {
     useEffect(() => { if (!localStorage.getItem("token")) router.push("/login"); }, [router]);
 
     const fetchBalance = useCallback(async () => {
-        try { const token = localStorage.getItem("token"); const res = await fetch(`${API_URL}/api/user_data`, { headers: { Authorization: `Bearer ${token}` } }); const data = await res.json(); if (data.balance !== undefined) setBalance(data.balance); } catch {}
+        try { const token = localStorage.getItem("token"); const res = await fetch(`${API_URL}/api/user_data`, { headers: { Authorization: `Bearer ${token}` } }); if (!res.ok) throw new Error(); const data = await res.json(); if (data.balance !== undefined) setBalance(data.balance); } catch {}
     }, []);
 
     const fetchHistory = useCallback(async () => {
-        try { const token = localStorage.getItem("token"); const res = await fetch(`${API_URL}/api/history`, { headers: { Authorization: `Bearer ${token}` } }); const data = await res.json(); setTransactions(data.transactions || []); } catch {}
+        try { const token = localStorage.getItem("token"); const res = await fetch(`${API_URL}/api/history`, { headers: { Authorization: `Bearer ${token}` } }); if (!res.ok) throw new Error(); const data = await res.json(); setTransactions(data.transactions || []); } catch {}
     }, []);
 
     useEffect(() => { fetchBalance(); fetchHistory(); }, [fetchBalance, fetchHistory]);
@@ -115,7 +115,7 @@ export default function PurchasesPage() {
 
     async function saveBalance() {
         const val = parseFloat(newBalance); if (isNaN(val) || val < 0) return;
-        try { const token = localStorage.getItem("token"); await fetch(`${API_URL}/api/balance`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ balance: val }) }); setBalance(val); setEditingBalance(false); } catch {}
+        try { const token = localStorage.getItem("token"); const res = await fetch(`${API_URL}/api/balance`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ balance: val }) }); if (!res.ok) throw new Error(); setBalance(val); setEditingBalance(false); } catch {}
     }
 
     async function handleEvaluate(e: React.FormEvent) {
@@ -124,6 +124,7 @@ export default function PurchasesPage() {
         try {
             const token = localStorage.getItem("token");
             const res = await fetch(`${API_URL}/api/purchase/evaluate`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ item_name: itemName.trim(), amount: parseFloat(amount), reason: reason.trim() }) });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json(); if (data.error) setError(data.error); else setVerdict(data);
         } catch { setError("Could not reach AI for evaluation."); } finally { setEvaluating(false); }
     }
@@ -133,9 +134,10 @@ export default function PurchasesPage() {
         try {
             const token = localStorage.getItem("token");
             const res = await fetch(`${API_URL}/api/purchase/execute`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ item_name: verdict.item_name, amount: verdict.amount }) });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             if (data.status === "BLOCKED") { setBlockedReason(data.reason); setShowBlocked(true); }
-            else if (data.status === "ALLOWED") { setResult(`Purchase complete! New balance: $${data.new_balance.toFixed(2)}`); setBalance(data.new_balance); fetchHistory(); setItemName(""); setAmount(""); setReason(""); setVerdict(null); }
+            else if (data.status === "ALLOWED") { setResult(`Purchase complete! New balance: $${(data.new_balance ?? 0).toFixed(2)}`); setBalance(data.new_balance); fetchHistory(); setItemName(""); setAmount(""); setReason(""); setVerdict(null); }
         } catch { setError("Could not process purchase."); } finally { setExecuting(false); }
     }
 
@@ -147,6 +149,7 @@ export default function PurchasesPage() {
         try {
             const token = localStorage.getItem("token");
             const res = await fetch(`${API_URL}/api/income`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ source: incomeSource, amount: val }) });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json(); if (data.balance !== undefined) { setBalance(data.balance); setIncomeResult(`+$${val.toFixed(2)} added from ${incomeSource}`); setIncomeAmount(""); fetchHistory(); }
         } catch { setIncomeResult("Failed to add income."); } finally { setAddingIncome(false); }
     }
@@ -245,7 +248,7 @@ export default function PurchasesPage() {
                                             {tx.status==="BLOCKED"?<ShieldX className="text-m3-error" size={20} />:tx.status==="INCOME"?<Plus className="text-m3-secondary" size={20} />:<CheckCircle className="text-m3-primary" size={20} />}
                                             <div><p className={`font-medium text-sm ${tx.status==="BLOCKED"?"text-m3-on-error-container":"text-m3-on-surface"}`}>{tx.item_name}</p><p className="text-xs text-m3-on-surface-variant">{formatTime(tx.timestamp)}</p></div>
                                         </div>
-                                        <div className="text-right"><p className="font-semibold text-sm text-m3-on-surface">{tx.status==="INCOME"?"+":"-"}${tx.amount.toFixed(2)}</p><p className={`text-xs font-medium ${tx.status==="BLOCKED"?"text-m3-error":tx.status==="INCOME"?"text-m3-secondary":"text-m3-primary"}`}>{tx.status}</p></div>
+                                        <div className="text-right"><p className="font-semibold text-sm text-m3-on-surface">{tx.status==="INCOME"?"+":"-"}${(tx.amount ?? 0).toFixed(2)}</p><p className={`text-xs font-medium ${tx.status==="BLOCKED"?"text-m3-error":tx.status==="INCOME"?"text-m3-secondary":"text-m3-primary"}`}>{tx.status}</p></div>
                                     </div>
                                 ))}
                             </div>

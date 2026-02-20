@@ -23,6 +23,7 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
         const token = localStorage.getItem("token");
         try {
             const res = await fetch(`${API_URL}/api/history`, { headers: { Authorization: `Bearer ${token}` } });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             setTransactions(data.transactions || []);
         } catch { setTransactions([]); }
@@ -93,7 +94,7 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-m3-label-large text-m3-on-surface">${tx.amount.toFixed(2)}</p>
+                                <p className="text-m3-label-large text-m3-on-surface">${(tx.amount ?? 0).toFixed(2)}</p>
                                 <p className={`text-m3-label-small ${tx.status === "BLOCKED" ? "text-m3-error" : "text-m3-primary"}`}>{tx.status}</p>
                             </div>
                         </div>

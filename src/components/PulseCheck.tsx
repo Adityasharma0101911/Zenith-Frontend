@@ -98,11 +98,12 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
     async function handleUpdateStress() {
         const token = localStorage.getItem("token");
         try {
-            await fetch(`${API_URL}/api/update_stress`, {
+            const res = await fetch(`${API_URL}/api/update_stress`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ new_stress_level: stress }),
             });
+            if (!res.ok) throw new Error("Request failed");
             setError("");
             setSaved(true);
             setTimeout(() => setSaved(false), 2000);

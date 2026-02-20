@@ -53,9 +53,11 @@ export default function ChatInterface({
     useEffect(() => {
         if (!loadingRef.current || !loading) return;
         const dots = loadingRef.current.querySelectorAll(".chat-dot");
+        const tweens: gsap.core.Tween[] = [];
         dots.forEach((dot, i) => {
-            gsap.to(dot, { opacity: 0.3, duration: 0.5, repeat: -1, yoyo: true, delay: i * 0.2, ease: "sine.inOut" });
+            tweens.push(gsap.to(dot, { opacity: 0.3, duration: 0.5, repeat: -1, yoyo: true, delay: i * 0.2, ease: "sine.inOut" }));
         });
+        return () => { tweens.forEach(t => t.kill()); };
     }, [loading]);
 
     // send button hover
@@ -83,6 +85,7 @@ export default function ChatInterface({
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ section, message: userMsg }),
             });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             setMessages(prev => [...prev, { role: "ai", content: data.response || "No response received." }]);
         } catch {

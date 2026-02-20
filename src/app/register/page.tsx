@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { Loader2, UserPlus, Sparkles } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { API_URL } from "@/utils/api";
 import PageTransition from "@/components/PageTransition";
 
@@ -72,14 +73,21 @@ export default function RegisterPage() {
     async function handleRegister(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true); setButtonText("Generating Secure Keys...");
-        const res = await fetch(`${API_URL}/api/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
-        const data = await res.json();
-        if (data.message) {
-            if (data.token) localStorage.setItem("token", data.token);
-            setSuccess(true); setButtonText("Vault Created!");
-            setTimeout(() => router.push("/survey"), 1500);
-        } else {
-            setLoading(false); setButtonText("Create Account"); alert("Registration failed. Try a different username.");
+        try {
+            const res = await fetch(`${API_URL}/api/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+            if (!res.ok) throw new Error("Request failed");
+            const data = await res.json();
+            if (data.token || data.message) {
+                if (data.token) localStorage.setItem("token", data.token);
+                setSuccess(true); setButtonText("Vault Created!");
+                setTimeout(() => router.push("/survey"), 1500);
+            } else {
+                setButtonText("Create Account"); toast.error(data.error || "Registration failed. Try a different username.");
+            }
+        } catch {
+            setButtonText("Create Account"); toast.error("Could not connect to server.");
+        } finally {
+            if (!success) setLoading(false);
         }
     }
 

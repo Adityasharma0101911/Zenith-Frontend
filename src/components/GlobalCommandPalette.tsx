@@ -16,14 +16,16 @@ export default function GlobalCommandPalette() {
     const paletteRef = useRef<HTMLDivElement>(null);
     const responseRef = useRef<HTMLDivElement>(null);
 
-    // listen for cmd+k
+    // listen for cmd+k and escape
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
             if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setOpen(o => !o); }
+            if (e.key === "Escape" && open) { e.preventDefault(); handleClose(); }
         };
         document.addEventListener("keydown", down);
         return () => document.removeEventListener("keydown", down);
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open]);
 
     // entrance animation when opened
     useEffect(() => {
@@ -59,6 +61,7 @@ export default function GlobalCommandPalette() {
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ section: "guardian", message: query }),
             });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             setResponse(data.response || "No response.");
         } catch { setResponse("Could not reach the AI. Please try again."); }

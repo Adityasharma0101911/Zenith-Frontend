@@ -43,8 +43,10 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
         setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/api/ai/insights`, { headers: { Authorization: `Bearer ${token}` } });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
-            setAdvice(data.advice); setIsLoading(false); typeText(data.advice);
+            const text = data.advice || "No insight available right now.";
+            setAdvice(text); setIsLoading(false); typeText(text);
             localStorage.setItem(cacheKey, data.advice);
         } catch {
             const fallback = "Zenith AI is currently offline. Please try again later.";
@@ -61,13 +63,13 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
     // card float animation
     useEffect(() => {
         if (!cardRef.current) return;
-        gsap.to(cardRef.current, { y: -4, duration: 2, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        const floatTween = gsap.to(cardRef.current, { y: -4, duration: 2, repeat: -1, yoyo: true, ease: "sine.inOut" });
         const el = cardRef.current;
         const enter = () => gsap.to(el, { scale: 1.01, duration: 0.2, ease: "power3.out" });
         const leave = () => gsap.to(el, { scale: 1, duration: 0.2, ease: "power3.out" });
         el.addEventListener("mouseenter", enter);
         el.addEventListener("mouseleave", leave);
-        return () => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); };
+        return () => { floatTween.kill(); el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); };
     }, []);
 
     // header entrance
@@ -79,22 +81,26 @@ export default function AiInsight({ refreshTrigger }: { refreshTrigger: number }
     // icon wiggle
     useEffect(() => {
         if (!iconRef.current) return;
-        gsap.to(iconRef.current, { rotation: 15, duration: 0.75, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        const wiggle = gsap.to(iconRef.current, { rotation: 15, duration: 0.75, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        return () => { wiggle.kill(); };
     }, []);
 
     // loading dots pulse
     useEffect(() => {
         if (!dotsRef.current || !isLoading) return;
         const dots = dotsRef.current.querySelectorAll(".ai-dot");
+        const tweens: gsap.core.Tween[] = [];
         dots.forEach((dot, i) => {
-            gsap.to(dot, { opacity: 0.3, duration: 0.5, repeat: -1, yoyo: true, delay: i * 0.2, ease: "sine.inOut" });
+            tweens.push(gsap.to(dot, { opacity: 0.3, duration: 0.5, repeat: -1, yoyo: true, delay: i * 0.2, ease: "sine.inOut" }));
         });
+        return () => { tweens.forEach(t => t.kill()); };
     }, [isLoading]);
 
     // blinking cursor
     useEffect(() => {
         if (!cursorRef.current) return;
-        gsap.to(cursorRef.current, { opacity: 0, duration: 0.4, repeat: -1, yoyo: true, ease: "steps(1)" });
+        const blink = gsap.to(cursorRef.current, { opacity: 0, duration: 0.4, repeat: -1, yoyo: true, ease: "steps(1)" });
+        return () => { blink.kill(); };
     }, []);
 
     return (

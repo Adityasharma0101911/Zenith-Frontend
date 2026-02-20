@@ -83,6 +83,7 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ item_name: itemName.trim(), amount: parseFloat(amount), reason: reason.trim() }),
             });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             if (data.error) setError(data.error); else setVerdict(data);
         } catch { setError("Could not reach AI for evaluation. Check your connection."); }
@@ -99,10 +100,11 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ item_name: verdict.item_name, amount: verdict.amount }),
             });
+            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
             if (data.status === "BLOCKED") { setBlockedReason(data.reason); setShowBlocked(true); }
             else if (data.status === "ALLOWED") {
-                setResult(`Purchase complete! New balance: $${data.new_balance.toFixed(2)}`);
+                setResult(`Purchase complete! New balance: $${(data.new_balance ?? 0).toFixed(2)}`);
                 refreshData(); setItemName(""); setAmount(""); setReason(""); setVerdict(null);
             }
         } catch { setError("Could not process purchase."); }

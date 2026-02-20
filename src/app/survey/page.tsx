@@ -9,6 +9,7 @@ import {
     ChevronRight, ChevronLeft, Rocket, ShieldCheck, Scale, Zap,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
+import toast from "react-hot-toast";
 import PageTransition from "@/components/PageTransition";
 
 const TOTAL_STEPS = 5;
@@ -127,6 +128,7 @@ export default function SurveyPage() {
 
     // nav button hovers
     useEffect(() => {
+        const cleanups: (() => void)[] = [];
         [backBtnRef, nextBtnRef].forEach(ref => {
             const el = ref.current;
             if (!el) return;
@@ -134,12 +136,17 @@ export default function SurveyPage() {
             const leave = () => gsap.to(el, { scale: 1, duration: 0.15, ease: "power3.out" });
             const down = () => gsap.to(el, { scale: 0.95, duration: 0.1 });
             el.addEventListener("mouseenter", enter); el.addEventListener("mouseleave", leave); el.addEventListener("mousedown", down);
+            cleanups.push(() => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); el.removeEventListener("mousedown", down); });
         });
+        return () => cleanups.forEach(fn => fn());
     }, [step]);
 
     // rocket animation
     useEffect(() => {
-        if (launching && rocketRef.current) gsap.to(rocketRef.current, { y: -3, duration: 0.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        if (launching && rocketRef.current) {
+            const tween = gsap.to(rocketRef.current, { y: -3, duration: 0.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
+            return () => { tween.kill(); };
+        }
     }, [launching]);
 
     async function handleFinish() {
@@ -158,8 +165,8 @@ export default function SurveyPage() {
                 body: JSON.stringify(surveyData),
             });
             if (res.ok) setTimeout(() => router.push("/dashboard"), 1200);
-            else { setLaunching(false); alert("Failed to save survey."); }
-        } catch { setLaunching(false); alert("Network error."); }
+            else { setLaunching(false); toast.error("Failed to save survey."); }
+        } catch { setLaunching(false); toast.error("Network error. Please try again."); }
     }
 
     return (

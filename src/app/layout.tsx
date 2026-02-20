@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* apply theme + dark mode before paint to prevent flash */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('zenith-theme');if(t)document.documentElement.setAttribute('data-theme',t);var m=localStorage.getItem('zenith-mode');if(m)document.documentElement.setAttribute('data-mode',m)})()` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('zenith-theme');if(t)document.documentElement.setAttribute('data-theme',t);var m=localStorage.getItem('zenith-mode');if(m)document.documentElement.setAttribute('data-mode',m)}catch(e){}})()` }} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-m3-surface text-m3-on-surface`}

@@ -24,6 +24,8 @@ export default function ThemePicker({ expanded = true }: { expanded?: boolean })
     useEffect(() => {
         const saved = localStorage.getItem("zenith-theme") || "teal";
         setActive(saved);
+        // ensure theme is applied on mount (in case inline script missed it)
+        document.documentElement.setAttribute("data-theme", saved);
     }, []);
 
     // stagger entrance for dots

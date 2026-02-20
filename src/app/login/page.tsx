@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { Loader2, Lock, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { API_URL } from "@/utils/api";
 import PageTransition from "@/components/PageTransition";
 
@@ -32,7 +33,9 @@ export default function LoginPage() {
         const token = localStorage.getItem("token");
         if (token) {
             fetch(`${API_URL}/api/user_data`, { headers: { Authorization: `Bearer ${token}` } })
-                .then(res => res.json()).then(data => { if (!data.error) router.push("/dashboard"); }).catch(() => {});
+                .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+                .then(data => { if (!data.error) router.push("/dashboard"); })
+                .catch(() => {});
         }
     }, [router]);
 
@@ -81,13 +84,20 @@ export default function LoginPage() {
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true); setButtonText("Authenticating...");
-        const res = await fetch(`${API_URL}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
-        const data = await res.json();
-        if (data.success) {
-            localStorage.setItem("token", data.token); setButtonText("Decrypting Vault..."); setSuccess(true);
-            setTimeout(() => router.push("/dashboard"), 1500);
-        } else {
-            setLoading(false); setButtonText("Sign in"); alert("Login failed. Check your username and password.");
+        try {
+            const res = await fetch(`${API_URL}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+            if (!res.ok) throw new Error("Request failed");
+            const data = await res.json();
+            if (data.success) {
+                localStorage.setItem("token", data.token); setButtonText("Decrypting Vault..."); setSuccess(true);
+                setTimeout(() => router.push("/dashboard"), 1500);
+            } else {
+                setButtonText("Sign in"); toast.error("Login failed. Check your username and password.");
+            }
+        } catch {
+            setButtonText("Sign in"); toast.error("Could not connect to server.");
+        } finally {
+            if (!success) setLoading(false);
         }
     }
 
