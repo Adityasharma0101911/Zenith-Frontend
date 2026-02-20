@@ -93,7 +93,7 @@ export default function OnboardingPage() {
                             <div key={s} className="dot rounded-full h-[10px]" style={{ width: step === s ? 28 : 10, backgroundColor: step >= s ? "var(--m3-primary)" : "var(--m3-outline-variant)" }} />
                         ))}
                     </div>
-                    <div ref={cardRef} className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2">
+                    <div ref={cardRef} className="bg-m3-surface-container-low/80 backdrop-blur-xl backdrop-saturate-150 rounded-m3-xl p-8 shadow-m3-2 border border-m3-outline-variant/15">
                         {step === 1 && (
                             <div ref={stepRef} className="flex flex-col gap-5">
                                 <div className="step-item text-center">
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
                                     <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">This helps Zenith protect you better</p>
                                 </div>
                                 {profiles.map((p) => (
-                                    <button key={p.label} onClick={() => selectProfile(p.label)} className={`step-item ${p.color} rounded-m3-lg p-4 flex items-center gap-4 text-left transition-shadow duration-200 hover:shadow-m3-2 hover:-translate-y-1 active:scale-[0.96] transition-transform`}>
+                                    <button key={p.label} onClick={() => selectProfile(p.label)} className={`step-item ${p.color} rounded-m3-lg p-4 flex items-center gap-4 text-left transition-all duration-200 hover:shadow-m3-2 hover:-translate-y-1 active:scale-[0.96]`}>
                                         <p.icon size={24} />
                                         <div className="flex-1">
                                             <p className="text-m3-label-large">{p.label}</p>

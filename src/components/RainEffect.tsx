@@ -1,4 +1,5 @@
 // canvas-based rain effect — mouse blocks rain like an umbrella, rain splashes on cursor
+// theme-aware: reads data-mode to pick light/dark palette
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -11,13 +12,17 @@ interface Drop {
     opacity: number;
     deflected: boolean;
     deflectAngle: number;
-    splashTimer: number;  // >0 means splashing
+    splashTimer: number;
     splashX: number;
     splashY: number;
 }
 
 const MOUSE_RADIUS = 80;
-const SPLASH_DURATION = 10; // frames
+const SPLASH_DURATION = 10;
+
+function isDarkMode(): boolean {
+    return document.documentElement.getAttribute("data-mode") === "dark";
+}
 
 export default function RainEffect({ intensity = 220 }: { intensity?: number }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,7 +44,6 @@ export default function RainEffect({ intensity = 220 }: { intensity?: number }) 
         canvas.style.height = h + "px";
         ctx.scale(dpr, dpr);
 
-        // create rain drops
         const drops: Drop[] = [];
         for (let i = 0; i < intensity; i++) {
             drops.push(makeDrop(w, h, true));
@@ -60,40 +64,43 @@ export default function RainEffect({ intensity = 220 }: { intensity?: number }) 
             };
         }
 
+        function getColors() {
+            const dark = isDarkMode();
+            return {
+                drop: dark ? "140, 180, 220" : "100, 140, 190",
+                splash: dark ? "160, 200, 240" : "120, 160, 210",
+                dropAlphaScale: dark ? 1.6 : 1,
+                splashAlphaScale: dark ? 1.4 : 1,
+            };
+        }
+
         function animate() {
             ctx!.clearRect(0, 0, w, h);
-
             const mx = mouseRef.current.x;
             const my = mouseRef.current.y;
+            const colors = getColors();
 
             for (let i = 0; i < drops.length; i++) {
                 const d = drops[i];
 
-                // handle splash animation
                 if (d.splashTimer > 0) {
-                    drawSplash(ctx!, d);
+                    drawSplash(ctx!, d, colors);
                     d.splashTimer--;
-                    if (d.splashTimer <= 0) {
-                        // reset drop
-                        Object.assign(d, makeDrop(w, h));
-                    }
+                    if (d.splashTimer <= 0) Object.assign(d, makeDrop(w, h));
                     continue;
                 }
 
-                // distance to mouse
                 const dx = d.x - mx;
                 const dy = (d.y + d.length * 0.5) - my;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < MOUSE_RADIUS) {
                     if (dist < MOUSE_RADIUS * 0.25) {
-                        // splash on the mouse "shield"
                         d.splashTimer = SPLASH_DURATION;
                         d.splashX = d.x;
                         d.splashY = d.y;
                         continue;
                     }
-                    // deflect — push sideways
                     const angle = Math.atan2(dy, dx);
                     d.deflected = true;
                     d.deflectAngle = angle;
@@ -104,17 +111,14 @@ export default function RainEffect({ intensity = 220 }: { intensity?: number }) 
                     d.y += d.speed;
                 }
 
-                // reset when off screen
-                if (d.y > h + 30) {
-                    Object.assign(d, makeDrop(w, h));
-                }
+                if (d.y > h + 30) Object.assign(d, makeDrop(w, h));
 
-                // draw rain drop
-                const slant = d.deflected ? Math.cos(d.deflectAngle) * 3 : 0.8; // slight wind slant + deflection
+                const slant = d.deflected ? Math.cos(d.deflectAngle) * 3 : 0.8;
+                const alpha = Math.min(d.opacity * colors.dropAlphaScale, 0.5);
                 ctx!.beginPath();
                 ctx!.moveTo(d.x, d.y);
                 ctx!.lineTo(d.x + slant, d.y + d.length);
-                ctx!.strokeStyle = `rgba(174, 200, 235, ${d.opacity})`;
+                ctx!.strokeStyle = `rgba(${colors.drop}, ${alpha})`;
                 ctx!.lineWidth = 1.2;
                 ctx!.lineCap = "round";
                 ctx!.stroke();
@@ -123,26 +127,25 @@ export default function RainEffect({ intensity = 220 }: { intensity?: number }) 
             rafRef.current = requestAnimationFrame(animate);
         }
 
-        function drawSplash(c: CanvasRenderingContext2D, d: Drop) {
+        function drawSplash(c: CanvasRenderingContext2D, d: Drop, colors: ReturnType<typeof getColors>) {
             const progress = 1 - d.splashTimer / SPLASH_DURATION;
-            const alpha = (1 - progress) * 0.35;
+            const alpha = Math.min((1 - progress) * 0.35 * colors.splashAlphaScale, 0.6);
             const spread = 4 + progress * 18;
             const count = 5;
 
             for (let j = 0; j < count; j++) {
-                const angle = (Math.PI * 2 * j) / count - Math.PI * 0.5; // fan upward
+                const angle = (Math.PI * 2 * j) / count - Math.PI * 0.5;
                 const px = d.splashX + Math.cos(angle) * spread;
-                const py = d.splashY + Math.sin(angle) * spread * 0.5; // flatten vertically
+                const py = d.splashY + Math.sin(angle) * spread * 0.5;
                 c.beginPath();
                 c.arc(px, py, 1.2 - progress * 0.6, 0, Math.PI * 2);
-                c.fillStyle = `rgba(174, 210, 245, ${alpha})`;
+                c.fillStyle = `rgba(${colors.splash}, ${alpha})`;
                 c.fill();
             }
 
-            // central ring
             c.beginPath();
             c.arc(d.splashX, d.splashY, spread * 0.6, 0, Math.PI * 2);
-            c.strokeStyle = `rgba(174, 210, 245, ${alpha * 0.5})`;
+            c.strokeStyle = `rgba(${colors.splash}, ${alpha * 0.5})`;
             c.lineWidth = 0.8;
             c.stroke();
         }

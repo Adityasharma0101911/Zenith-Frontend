@@ -200,13 +200,13 @@ export default function Sidebar() {
             {mobileOpen && (
                 <>
                     <div ref={scrimRef} onClick={closeDrawer} className="fixed inset-0 bg-black/40 z-50 md:hidden" />
-                    <div ref={drawerRef} className="fixed left-0 top-0 bottom-0 w-[260px] bg-m3-surface-container-low z-50 md:hidden shadow-m3-4">
+                    <div ref={drawerRef} className="fixed left-0 top-0 bottom-0 w-[260px] bg-m3-surface-container-low/85 backdrop-blur-xl backdrop-saturate-150 z-50 md:hidden shadow-m3-4">
                         <button onClick={closeDrawer} className="absolute top-4 right-3 p-1.5 rounded-m3-full hover:bg-m3-surface-container-high text-m3-on-surface-variant"><X size={18} /></button>
                         {sidebarContent}
                     </div>
                 </>
             )}
-            <aside ref={sidebarRef} style={{ width: expanded ? 220 : 80 }} className="fixed left-0 top-0 bottom-0 z-40 hidden md:flex bg-m3-surface-container-low border-r border-m3-outline-variant/30">
+            <aside ref={sidebarRef} style={{ width: expanded ? 220 : 80 }} className="fixed left-0 top-0 bottom-0 z-40 hidden md:flex bg-m3-surface-container-low/80 backdrop-blur-xl backdrop-saturate-150 border-r border-m3-outline-variant/20">
                 {sidebarContent}
             </aside>
         </>

@@ -15,22 +15,45 @@ export default function DarkModeToggle({ expanded = true }: { expanded?: boolean
     const labelRef = useRef<HTMLSpanElement>(null);
     const glowRef = useRef<HTMLDivElement>(null);
 
-    // read initial mode
+    // read initial mode + entrance animation
     useEffect(() => {
         const mode = localStorage.getItem("zenith-mode");
-        setIsDark(mode === "dark");
-    }, []);
+        const dark = mode === "dark";
+        setIsDark(dark);
 
-    // entrance animation
-    useEffect(() => {
-        if (!toggleRef.current) return;
-        gsap.from(toggleRef.current, {
-            scale: 0,
-            opacity: 0,
-            duration: 0.5,
-            delay: 0.2,
-            ease: "back.out(1.7)",
-        });
+        // set visual state immediately (no animation) to match stored mode
+        if (thumbRef.current) {
+            gsap.set(thumbRef.current, {
+                x: dark ? 22 : 0,
+                backgroundColor: dark ? "rgb(180, 210, 248)" : "rgb(255, 183, 77)",
+            });
+        }
+        if (trackRef.current) {
+            gsap.set(trackRef.current, {
+                backgroundColor: dark ? "rgba(80, 100, 140, 0.4)" : "rgba(255, 183, 77, 0.2)",
+                borderColor: dark ? "rgba(180, 210, 248, 0.3)" : "rgba(255, 183, 77, 0.4)",
+            });
+        }
+        if (sunRef.current) {
+            gsap.set(sunRef.current, { scale: dark ? 0 : 1, rotation: dark ? 180 : 0, opacity: dark ? 0 : 1 });
+        }
+        if (moonRef.current) {
+            gsap.set(moonRef.current, { scale: dark ? 1 : 0, rotation: dark ? 0 : -180, opacity: dark ? 1 : 0 });
+        }
+        if (starsRef.current) {
+            const stars = starsRef.current.querySelectorAll(".toggle-star");
+            gsap.set(stars, { scale: dark ? 1 : 0, opacity: dark ? 1 : 0 });
+        }
+
+        if (toggleRef.current) {
+            gsap.from(toggleRef.current, {
+                scale: 0,
+                opacity: 0,
+                duration: 0.5,
+                delay: 0.2,
+                ease: "back.out(1.7)",
+            });
+        }
     }, []);
 
     // animate state on change
@@ -114,32 +137,8 @@ export default function DarkModeToggle({ expanded = true }: { expanded?: boolean
         animateToggle(next);
     }
 
-    // set initial visual state (no animation)
-    useEffect(() => {
-        if (thumbRef.current) {
-            gsap.set(thumbRef.current, {
-                x: isDark ? 22 : 0,
-                backgroundColor: isDark ? "rgb(180, 210, 248)" : "rgb(255, 183, 77)",
-            });
-        }
-        if (trackRef.current) {
-            gsap.set(trackRef.current, {
-                backgroundColor: isDark ? "rgba(80, 100, 140, 0.4)" : "rgba(255, 183, 77, 0.2)",
-                borderColor: isDark ? "rgba(180, 210, 248, 0.3)" : "rgba(255, 183, 77, 0.4)",
-            });
-        }
-        if (sunRef.current) {
-            gsap.set(sunRef.current, { scale: isDark ? 0 : 1, rotation: isDark ? 180 : 0, opacity: isDark ? 0 : 1 });
-        }
-        if (moonRef.current) {
-            gsap.set(moonRef.current, { scale: isDark ? 1 : 0, rotation: isDark ? 0 : -180, opacity: isDark ? 1 : 0 });
-        }
-        if (starsRef.current) {
-            const stars = starsRef.current.querySelectorAll(".toggle-star");
-            gsap.set(stars, { scale: isDark ? 1 : 0, opacity: isDark ? 1 : 0 });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // no-op: initial visual state is set in the mount effect above
+    // (keeping this comment so the code flow is clear)
 
     // hover animation on toggle button
     const onEnter = useCallback(() => {

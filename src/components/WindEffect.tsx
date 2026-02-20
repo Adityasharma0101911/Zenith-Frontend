@@ -1,7 +1,12 @@
 // canvas-based wind effect — horizontal streaks and drifting particles
+// theme-aware: reads data-mode to pick light/dark palette
 "use client";
 
 import { useEffect, useRef } from "react";
+
+function isDarkMode(): boolean {
+    return document.documentElement.getAttribute("data-mode") === "dark";
+}
 
 interface Streak {
     x: number;
@@ -118,10 +123,13 @@ export default function WindEffect({
                 }
 
                 // draw
+                const dark = isDarkMode();
+                const streakR = dark ? "190, 210, 230" : "120, 135, 155";
+                const streakA = Math.min(s.opacity * (dark ? 2.2 : 1), 0.35);
                 ctx!.beginPath();
                 ctx!.moveTo(s.x, s.y);
                 ctx!.lineTo(s.x + s.length * windDirX, s.y + curveY * 2);
-                ctx!.strokeStyle = `rgba(160, 175, 195, ${s.opacity})`;
+                ctx!.strokeStyle = `rgba(${streakR}, ${streakA})`;
                 ctx!.lineWidth = s.thickness;
                 ctx!.lineCap = "round";
                 ctx!.stroke();
@@ -154,9 +162,12 @@ export default function WindEffect({
                 }
 
                 // draw
+                const darkP = isDarkMode();
+                const partR = darkP ? "180, 200, 225" : "120, 140, 165";
+                const partA = Math.min(p.opacity * (darkP ? 2 : 1), 0.35);
                 ctx!.beginPath();
                 ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx!.fillStyle = `rgba(160, 180, 200, ${p.opacity})`;
+                ctx!.fillStyle = `rgba(${partR}, ${partA})`;
                 ctx!.fill();
             }
 

@@ -57,8 +57,12 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!containerRef.current || !userData) return;
 
-        // kill any existing ScrollTriggers before creating new ones
-        ScrollTrigger.getAll().forEach(t => t.kill());
+        // kill only dashboard-scoped ScrollTriggers before creating new ones
+        const existingTriggers = ScrollTrigger.getAll().filter(t => {
+            const trigger = t.vars?.trigger;
+            return trigger && containerRef.current?.contains(trigger as Element);
+        });
+        existingTriggers.forEach(t => t.kill());
 
         const widgets = containerRef.current.querySelectorAll(".dash-widget");
         const entranceTween = gsap.fromTo(widgets,
@@ -117,7 +121,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col items-center mt-4">
                     {userData ? (
                         <div ref={containerRef} className="flex flex-col items-center w-full max-w-2xl">
-                            <div ref={welcomeRef} className="dash-widget w-full bg-m3-primary-container p-6 text-center rounded-m3-xl shadow-m3-2">
+                            <div ref={welcomeRef} className="dash-widget w-full bg-m3-primary-container/80 backdrop-blur-xl backdrop-saturate-150 p-6 text-center rounded-m3-xl shadow-m3-2 border border-m3-outline-variant/10">
                                 <h1 ref={greetingRef} className="text-m3-headline-medium text-m3-on-primary-container">Welcome, {userData.name}</h1>
                                 <div ref={balanceRef} className="flex items-center justify-center gap-2 mt-2">
                                     <Wallet size={20} className="text-m3-on-primary-container/70" />

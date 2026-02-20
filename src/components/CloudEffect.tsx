@@ -1,7 +1,12 @@
 // canvas-based cloud effect — soft blobs that dissolve where mouse hovers and regenerate
+// theme-aware: reads data-mode to pick light/dark palette
 "use client";
 
 import { useEffect, useRef } from "react";
+
+function isDarkMode(): boolean {
+    return document.documentElement.getAttribute("data-mode") === "dark";
+}
 
 interface Cloud {
     x: number;
@@ -129,9 +134,13 @@ export default function CloudEffect({ count = 12 }: { count?: number }) {
 
                     if (blobAlpha < 0.002) continue;
 
+                    const dark = isDarkMode();
+                    const cloudRgb = dark ? "80, 100, 130" : "180, 195, 210";
+                    const finalAlpha = dark ? blobAlpha * 2.5 : blobAlpha;
+
                     ctx!.beginPath();
                     ctx!.ellipse(bx, by, blob.rx, blob.ry, 0, 0, Math.PI * 2);
-                    ctx!.fillStyle = `rgba(180, 195, 210, ${blobAlpha})`;
+                    ctx!.fillStyle = `rgba(${cloudRgb}, ${Math.min(finalAlpha, 0.35)})`;
                     ctx!.fill();
                 }
             }

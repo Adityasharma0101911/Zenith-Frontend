@@ -12,7 +12,7 @@ export default function FloatingDarkMode() {
     if (!SHOW_ON.includes(pathname)) return null;
 
     return (
-        <div className="fixed top-4 right-4 z-[200] bg-m3-surface-container-high/80 backdrop-blur-md rounded-m3-full shadow-m3-2 border border-m3-outline-variant/20">
+        <div className="fixed top-4 right-4 z-[200] bg-m3-surface-container-high/70 backdrop-blur-xl backdrop-saturate-150 rounded-m3-full shadow-m3-2 border border-m3-outline-variant/15">
             <DarkModeToggle expanded={false} />
         </div>
     );

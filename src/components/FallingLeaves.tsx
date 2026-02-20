@@ -1,8 +1,13 @@
 // physics-based falling leaves — mouse acts as a solid circle that pushes leaves
+// theme-aware: reads data-mode for light/dark color palette
 "use client";
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+
+function isDarkMode(): boolean {
+    return document.documentElement.getAttribute("data-mode") === "dark";
+}
 
 const LEAF_PATHS = [
     "M12 2C6.5 2 2 8 2 14c0 4 3 8 10 8s10-4 10-8C22 8 17.5 2 12 2z",
@@ -12,7 +17,7 @@ const LEAF_PATHS = [
     "M12 1C10 4 7 5 5 8c-1 2 0 4 1 5 0 2-1 4 0 6 1 2 3 3 5 3s4-1 5-3c1-2 0-4 0-6 1-1 2-3 1-5C15 5 14 4 12 1z",
 ];
 
-const LEAF_COLORS = [
+const LEAF_COLORS_LIGHT = [
     "rgba(76, 175, 80, 0.4)",
     "rgba(139, 195, 74, 0.35)",
     "rgba(205, 220, 57, 0.3)",
@@ -21,6 +26,17 @@ const LEAF_COLORS = [
     "rgba(121, 85, 72, 0.2)",
     "rgba(56, 142, 60, 0.35)",
     "rgba(174, 213, 129, 0.3)",
+];
+
+const LEAF_COLORS_DARK = [
+    "rgba(129, 199, 132, 0.55)",
+    "rgba(174, 213, 129, 0.5)",
+    "rgba(230, 238, 156, 0.45)",
+    "rgba(255, 213, 79, 0.45)",
+    "rgba(255, 183, 77, 0.4)",
+    "rgba(161, 136, 127, 0.35)",
+    "rgba(102, 187, 106, 0.5)",
+    "rgba(200, 230, 160, 0.45)",
 ];
 
 interface LeafState {
@@ -64,13 +80,15 @@ export default function FallingLeaves({ count = 38 }: { count?: number }) {
 
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
             path.setAttribute("d", LEAF_PATHS[Math.floor(Math.random() * LEAF_PATHS.length)]);
-            path.setAttribute("fill", LEAF_COLORS[Math.floor(Math.random() * LEAF_COLORS.length)]);
+            const colors = isDarkMode() ? LEAF_COLORS_DARK : LEAF_COLORS_LIGHT;
+            path.setAttribute("fill", colors[Math.floor(Math.random() * colors.length)]);
             svg.appendChild(path);
 
             const vein = document.createElementNS("http://www.w3.org/2000/svg", "line");
             vein.setAttribute("x1", "12"); vein.setAttribute("y1", "4");
             vein.setAttribute("x2", "12"); vein.setAttribute("y2", "18");
-            vein.setAttribute("stroke", "rgba(0,0,0,0.08)"); vein.setAttribute("stroke-width", "0.5");
+            const veinColor = isDarkMode() ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)";
+            vein.setAttribute("stroke", veinColor); vein.setAttribute("stroke-width", "0.5");
             svg.appendChild(vein);
 
             container.appendChild(svg);

@@ -73,7 +73,7 @@ export default function GlobalCommandPalette() {
     return (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]">
             <div ref={backdropRef} className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={handleClose} />
-            <div ref={paletteRef} className="relative w-full max-w-xl mx-4 bg-m3-surface-container-high rounded-m3-xl shadow-2xl border border-white/10 overflow-hidden">
+            <div ref={paletteRef} className="relative w-full max-w-xl mx-4 bg-m3-surface-container-high/80 backdrop-blur-2xl backdrop-saturate-150 rounded-m3-xl shadow-2xl border border-white/10 overflow-hidden">
                 <form onSubmit={handleSubmit} className="relative flex items-center p-4 border-b border-m3-outline-variant/20">
                     <Sparkles size={20} className="text-m3-primary shrink-0 opacity-70" />
                     <input ref={inputRef} type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ask Jarvis anything... (Esc to close)" className="w-full bg-transparent text-m3-on-surface text-lg px-4 outline-none placeholder:text-m3-on-surface-variant/50 z-10" />

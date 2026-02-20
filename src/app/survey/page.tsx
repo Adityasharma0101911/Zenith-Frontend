@@ -390,7 +390,7 @@ export default function SurveyPage() {
                 {minimized && (
                     <div onClick={handleRestore}
                         className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 cursor-pointer">
-                        <div className="flex items-center gap-2 bg-m3-surface-container-high rounded-m3-full px-4 py-2.5 shadow-m3-2 border border-m3-outline-variant/30 hover:shadow-m3-3 transition-shadow">
+                        <div className="flex items-center gap-2 bg-m3-surface-container-high/70 backdrop-blur-lg rounded-m3-full px-4 py-2.5 shadow-m3-2 border border-m3-outline-variant/20 hover:shadow-m3-3 transition-shadow">
                             <Image src="/zenith-logo.png" alt="Zenith" width={24} height={24} className="w-5 h-5 object-contain" />
                             <span className="text-m3-label-medium text-m3-on-surface">Zenith Survey</span>
                             <div className="w-2 h-2 rounded-full bg-m3-primary animate-pulse" />
@@ -421,13 +421,13 @@ export default function SurveyPage() {
                             </>
                         )}
 
-                        <div className={`bg-m3-surface-container-low shadow-m3-3 overflow-hidden border border-m3-outline-variant/30 flex flex-col ${maximized ? "rounded-none h-full" : "rounded-m3-xl"} ${hasCustomSize && !centered ? "h-full" : ""}`}>
+                        <div className={`bg-m3-surface-container-low/85 backdrop-blur-xl backdrop-saturate-150 shadow-m3-3 overflow-hidden border border-m3-outline-variant/20 flex flex-col ${maximized ? "rounded-none h-full" : "rounded-m3-xl"} ${hasCustomSize && !centered ? "h-full" : ""}`}>
 
                             {/* title bar — draggable, double-click to maximize */}
                             <div
                                 onMouseDown={handleMouseDown}
                                 onDoubleClick={handleMaximize}
-                                className="bg-m3-surface-container-high px-3 py-2 flex items-center gap-2 cursor-grab active:cursor-grabbing border-b border-m3-outline-variant/20 shrink-0"
+                                className="bg-m3-surface-container-high/70 backdrop-blur-lg px-3 py-2 flex items-center gap-2 cursor-grab active:cursor-grabbing border-b border-m3-outline-variant/15 shrink-0"
                             >
                                 {/* zenith logo */}
                                 <Image src="/zenith-logo.png" alt="Zenith" width={80} height={50} className="h-6 w-auto object-contain" />

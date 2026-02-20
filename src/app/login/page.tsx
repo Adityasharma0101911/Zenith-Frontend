@@ -99,7 +99,7 @@ export default function LoginPage() {
         } catch {
             setButtonText("Sign in"); toast.error("Could not connect to server.");
         } finally {
-            if (!success) setLoading(false);
+            setLoading(false);
         }
     }
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
                 <FloatingParticles count={15} />
                 <div ref={cardRef} className="w-full max-w-sm relative z-10">
                     <TiltCard className="rounded-m3-xl" maxTilt={5}>
-                    <div ref={innerRef} className="bg-m3-surface-container-low rounded-m3-xl p-8 shadow-m3-2">
+                    <div ref={innerRef} className="bg-m3-surface-container-low/80 backdrop-blur-xl backdrop-saturate-150 rounded-m3-xl p-8 shadow-m3-2 border border-m3-outline-variant/15">
                         <div ref={iconContainerRef} className="w-16 h-16 rounded-m3-full bg-m3-primary-container flex items-center justify-center mx-auto mb-5">
                             {success ? (
                                 <div ref={checkRef}><ShieldCheck className="text-m3-on-primary-container" size={28} /></div>
