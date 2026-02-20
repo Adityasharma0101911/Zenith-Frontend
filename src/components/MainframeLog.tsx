@@ -7,8 +7,6 @@ import { useEffect, useState, useRef } from "react";
 // import motion for log line entrance animations
 import { motion } from "framer-motion";
 
-import InteractiveCard from "./InteractiveCard";
-
 // m3 standard easing
 const m3Ease = [0.2, 0, 0, 1] as const;
 
@@ -37,34 +35,32 @@ export default function MainframeLog({ refreshTrigger }: { refreshTrigger: numbe
     }, [logs]);
 
     return (
-        <InteractiveCard
-            className="bg-m3-inverse-surface text-m3-primary-container font-mono text-xs p-5 h-36 border-m3-outline-variant/20"
-            glowColor="rgba(var(--m3-primary), 0.2)"
+        <motion.div
+            whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+            className="bg-m3-inverse-surface text-m3-primary-container font-mono text-xs p-5 rounded-m3-xl shadow-m3-2 h-36 overflow-y-auto w-full transition-shadow hover:shadow-m3-3"
         >
-            <div className="h-full overflow-y-auto w-full pr-2">
-                {/* render each log line with slide-in 3D animation */}
-                {logs.map((line, i) => (
-                    <motion.p
-                        key={`${i}-${line}`}
-                        initial={{ opacity: 0, y: 10, rotateX: -20, transformOrigin: "top" }}
-                        animate={{ opacity: 0.85, y: 0, rotateX: 0 }}
-                        transition={{ duration: 0.4, ease: m3Ease, delay: i === logs.length - 1 ? 0.1 : 0 }}
-                        className="leading-relaxed mb-1"
-                    >
-                        {line}
-                    </motion.p>
-                ))}
+            {/* render each log line with slide-in animation */}
+            {logs.map((line, i) => (
+                <motion.p
+                    key={`${i}-${line}`}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 0.85, x: 0 }}
+                    transition={{ duration: 0.3, ease: m3Ease, delay: i === logs.length - 1 ? 0.1 : 0 }}
+                    className="leading-relaxed"
+                >
+                    {line}
+                </motion.p>
+            ))}
 
-                {/* blinking cursor at the end */}
-                <motion.span
-                    animate={{ opacity: [0, 1] }}
-                    transition={{ repeat: Infinity, duration: 0.8 }}
-                    className="inline-block w-1.5 h-3 bg-m3-primary-container/60 ml-0.5"
-                />
+            {/* blinking cursor at the end */}
+            <motion.span
+                animate={{ opacity: [0, 1] }}
+                transition={{ repeat: Infinity, duration: 0.8 }}
+                className="inline-block w-1.5 h-3 bg-m3-primary-container/60 ml-0.5"
+            />
 
-                {/* invisible div to auto-scroll to */}
-                <div ref={bottomRef} className="h-4" />
-            </div>
-        </InteractiveCard>
+            {/* invisible div to auto-scroll to */}
+            <div ref={bottomRef} />
+        </motion.div>
     );
 }

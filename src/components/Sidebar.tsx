@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import toast from "react-hot-toast";
 import {
     LayoutDashboard,
     GraduationCap,
@@ -17,13 +16,11 @@ import {
     ChevronRight,
     Menu,
     X,
-    Terminal,
     ShoppingCart,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import SdgBadge from "@/components/SdgBadge";
 import ThemePicker from "@/components/ThemePicker";
-import MotionButton from "@/components/MotionButton";
 
 const m3Ease = [0.2, 0, 0, 1] as const;
 
@@ -39,23 +36,7 @@ const NAV_ITEMS = [
     { href: "/vitals", icon: HeartPulse, label: "Vitals" },
 ];
 
-// triggers demo mode for presentations
-async function handleDemoMode() {
-    const token = localStorage.getItem("token");
-    try {
-        const res = await fetch(`${API_URL}/api/demo_mode`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (data.message) {
-            toast.success("Enterprise Sandbox Activated");
-            setTimeout(() => window.location.reload(), 500);
-        }
-    } catch {
-        toast.error("Could not activate demo mode");
-    }
-}
+
 
 // single nav item component
 function SidebarItem({
@@ -79,8 +60,8 @@ function SidebarItem({
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 className={`flex items-center gap-3 px-3 rounded-m3-full transition-colors relative m3-state-layer group overflow-hidden ${isActive
-                        ? "bg-m3-secondary-container text-m3-on-secondary-container"
-                        : "text-m3-on-surface-variant hover:bg-m3-surface-container-high"
+                    ? "bg-m3-secondary-container text-m3-on-secondary-container"
+                    : "text-m3-on-surface-variant hover:bg-m3-surface-container-high"
                     }`}
                 style={{ height: 56, paddingLeft: expanded ? 16 : 16, paddingRight: expanded ? 24 : 16 }}
             >
@@ -188,19 +169,8 @@ export default function Sidebar() {
                 {/* theme picker */}
                 <ThemePicker expanded={expanded} />
 
-                {/* demo mode button */}
-                <MotionButton
-                    magnetic={false}
-                    onClick={handleDemoMode}
-                    className="flex justify-start items-center gap-3 px-3 py-2 rounded-m3-lg text-m3-on-surface-variant hover:bg-m3-surface-container-high transition-colors text-xs bg-transparent shadow-none w-full"
-                >
-                    <Terminal size={18} className="shrink-0" />
-                    {expanded && <span className="text-m3-label-medium">Dev Mode</span>}
-                </MotionButton>
-
                 {/* logout button */}
-                <MotionButton
-                    magnetic={false}
+                <button
                     onClick={handleLogout}
                     className="flex justify-start items-center gap-3 px-3 py-2.5 rounded-m3-full text-m3-error hover:bg-m3-error-container transition-colors bg-transparent shadow-none w-full"
                 >
@@ -218,7 +188,7 @@ export default function Sidebar() {
                             </motion.span>
                         )}
                     </AnimatePresence>
-                </MotionButton>
+                </button>
             </div>
         </div>
     );

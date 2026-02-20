@@ -1,0 +1,30 @@
+3c3698f fix(lint): resolve unused vars and missing dependency warnings
+1761649 chore: cleanup
+1a3e06a feat(dashboard): assemble all widgets and interactions into dashboard
+f0c70bb feat(immersion): add spending particles, contextual spotlights, and easter egg
+ce262b4 feat(widgets): enhance dashboard widgets with gamification, 3D flips, and heatmaps
+56e3d3c style(theme): implement context-aware dynamic theming and granular dark mode
+2e81e11 feat(ui): add global command palette and ai visual indicators
+ba2ca53 feat(ui): add foundational interactive m3 components
+9544dba feat(auth): integrate interactive cards and motion buttons to auth flow
+7b4cfdd fix: atomic db operations, remove pii prompts, fix survey redirect, fix ai caching
+37a1b6d fix: address 5 audit issues (health endpoint, sqlite migrations, ai reset scope, legacy ai service, cors)
+7506a03 m3 ui revamp: full typography scale, dark theme, tonal elevation, state layers, updated all components
+a76a066 feat: server + AI status indicators in dashboard header
+61f3766 perf: fix token waste (cache insights, fix deps loop, slow polling), center logo
+2560d50 feat: matte theme system (6 themes), income adder, balance sync fix, brief caching fix, improved error handling
+941ef65 feat: purchases page, cached briefs, bigger logo, real-time ledger, shopping widget rewrite
+10b0118 fix: flex layout command bar (no overlap), ai reset button, RotateCcw icon
+f0d92c8 feat: add zenith logo image
+421b557 feat: circular progress rings, zenith logo, ring scoring
+7dadb19 feat: replace chatbot with JARVIS-style AI dashboard for all 3 sections
+8ccee68 fix layout overflow and page ratios - prevent content cutoff
+f49ffc0 add collapsible sidebar, comprehensive survey, 3 ai sections (scholar/guardian/vitals), auth fixes
+c111b9e add rich android material you animations across all pages and components
+056ca10 fix framer motion ease type for vercel build
+2ab8192 fix outlined button hover opacity for vercel build
+7f19a23 revamp entire frontend to material design 3 with tonal colors and motion animations
+192f8f7 replace dosha with universal spending profiles and add formatCurrency helper
+b81109e add demo mode, history log, mainframe terminal, sdg badge, wellness score, and toasts
+50ebf9d add color-changing stress slider, dramatic blocked modal, auth animations, and encryption delays
+35c6341 add stagger entrance animations, glowing ai terminal, and material you store widget

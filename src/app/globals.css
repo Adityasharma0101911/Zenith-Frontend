@@ -431,10 +431,9 @@ body {
     rounded-m3-full bg-m3-primary text-m3-on-primary relative overflow-hidden;
   font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
   height: 40px; padding: 0 24px;
-  box-shadow: 0 2px 4px -1px rgba(0,0,0,0.1), 0 4px 6px -1px rgba(0,0,0,0.1);
   transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1), background-color 200ms cubic-bezier(0.2, 0, 0, 1);
 }
-.m3-btn-filled:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15), 0 10px 15px -3px rgba(0,0,0,0.15); }
+.m3-btn-filled:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15); }
 .m3-btn-filled:active { box-shadow: none; }
 .m3-btn-filled:disabled { @apply bg-m3-on-surface/[0.12] text-m3-on-surface/[0.38]; box-shadow: none; }
 
@@ -443,10 +442,9 @@ body {
     rounded-m3-full bg-m3-secondary-container text-m3-on-secondary-container relative overflow-hidden;
   font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500;
   height: 40px; padding: 0 24px;
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
   transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1), background-color 200ms cubic-bezier(0.2, 0, 0, 1);
 }
-.m3-btn-tonal:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15), 0 2px 4px -2px rgba(0,0,0,0.15); }
+.m3-btn-tonal:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15); }
 .m3-btn-tonal:active { box-shadow: none; }
 
 .m3-btn-outlined {
@@ -468,21 +466,18 @@ body {
 }
 .m3-btn-text:hover { background-color: rgb(var(--m3-primary) / 0.08); }
 
-/* ─── M3 CARDS (Softer Neumorphic Depth per Idea #3) ─── */
+/* ─── M3 CARDS ─── */
 .m3-card {
-  @apply bg-m3-surface-container-low rounded-m3-xl p-5 border border-white/5;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
-  transition: box-shadow 300ms cubic-bezier(0.2, 0, 0, 1), transform 300ms cubic-bezier(0.2, 0, 0, 1);
+  @apply bg-m3-surface-container-low rounded-m3-md p-5;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  transition: box-shadow 280ms cubic-bezier(0.2, 0, 0, 1);
 }
-.m3-card:hover { 
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); 
-  transform: translateY(-2px);
-}
+.m3-card:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); }
 
 .m3-card-elevated {
-  @apply bg-m3-surface-container-low rounded-m3-xl p-5 border border-white/5;
-  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-  transition: box-shadow 300ms cubic-bezier(0.2, 0, 0, 1);
+  @apply bg-m3-surface-container-low rounded-m3-md p-5;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+  transition: box-shadow 280ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .m3-card-filled {
@@ -557,8 +552,8 @@ input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.2); box-sh
 
 /* ─── NAVIGATION DRAWER ─── */
 .m3-nav-drawer {
-  @apply bg-m3-surface-container-low border-r border-white/5;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.05);
+  @apply bg-m3-surface-container-low;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
 }
 .m3-nav-item {
   @apply flex items-center gap-3 rounded-m3-full relative overflow-hidden;
@@ -568,14 +563,4 @@ input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.2); box-sh
 }
 .m3-nav-item-active {
   @apply bg-m3-secondary-container text-m3-on-secondary-container;
-}
-
-/* ─── CUSTOM ANIMATIONS (Idea #7, Idea #4) ─── */
-@keyframes ripple {
-  0% { width: 0; height: 0; opacity: 0.5; }
-  100% { width: 400px; height: 400px; opacity: 0; }
-}
-
-.animate-ripple {
-  animation: ripple 0.6s linear forwards;
 }

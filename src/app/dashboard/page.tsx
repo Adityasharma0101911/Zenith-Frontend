@@ -21,14 +21,8 @@ import PulseCheck from "@/components/PulseCheck";
 import AiInsight from "@/components/AiInsight";
 import HistoryLog from "@/components/HistoryLog";
 import MainframeLog from "@/components/MainframeLog";
-import InteractiveCard from "@/components/InteractiveCard";
-import CalendarHeatmap from "@/components/CalendarHeatmap";
-
 import PageTransition from "@/components/PageTransition";
-import AnimatedCounter from "@/components/AnimatedCounter";
-import SpendingParticles from "@/components/SpendingParticles";
 import ContextualSpotlight from "@/components/ContextualSpotlight";
-import ZenithEasterEgg from "@/components/ZenithEasterEgg";
 
 // m3 standard easing
 const m3Ease = [0.2, 0, 0, 1] as const;
@@ -111,25 +105,6 @@ export default function DashboardPage() {
         fetchUserData();
     }, [fetchUserData]);
 
-    // #19 Context-Aware Dynamic Theming
-    useEffect(() => {
-        if (!userData) return;
-
-        const currentTheme = document.documentElement.getAttribute("data-theme");
-        const preferredTheme = localStorage.getItem("theme") || "teal";
-
-        // prevent overriding easter egg theme if active
-        if (currentTheme === "slate" && document.getElementById("zenith-neon-theme")) return;
-
-        if (userData.stress_level >= 8) {
-            document.documentElement.setAttribute("data-theme", "crimson");
-        } else if (userData.wellness_score >= 80) {
-            document.documentElement.setAttribute("data-theme", "forest");
-        } else {
-            document.documentElement.setAttribute("data-theme", preferredTheme);
-        }
-    }, [userData]);
-
     // this triggers a refresh for both the history and the balance
     function handleTransactionComplete() {
         fetchUserData();
@@ -149,10 +124,9 @@ export default function DashboardPage() {
                             animate="visible"
                             className="flex flex-col items-center w-full max-w-2xl"
                         >
-                            {/* welcome header card with interactive radial glow */}
-                            <InteractiveCard
-                                className="w-full bg-m3-primary-container p-6 text-center"
-                                glowColor="rgba(var(--m3-on-primary-container), 0.15)"
+                            {/* welcome header card */}
+                            <motion.div
+                                className="w-full bg-m3-primary-container p-6 text-center rounded-m3-xl shadow-m3-2"
                             >
                                 {/* greeting with bounce entrance */}
                                 <motion.h1
@@ -172,12 +146,9 @@ export default function DashboardPage() {
                                     className="flex items-center justify-center gap-2 mt-2"
                                 >
                                     <Wallet size={20} className="text-m3-on-primary-container/70" />
-                                    <AnimatedCounter
-                                        value={userData.balance}
-                                        prefix="$"
-                                        decimals={2}
-                                        className="text-m3-title-large text-m3-on-primary-container/80"
-                                    />
+                                    <span className="text-m3-title-large text-m3-on-primary-container/80">
+                                        ${userData.balance.toFixed(2)}
+                                    </span>
                                 </motion.div>
 
                                 {/* spending profile badge with scale entrance */}
@@ -207,14 +178,11 @@ export default function DashboardPage() {
                                         <Heart size={16} className="text-m3-on-primary-container/60" />
                                     </motion.span>
                                     <span className="text-m3-label-medium text-m3-on-primary-container/60">Wellness</span>
-                                    <AnimatedCounter
-                                        value={userData.wellness_score}
-                                        suffix="%"
-                                        decimals={0}
-                                        className={`text-m3-title-large ${userData.wellness_score < 50 ? "text-m3-error" : "text-m3-on-primary-container"}`}
-                                    />
+                                    <span className={`text-m3-title-large ${userData.wellness_score < 50 ? "text-m3-error" : "text-m3-on-primary-container"}`}>
+                                        {userData.wellness_score}%
+                                    </span>
                                 </motion.div>
-                            </InteractiveCard>
+                            </motion.div>
 
                             {/* ai insight card */}
                             <motion.div variants={itemVariants} className="w-full mt-5">
@@ -223,10 +191,7 @@ export default function DashboardPage() {
 
                             {/* two-column grid for pulse check and shopping widget */}
                             <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 w-full">
-                                <div className="flex flex-col gap-5">
-                                    <PulseCheck triggerRefresh={() => setRefreshTrigger(prev => prev + 1)} />
-                                    <CalendarHeatmap refreshTrigger={refreshTrigger} />
-                                </div>
+                                <PulseCheck triggerRefresh={() => setRefreshTrigger(prev => prev + 1)} />
                                 <ShoppingWidget refreshData={handleTransactionComplete} />
                             </motion.div>
 
@@ -254,10 +219,7 @@ export default function DashboardPage() {
                         </div>
                     )}
                 </div>
-                {/* trigger particle burst when data refreshes */}
-                <SpendingParticles trigger={refreshTrigger} />
                 <ContextualSpotlight />
-                <ZenithEasterEgg />
             </main>
         </PageTransition>
     );

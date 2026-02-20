@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import PageTransition from "@/components/PageTransition";
-import InteractiveCard from "@/components/InteractiveCard";
 
 const m3Ease = [0.2, 0, 0, 1] as const;
 
@@ -67,11 +66,12 @@ function OptionCard({
         <motion.button
             type="button"
             onClick={onClick}
-            whileHover={{ scale: 1.02, y: -2, transition: { type: "spring", stiffness: 400, damping: 10 } }}
-            whileTap={{ scale: 0.97, transition: { type: "spring", stiffness: 400, damping: 10 } }}
-            className={`w-full text-left px-4 py-3 rounded-m3-lg border-2 transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-m3-primary ${selected
-                ? `${color || "bg-m3-primary-container"} border-m3-primary`
-                : "bg-m3-surface-container border-transparent hover:bg-m3-surface-container-high"
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className={`w-full text-left px-4 py-3 rounded-m3-lg border-2 transition-colors ${selected
+                    ? `${color || "bg-m3-primary-container"} border-m3-primary`
+                    : "bg-m3-surface-container border-transparent hover:bg-m3-surface-container-high"
                 }`}
         >
             <div className="flex items-center gap-3">
@@ -105,11 +105,11 @@ function Chip({
         <motion.button
             type="button"
             onClick={onClick}
-            whileHover={{ scale: 1.05, transition: { type: "spring", stiffness: 400, damping: 10 } }}
-            whileTap={{ scale: 0.95, transition: { type: "spring", stiffness: 400, damping: 10 } }}
-            className={`px-3 py-1.5 rounded-m3-full text-m3-label-medium border transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-m3-primary ${selected
-                ? "bg-m3-primary text-m3-on-primary border-m3-primary"
-                : "bg-m3-surface-container text-m3-on-surface-variant border-m3-outline-variant hover:bg-m3-surface-container-high"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`px-3 py-1.5 rounded-m3-full text-m3-label-medium border transition-colors ${selected
+                    ? "bg-m3-primary text-m3-on-primary border-m3-primary"
+                    : "bg-m3-surface-container text-m3-on-surface-variant border-m3-outline-variant hover:bg-m3-surface-container-high"
                 }`}
         >
             {label}
@@ -231,10 +231,12 @@ export default function SurveyPage() {
                         ))}
                     </div>
 
-                    {/* card container wrapping the survey */}
-                    <InteractiveCard
-                        className="bg-m3-surface-container-low p-6 shadow-m3-2"
-                        glowColor="rgba(var(--m3-primary), 0.1)"
+                    {/* card container */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 24, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.5, ease: m3Ease }}
+                        className="bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-2"
                     >
                         <AnimatePresence mode="wait">
                             {/* step 1: about you */}
@@ -517,7 +519,7 @@ export default function SurveyPage() {
                                 </motion.button>
                             )}
                         </div>
-                    </InteractiveCard>
+                    </motion.div>
                 </div>
             </main>
         </PageTransition>

@@ -20,7 +20,6 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-import MeshBackground from "@/components/MeshBackground";
 import GlobalCommandPalette from "@/components/GlobalCommandPalette";
 
 export const metadata: Metadata = {
@@ -43,8 +42,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-m3-surface text-m3-on-surface`}
       >
         <div className="relative min-h-screen overflow-x-hidden">
-          {/* Animated 3D aurora mesh background - handles Ideas #2 (Aurora) and #5 (Granular Noise) */}
-          <MeshBackground />
 
           {/* page content on top of the surface */}
           <div className="relative z-10 min-h-screen">
