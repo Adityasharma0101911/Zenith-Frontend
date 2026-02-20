@@ -154,7 +154,7 @@ export default function Sidebar() {
                             transition={{ duration: 0.2 }}
                             className="flex-1 flex justify-center"
                         >
-                            <Image src="/zenith-logo.png" alt="Zenith" width={160} height={100} className="h-12 w-auto" />
+                            <Image src="/zenith-logo.png" alt="Zenith" width={200} height={125} className="h-20 w-auto" />
                         </motion.div>
                     )}
                 </AnimatePresence>
