@@ -1,27 +1,30 @@
-// comprehensive onboarding survey with 5 steps — gsap powered
+// window-based survey — fake browser with tabs, gsap animations, zenith logo
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import gsap from "gsap";
 import {
     User, Wallet, GraduationCap, HeartPulse, Brain,
-    ChevronRight, ChevronLeft, Rocket, ShieldCheck, Scale, Zap,
+    ChevronLeft, ChevronRight, Rocket, ShieldCheck, Scale, Zap,
+    Minus, X, RotateCcw, ArrowLeft, ArrowRight, Search,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import toast from "react-hot-toast";
 import PageTransition from "@/components/PageTransition";
 import FloatingParticles from "@/components/FloatingParticles";
 
-const TOTAL_STEPS = 5;
-const STEP_META = [
-    { icon: User, title: "About You", sub: "Let us know who you are" },
-    { icon: Wallet, title: "Finances", sub: "Your financial picture" },
-    { icon: GraduationCap, title: "Academics", sub: "Your learning profile" },
-    { icon: HeartPulse, title: "Health", sub: "Your physical wellness" },
-    { icon: Brain, title: "Wellness", sub: "Your mental state" },
+// tab definitions for each survey section
+const TABS = [
+    { id: 1, icon: User, label: "About You", url: "survey.com/about" },
+    { id: 2, icon: Wallet, label: "Finances", url: "survey.com/finances" },
+    { id: 3, icon: GraduationCap, label: "Academics", url: "survey.com/academics" },
+    { id: 4, icon: HeartPulse, label: "Health", url: "survey.com/health" },
+    { id: 5, icon: Brain, label: "Wellness", url: "survey.com/wellness" },
 ];
 
+// option card component with gsap hover
 function OptionCard({ label, description, selected, onClick, icon: Icon, color }: {
     label: string; description?: string; selected: boolean; onClick: () => void; icon?: React.ElementType; color?: string;
 }) {
@@ -51,6 +54,7 @@ function OptionCard({ label, description, selected, onClick, icon: Icon, color }
     );
 }
 
+// chip component with gsap hover
 function Chip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void; }) {
     const ref = useRef<HTMLButtonElement>(null);
     useEffect(() => {
@@ -72,9 +76,11 @@ function Chip({ label, selected, onClick }: { label: string; selected: boolean; 
 
 export default function SurveyPage() {
     const router = useRouter();
-    const [step, setStep] = useState(1);
+    const [activeTab, setActiveTab] = useState(1);
     const [launching, setLaunching] = useState(false);
+    const [minimized, setMinimized] = useState(false);
 
+    // survey state
     const [name, setName] = useState("");
     const [ageRange, setAgeRange] = useState("");
     const [occupation, setOccupation] = useState("");
@@ -95,12 +101,17 @@ export default function SurveyPage() {
     const [biggestStressor, setBiggestStressor] = useState("");
     const [wellnessPriorities, setWellnessPriorities] = useState<string[]>([]);
 
-    const dotsRef = useRef<HTMLDivElement>(null);
-    const cardRef = useRef<HTMLDivElement>(null);
-    const stepRef = useRef<HTMLDivElement>(null);
+    // refs for gsap animations
+    const windowRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const tabBarRef = useRef<HTMLDivElement>(null);
     const rocketRef = useRef<HTMLSpanElement>(null);
-    const backBtnRef = useRef<HTMLButtonElement>(null);
-    const nextBtnRef = useRef<HTMLButtonElement>(null);
+
+    // dragging state
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+    const [windowPos, setWindowPos] = useState({ x: 0, y: 0 });
+    const [centered, setCentered] = useState(true);
 
     useEffect(() => { if (!localStorage.getItem("token")) router.push("/login"); }, [router]);
 
@@ -108,47 +119,104 @@ export default function SurveyPage() {
         setter(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]);
     }
 
-    // card entrance
+    // window entrance animation
     useEffect(() => {
-        if (cardRef.current) gsap.from(cardRef.current, { opacity: 0, y: 24, scale: 0.96, duration: 0.5, ease: "power3.out" });
+        if (windowRef.current) {
+            gsap.fromTo(windowRef.current,
+                { opacity: 0, scale: 0.85, y: 40, rotationX: -8 },
+                { opacity: 1, scale: 1, y: 0, rotationX: 0, duration: 0.7, ease: "power3.out", transformPerspective: 1000 }
+            );
+        }
     }, []);
 
-    // dots animation
+    // tab content stagger entrance on tab change
     useEffect(() => {
-        if (!dotsRef.current) return;
-        dotsRef.current.querySelectorAll(".dot").forEach((dot, i) => {
-            gsap.to(dot, { width: step === (i + 1) ? 28 : 10, backgroundColor: step >= (i + 1) ? "var(--m3-primary)" : "var(--m3-outline-variant)", duration: 0.3, ease: "back.out(1.5)" });
+        if (!contentRef.current) return;
+        const items = contentRef.current.querySelectorAll(".step-item");
+        gsap.fromTo(items,
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.35, stagger: 0.08, delay: 0.1, ease: "power3.out", overwrite: true }
+        );
+    }, [activeTab]);
+
+    // tab indicator animation
+    useEffect(() => {
+        if (!tabBarRef.current) return;
+        const tabs = tabBarRef.current.querySelectorAll(".browser-tab");
+        tabs.forEach((tab, i) => {
+            gsap.to(tab, {
+                backgroundColor: activeTab === (i + 1) ? "var(--m3-surface-container-lowest, #fff)" : "transparent",
+                duration: 0.2,
+                ease: "power2.out",
+            });
         });
-    }, [step]);
+    }, [activeTab]);
 
-    // step content stagger entrance
-    useEffect(() => {
-        if (!stepRef.current) return;
-        gsap.from(stepRef.current.querySelectorAll(".step-item"), { opacity: 0, y: 16, duration: 0.35, stagger: 0.08, delay: 0.15, ease: "power3.out" });
-    }, [step]);
-
-    // nav button hovers
-    useEffect(() => {
-        const cleanups: (() => void)[] = [];
-        [backBtnRef, nextBtnRef].forEach(ref => {
-            const el = ref.current;
-            if (!el) return;
-            const enter = () => gsap.to(el, { scale: 1.03, duration: 0.15, ease: "power3.out" });
-            const leave = () => gsap.to(el, { scale: 1, duration: 0.15, ease: "power3.out" });
-            const down = () => gsap.to(el, { scale: 0.95, duration: 0.1 });
-            el.addEventListener("mouseenter", enter); el.addEventListener("mouseleave", leave); el.addEventListener("mousedown", down);
-            cleanups.push(() => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); el.removeEventListener("mousedown", down); });
-        });
-        return () => cleanups.forEach(fn => fn());
-    }, [step]);
-
-    // rocket animation
+    // rocket animation during launch
     useEffect(() => {
         if (launching && rocketRef.current) {
             const tween = gsap.to(rocketRef.current, { y: -3, duration: 0.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
             return () => { tween.kill(); };
         }
     }, [launching]);
+
+    // minimize/restore animation
+    const handleMinimize = useCallback(() => {
+        if (!windowRef.current) return;
+        if (!minimized) {
+            gsap.to(windowRef.current, {
+                scale: 0.02, y: 600, opacity: 0, duration: 0.5, ease: "power3.in",
+                onComplete: () => setMinimized(true),
+            });
+        }
+    }, [minimized]);
+
+    const handleRestore = useCallback(() => {
+        setMinimized(false);
+        setTimeout(() => {
+            if (windowRef.current) {
+                gsap.fromTo(windowRef.current,
+                    { scale: 0.02, y: 600, opacity: 0 },
+                    { scale: 1, y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }
+                );
+            }
+        }, 10);
+    }, []);
+
+    // fake reload animation
+    const handleReload = useCallback(() => {
+        if (!contentRef.current) return;
+        gsap.to(contentRef.current, {
+            opacity: 0, duration: 0.15, onComplete: () => {
+                gsap.to(contentRef.current!, { opacity: 1, duration: 0.3 });
+                const items = contentRef.current!.querySelectorAll(".step-item");
+                gsap.fromTo(items, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.06, ease: "power3.out" });
+            }
+        });
+    }, []);
+
+    // drag handlers for the title bar
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if ((e.target as HTMLElement).closest("button")) return;
+        setIsDragging(true);
+        setCentered(false);
+        const rect = windowRef.current?.getBoundingClientRect();
+        if (rect) {
+            setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+            setWindowPos({ x: rect.left, y: rect.top });
+        }
+    };
+
+    useEffect(() => {
+        if (!isDragging) return;
+        const handleMove = (e: MouseEvent) => {
+            setWindowPos({ x: e.clientX - dragOffset.x, y: e.clientY - dragOffset.y });
+        };
+        const handleUp = () => setIsDragging(false);
+        window.addEventListener("mousemove", handleMove);
+        window.addEventListener("mouseup", handleUp);
+        return () => { window.removeEventListener("mousemove", handleMove); window.removeEventListener("mouseup", handleUp); };
+    }, [isDragging, dragOffset]);
 
     async function handleFinish() {
         setLaunching(true);
@@ -165,88 +233,233 @@ export default function SurveyPage() {
                 method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify(surveyData),
             });
-            if (res.ok) setTimeout(() => router.push("/dashboard"), 1200);
-            else { setLaunching(false); toast.error("Failed to save survey."); }
+            if (res.ok) {
+                // close window animation before redirect
+                if (windowRef.current) {
+                    gsap.to(windowRef.current, {
+                        scale: 0, opacity: 0, rotationX: 10, duration: 0.5, ease: "power3.in",
+                        onComplete: () => router.push("/dashboard"),
+                    });
+                } else {
+                    setTimeout(() => router.push("/dashboard"), 1200);
+                }
+            } else { setLaunching(false); toast.error("Failed to save survey."); }
         } catch { setLaunching(false); toast.error("Network error. Please try again."); }
     }
+
+    // current url for address bar
+    const currentUrl = TABS.find(t => t.id === activeTab)?.url || "survey.com";
 
     return (
         <PageTransition>
             <FloatingParticles count={12} />
-            <main className="min-h-screen flex items-center justify-center px-4 py-10 overflow-y-auto">
-                <div className="w-full max-w-md">
-                    <div ref={dotsRef} className="flex items-center gap-2 mb-6 justify-center">
-                        {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-                            <div key={i} className="dot rounded-full h-[10px]" style={{ width: step === (i + 1) ? 28 : 10, backgroundColor: step >= (i + 1) ? "var(--m3-primary)" : "var(--m3-outline-variant)" }} />
-                        ))}
-                    </div>
-                    <div ref={cardRef} className="bg-m3-surface-container-low rounded-m3-xl p-6 shadow-m3-2">
-                        {step === 1 && (
-                            <div ref={stepRef} key="s1" className="flex flex-col gap-4">
-                                <div className="step-item text-center"><h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[0].title}</h1><p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[0].sub}</p></div>
-                                <div className="step-item relative"><input type="text" placeholder=" " value={name} onChange={e => setName(e.target.value)} className="m3-input-outlined peer" required /><label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">Your name</label></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Age Range</p><div className="flex flex-col gap-1.5">{["Under 18","18-24","25-34","35-44","45+"].map(opt => <OptionCard key={opt} label={opt} selected={ageRange===opt} onClick={()=>setAgeRange(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Occupation</p><div className="flex flex-col gap-1.5">{["Student","Employed","Self-employed","Unemployed","Retired"].map(opt => <OptionCard key={opt} label={opt} selected={occupation===opt} onClick={()=>setOccupation(opt)} />)}</div></div>
-                            </div>
-                        )}
-                        {step === 2 && (
-                            <div ref={stepRef} key="s2" className="flex flex-col gap-4">
-                                <div className="step-item text-center"><h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[1].title}</h1><p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[1].sub}</p></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Monthly Income</p><div className="flex flex-col gap-1.5">{["Under $1,000","$1,000-$3,000","$3,000-$5,000","$5,000-$10,000","$10,000+"].map(opt => <OptionCard key={opt} label={opt} selected={incomeRange===opt} onClick={()=>setIncomeRange(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Spending Style</p><div className="flex flex-col gap-1.5">
-                                    <OptionCard label="Cautious Saver" description="Think twice before every purchase" icon={ShieldCheck} selected={spendingProfile==="Cautious Saver"} onClick={()=>setSpendingProfile("Cautious Saver")} color="bg-m3-primary-container" />
-                                    <OptionCard label="Balanced Planner" description="Budget wisely and stick to plans" icon={Scale} selected={spendingProfile==="Balanced Planner"} onClick={()=>setSpendingProfile("Balanced Planner")} color="bg-m3-secondary-container" />
-                                    <OptionCard label="Impulse Spender" description="Buy now and think later" icon={Zap} selected={spendingProfile==="Impulse Spender"} onClick={()=>setSpendingProfile("Impulse Spender")} color="bg-m3-tertiary-container" />
-                                </div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Current Savings</p><div className="flex flex-col gap-1.5">{["None","Under $1,000","$1,000-$10,000","$10,000-$50,000","$50,000+"].map(opt => <OptionCard key={opt} label={opt} selected={savings===opt} onClick={()=>setSavings(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Financial Goals</p><div className="flex flex-wrap gap-2">{["Save more","Pay off debt","Invest","Budget better","Build emergency fund","Reduce spending"].map(g => <Chip key={g} label={g} selected={financialGoals.includes(g)} onClick={()=>toggleMulti(financialGoals,setFinancialGoals,g)} />)}</div></div>
-                                <div className="step-item relative"><input type="number" placeholder=" " value={balance} onChange={e=>setBalance(e.target.value)} className="m3-input-outlined peer" /><label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-low peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-low peer-[:not(:placeholder-shown)]:px-1">Starting Balance ($)</label></div>
-                            </div>
-                        )}
-                        {step === 3 && (
-                            <div ref={stepRef} key="s3" className="flex flex-col gap-4">
-                                <div className="step-item text-center"><h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[2].title}</h1><p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[2].sub}</p></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Education Level</p><div className="flex flex-col gap-1.5">{["High School","Undergraduate","Graduate","Professional","Self-taught"].map(opt => <OptionCard key={opt} label={opt} selected={educationLevel===opt} onClick={()=>setEducationLevel(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Areas of Interest</p><div className="flex flex-wrap gap-2">{["STEM","Business","Arts","Health Sciences","Social Sciences","Technology","Languages","Mathematics"].map(s => <Chip key={s} label={s} selected={subjects.includes(s)} onClick={()=>toggleMulti(subjects,setSubjects,s)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Learning Style</p><div className="flex flex-col gap-1.5">{["Visual","Reading/Writing","Hands-on","Discussion-based","Audio/Lectures"].map(opt => <OptionCard key={opt} label={opt} selected={learningStyle===opt} onClick={()=>setLearningStyle(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Study Goals</p><div className="flex flex-wrap gap-2">{["Improve grades","Learn new skills","Career growth","Personal enrichment","Exam prep","Research"].map(g => <Chip key={g} label={g} selected={studyGoals.includes(g)} onClick={()=>toggleMulti(studyGoals,setStudyGoals,g)} />)}</div></div>
-                            </div>
-                        )}
-                        {step === 4 && (
-                            <div ref={stepRef} key="s4" className="flex flex-col gap-4">
-                                <div className="step-item text-center"><h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[3].title}</h1><p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[3].sub}</p></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Exercise Frequency</p><div className="flex flex-col gap-1.5">{["Never","1-2 times/week","3-4 times/week","5+ times/week","Daily"].map(opt => <OptionCard key={opt} label={opt} selected={exerciseFrequency===opt} onClick={()=>setExerciseFrequency(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Sleep Quality</p><div className="flex flex-col gap-1.5">{["Poor","Fair","Good","Excellent"].map(opt => <OptionCard key={opt} label={opt} selected={sleepQuality===opt} onClick={()=>setSleepQuality(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Diet Quality</p><div className="flex flex-col gap-1.5">{["Needs improvement","Moderate","Healthy","Very healthy"].map(opt => <OptionCard key={opt} label={opt} selected={dietQuality===opt} onClick={()=>setDietQuality(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Health Goals</p><div className="flex flex-wrap gap-2">{["Lose weight","Build muscle","Improve sleep","Reduce stress","Eat better","More energy","Flexibility"].map(g => <Chip key={g} label={g} selected={healthGoals.includes(g)} onClick={()=>toggleMulti(healthGoals,setHealthGoals,g)} />)}</div></div>
-                            </div>
-                        )}
-                        {step === 5 && (
-                            <div ref={stepRef} key="s5" className="flex flex-col gap-4">
-                                <div className="step-item text-center"><h1 className="text-m3-title-large text-m3-on-surface">{STEP_META[4].title}</h1><p className="text-m3-body-medium text-m3-on-surface-variant mt-1">{STEP_META[4].sub}</p></div>
-                                <div className="step-item">
-                                    <p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Current Stress Level</p>
-                                    <div className="flex items-center gap-4"><span className="text-xs text-m3-on-surface-variant">Low</span><input type="range" min="1" max="10" value={stressLevel} onChange={e=>setStressLevel(parseInt(e.target.value))} className="flex-1" /><span className="text-xs text-m3-on-surface-variant">High</span></div>
-                                    <p className="text-center text-lg font-semibold text-m3-primary mt-1">{stressLevel}/10</p>
-                                </div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Biggest Stressor</p><div className="flex flex-col gap-1.5">{["Work/School","Finances","Relationships","Health","Uncertainty","Time management"].map(opt => <OptionCard key={opt} label={opt} selected={biggestStressor===opt} onClick={()=>setBiggestStressor(opt)} />)}</div></div>
-                                <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Wellness Priorities</p><div className="flex flex-wrap gap-2">{["Stress management","Better sleep","More exercise","Mindfulness","Work-life balance","Social connections"].map(p => <Chip key={p} label={p} selected={wellnessPriorities.includes(p)} onClick={()=>toggleMulti(wellnessPriorities,setWellnessPriorities,p)} />)}</div></div>
-                            </div>
-                        )}
-                        <div className="flex items-center justify-between mt-6 gap-3">
-                            {step > 1 ? (
-                                <button ref={backBtnRef} onClick={() => setStep(step - 1)} className="m3-btn-outlined flex items-center gap-1 px-4 py-2.5 text-sm"><ChevronLeft size={16} /> Back</button>
-                            ) : <div />}
-                            {step < TOTAL_STEPS ? (
-                                <button ref={nextBtnRef} onClick={() => setStep(step + 1)} className="m3-btn-filled flex items-center gap-1">Continue <ChevronRight size={16} /></button>
-                            ) : (
-                                <button ref={nextBtnRef} onClick={handleFinish} disabled={launching} className="m3-btn-filled flex items-center gap-2 disabled:opacity-80">
-                                    {launching ? (<><span ref={rocketRef}><Rocket size={16} /></span> Launching...</>) : "Launch Zenith"}
-                                </button>
-                            )}
+            <main className="min-h-screen flex items-center justify-center px-4 py-6">
+
+                {/* minimized taskbar */}
+                {minimized && (
+                    <div onClick={handleRestore}
+                        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 cursor-pointer">
+                        <div className="flex items-center gap-2 bg-m3-surface-container-high rounded-m3-full px-4 py-2.5 shadow-m3-2 border border-m3-outline-variant/30 hover:shadow-m3-3 transition-shadow">
+                            <Image src="/zenith-logo.png" alt="Zenith" width={24} height={24} className="w-5 h-5 object-contain" />
+                            <span className="text-m3-label-medium text-m3-on-surface">Zenith Survey</span>
+                            <div className="w-2 h-2 rounded-full bg-m3-primary animate-pulse" />
                         </div>
                     </div>
-                </div>
+                )}
+
+                {/* the browser window */}
+                {!minimized && (
+                    <div
+                        ref={windowRef}
+                        className="w-full max-w-lg select-none"
+                        style={centered ? {} : { position: "fixed", left: windowPos.x, top: windowPos.y, zIndex: 100 }}
+                    >
+                        <div className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-3 overflow-hidden border border-m3-outline-variant/30">
+
+                            {/* title bar — draggable */}
+                            <div
+                                onMouseDown={handleMouseDown}
+                                className="bg-m3-surface-container-high px-3 py-2 flex items-center gap-2 cursor-grab active:cursor-grabbing border-b border-m3-outline-variant/20"
+                            >
+                                {/* zenith logo on the top left */}
+                                <Image src="/zenith-logo.png" alt="Zenith" width={80} height={50} className="h-6 w-auto object-contain" />
+
+                                {/* tab bar */}
+                                <div ref={tabBarRef} className="flex-1 flex items-center gap-0.5 ml-2 overflow-x-auto">
+                                    {TABS.map((tab) => {
+                                        const TabIcon = tab.icon;
+                                        const isActive = activeTab === tab.id;
+                                        return (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => setActiveTab(tab.id)}
+                                                className={`browser-tab flex items-center gap-1.5 px-3 py-1.5 rounded-t-lg text-xs whitespace-nowrap transition-colors ${isActive
+                                                    ? "bg-m3-surface-container-lowest text-m3-on-surface"
+                                                    : "text-m3-on-surface-variant hover:bg-m3-surface-container/60"
+                                                }`}
+                                            >
+                                                <TabIcon size={12} />
+                                                <span className="hidden sm:inline">{tab.label}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* window controls */}
+                                <div className="flex items-center gap-1 ml-2">
+                                    <button onClick={handleMinimize} className="w-3 h-3 rounded-full bg-yellow-400 hover:bg-yellow-500 transition-colors flex items-center justify-center group" title="Minimize">
+                                        <Minus size={7} className="text-yellow-800 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </button>
+                                    <div className="w-3 h-3 rounded-full bg-green-400" />
+                                    <button onClick={() => { toast("This window can't be closed until survey is complete!", { icon: "\uD83D\uDD12" }); }} className="w-3 h-3 rounded-full bg-red-400 hover:bg-red-500 transition-colors flex items-center justify-center group" title="Close">
+                                        <X size={7} className="text-red-800 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* navigation bar */}
+                            <div className="bg-m3-surface-container px-3 py-1.5 flex items-center gap-2 border-b border-m3-outline-variant/15">
+                                <button
+                                    onClick={() => activeTab > 1 && setActiveTab(activeTab - 1)}
+                                    className={`p-1 rounded-m3-full transition-colors ${activeTab > 1 ? "hover:bg-m3-surface-container-high text-m3-on-surface-variant" : "text-m3-outline-variant cursor-default"}`}
+                                    disabled={activeTab === 1}
+                                >
+                                    <ArrowLeft size={14} />
+                                </button>
+                                <button
+                                    onClick={() => activeTab < 5 && setActiveTab(activeTab + 1)}
+                                    className={`p-1 rounded-m3-full transition-colors ${activeTab < 5 ? "hover:bg-m3-surface-container-high text-m3-on-surface-variant" : "text-m3-outline-variant cursor-default"}`}
+                                    disabled={activeTab === 5}
+                                >
+                                    <ArrowRight size={14} />
+                                </button>
+                                <button onClick={handleReload} className="p-1 rounded-m3-full hover:bg-m3-surface-container-high text-m3-on-surface-variant transition-colors">
+                                    <RotateCcw size={14} />
+                                </button>
+
+                                {/* address bar */}
+                                <div className="flex-1 flex items-center gap-2 bg-m3-surface-container-highest rounded-m3-full px-3 py-1 border border-m3-outline-variant/20">
+                                    <Search size={12} className="text-m3-on-surface-variant/50 shrink-0" />
+                                    <span className="text-xs text-m3-on-surface-variant truncate">{currentUrl}</span>
+                                </div>
+                            </div>
+
+                            {/* loading bar at the top */}
+                            <div className="h-[2px] bg-m3-surface-container relative overflow-hidden">
+                                <div className="absolute inset-0 bg-m3-primary/40" />
+                            </div>
+
+                            {/* page content area */}
+                            <div className="p-5 max-h-[60vh] overflow-y-auto bg-m3-surface-container-lowest">
+                                <div ref={contentRef}>
+
+                                    {/* tab 1: about you */}
+                                    {activeTab === 1 && (
+                                        <div key="t1" className="flex flex-col gap-4">
+                                            <div className="step-item text-center">
+                                                <h1 className="text-m3-title-large text-m3-on-surface">About You</h1>
+                                                <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">Let us know who you are</p>
+                                            </div>
+                                            <div className="step-item relative">
+                                                <input type="text" placeholder=" " value={name} onChange={e => setName(e.target.value)} className="m3-input-outlined peer" required />
+                                                <label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-lowest peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-lowest peer-[:not(:placeholder-shown)]:px-1">Your name</label>
+                                            </div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Age Range</p><div className="flex flex-col gap-1.5">{["Under 18","18-24","25-34","35-44","45+"].map(opt => <OptionCard key={opt} label={opt} selected={ageRange===opt} onClick={()=>setAgeRange(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Occupation</p><div className="flex flex-col gap-1.5">{["Student","Employed","Self-employed","Unemployed","Retired"].map(opt => <OptionCard key={opt} label={opt} selected={occupation===opt} onClick={()=>setOccupation(opt)} />)}</div></div>
+                                        </div>
+                                    )}
+
+                                    {/* tab 2: finances */}
+                                    {activeTab === 2 && (
+                                        <div key="t2" className="flex flex-col gap-4">
+                                            <div className="step-item text-center">
+                                                <h1 className="text-m3-title-large text-m3-on-surface">Finances</h1>
+                                                <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">Your financial picture</p>
+                                            </div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Monthly Income</p><div className="flex flex-col gap-1.5">{["Under $1,000","$1,000-$3,000","$3,000-$5,000","$5,000-$10,000","$10,000+"].map(opt => <OptionCard key={opt} label={opt} selected={incomeRange===opt} onClick={()=>setIncomeRange(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Spending Style</p><div className="flex flex-col gap-1.5">
+                                                <OptionCard label="Cautious Saver" description="Think twice before every purchase" icon={ShieldCheck} selected={spendingProfile==="Cautious Saver"} onClick={()=>setSpendingProfile("Cautious Saver")} color="bg-m3-primary-container" />
+                                                <OptionCard label="Balanced Planner" description="Budget wisely and stick to plans" icon={Scale} selected={spendingProfile==="Balanced Planner"} onClick={()=>setSpendingProfile("Balanced Planner")} color="bg-m3-secondary-container" />
+                                                <OptionCard label="Impulse Spender" description="Buy now and think later" icon={Zap} selected={spendingProfile==="Impulse Spender"} onClick={()=>setSpendingProfile("Impulse Spender")} color="bg-m3-tertiary-container" />
+                                            </div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Current Savings</p><div className="flex flex-col gap-1.5">{["None","Under $1,000","$1,000-$10,000","$10,000-$50,000","$50,000+"].map(opt => <OptionCard key={opt} label={opt} selected={savings===opt} onClick={()=>setSavings(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Financial Goals</p><div className="flex flex-wrap gap-2">{["Save more","Pay off debt","Invest","Budget better","Build emergency fund","Reduce spending"].map(g => <Chip key={g} label={g} selected={financialGoals.includes(g)} onClick={()=>toggleMulti(financialGoals,setFinancialGoals,g)} />)}</div></div>
+                                            <div className="step-item relative"><input type="number" placeholder=" " value={balance} onChange={e=>setBalance(e.target.value)} className="m3-input-outlined peer" /><label className="absolute left-3 top-4 text-m3-on-surface-variant text-sm transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-xs peer-focus:text-m3-primary peer-focus:bg-m3-surface-container-lowest peer-focus:px-1 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-m3-surface-container-lowest peer-[:not(:placeholder-shown)]:px-1">Starting Balance ($)</label></div>
+                                        </div>
+                                    )}
+
+                                    {/* tab 3: academics */}
+                                    {activeTab === 3 && (
+                                        <div key="t3" className="flex flex-col gap-4">
+                                            <div className="step-item text-center">
+                                                <h1 className="text-m3-title-large text-m3-on-surface">Academics</h1>
+                                                <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">Your learning profile</p>
+                                            </div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Education Level</p><div className="flex flex-col gap-1.5">{["High School","Undergraduate","Graduate","Professional","Self-taught"].map(opt => <OptionCard key={opt} label={opt} selected={educationLevel===opt} onClick={()=>setEducationLevel(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Areas of Interest</p><div className="flex flex-wrap gap-2">{["STEM","Business","Arts","Health Sciences","Social Sciences","Technology","Languages","Mathematics"].map(s => <Chip key={s} label={s} selected={subjects.includes(s)} onClick={()=>toggleMulti(subjects,setSubjects,s)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Learning Style</p><div className="flex flex-col gap-1.5">{["Visual","Reading/Writing","Hands-on","Discussion-based","Audio/Lectures"].map(opt => <OptionCard key={opt} label={opt} selected={learningStyle===opt} onClick={()=>setLearningStyle(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Study Goals</p><div className="flex flex-wrap gap-2">{["Improve grades","Learn new skills","Career growth","Personal enrichment","Exam prep","Research"].map(g => <Chip key={g} label={g} selected={studyGoals.includes(g)} onClick={()=>toggleMulti(studyGoals,setStudyGoals,g)} />)}</div></div>
+                                        </div>
+                                    )}
+
+                                    {/* tab 4: health */}
+                                    {activeTab === 4 && (
+                                        <div key="t4" className="flex flex-col gap-4">
+                                            <div className="step-item text-center">
+                                                <h1 className="text-m3-title-large text-m3-on-surface">Health</h1>
+                                                <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">Your physical wellness</p>
+                                            </div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Exercise Frequency</p><div className="flex flex-col gap-1.5">{["Never","1-2 times/week","3-4 times/week","5+ times/week","Daily"].map(opt => <OptionCard key={opt} label={opt} selected={exerciseFrequency===opt} onClick={()=>setExerciseFrequency(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Sleep Quality</p><div className="flex flex-col gap-1.5">{["Poor","Fair","Good","Excellent"].map(opt => <OptionCard key={opt} label={opt} selected={sleepQuality===opt} onClick={()=>setSleepQuality(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Diet Quality</p><div className="flex flex-col gap-1.5">{["Needs improvement","Moderate","Healthy","Very healthy"].map(opt => <OptionCard key={opt} label={opt} selected={dietQuality===opt} onClick={()=>setDietQuality(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Health Goals</p><div className="flex flex-wrap gap-2">{["Lose weight","Build muscle","Improve sleep","Reduce stress","Eat better","More energy","Flexibility"].map(g => <Chip key={g} label={g} selected={healthGoals.includes(g)} onClick={()=>toggleMulti(healthGoals,setHealthGoals,g)} />)}</div></div>
+                                        </div>
+                                    )}
+
+                                    {/* tab 5: wellness */}
+                                    {activeTab === 5 && (
+                                        <div key="t5" className="flex flex-col gap-4">
+                                            <div className="step-item text-center">
+                                                <h1 className="text-m3-title-large text-m3-on-surface">Wellness</h1>
+                                                <p className="text-m3-body-medium text-m3-on-surface-variant mt-1">Your mental state</p>
+                                            </div>
+                                            <div className="step-item">
+                                                <p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Current Stress Level</p>
+                                                <div className="flex items-center gap-4"><span className="text-xs text-m3-on-surface-variant">Low</span><input type="range" min="1" max="10" value={stressLevel} onChange={e=>setStressLevel(parseInt(e.target.value))} className="flex-1" /><span className="text-xs text-m3-on-surface-variant">High</span></div>
+                                                <p className="text-center text-lg font-semibold text-m3-primary mt-1">{stressLevel}/10</p>
+                                            </div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Biggest Stressor</p><div className="flex flex-col gap-1.5">{["Work/School","Finances","Relationships","Health","Uncertainty","Time management"].map(opt => <OptionCard key={opt} label={opt} selected={biggestStressor===opt} onClick={()=>setBiggestStressor(opt)} />)}</div></div>
+                                            <div className="step-item"><p className="text-xs text-m3-on-surface-variant mb-2 font-medium">Wellness Priorities</p><div className="flex flex-wrap gap-2">{["Stress management","Better sleep","More exercise","Mindfulness","Work-life balance","Social connections"].map(p => <Chip key={p} label={p} selected={wellnessPriorities.includes(p)} onClick={()=>toggleMulti(wellnessPriorities,setWellnessPriorities,p)} />)}</div></div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* navigation footer */}
+                                <div className="flex items-center justify-between mt-6 gap-3">
+                                    {activeTab > 1 ? (
+                                        <button onClick={() => setActiveTab(activeTab - 1)} className="m3-btn-outlined flex items-center gap-1 px-4 py-2.5 text-sm"><ChevronLeft size={16} /> Back</button>
+                                    ) : <div />}
+                                    {activeTab < 5 ? (
+                                        <button onClick={() => setActiveTab(activeTab + 1)} className="m3-btn-filled flex items-center gap-1">Continue <ChevronRight size={16} /></button>
+                                    ) : (
+                                        <button onClick={handleFinish} disabled={launching} className="m3-btn-filled flex items-center gap-2 disabled:opacity-80">
+                                            {launching ? (<><span ref={rocketRef}><Rocket size={16} /></span> Launching...</>) : "Launch Zenith"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* status bar at bottom */}
+                            <div className="bg-m3-surface-container-high px-3 py-1 flex items-center justify-between border-t border-m3-outline-variant/15">
+                                <span className="text-[10px] text-m3-on-surface-variant/50">Tab {activeTab} of {TABS.length}</span>
+                                <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                    <span className="text-[10px] text-m3-on-surface-variant/50">Secure Connection</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </main>
         </PageTransition>
     );

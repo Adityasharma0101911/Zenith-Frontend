@@ -31,11 +31,27 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
 
     useEffect(() => { fetchHistory(); }, [refreshTrigger]);
 
-    // poll every 30s
+    // visibility-aware polling — only poll when tab is visible to save battery and bandwidth
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     useEffect(() => {
-        intervalRef.current = setInterval(fetchHistory, 30000);
-        return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+        function startPolling() {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            intervalRef.current = setInterval(fetchHistory, 30000);
+        }
+        function stopPolling() {
+            if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+        }
+        function handleVisibility() {
+            if (document.hidden) stopPolling();
+            else { fetchHistory(); startPolling(); }
+        }
+        // start polling only if tab is visible
+        if (!document.hidden) startPolling();
+        document.addEventListener("visibilitychange", handleVisibility);
+        return () => {
+            stopPolling();
+            document.removeEventListener("visibilitychange", handleVisibility);
+        };
     }, []);
 
     // card hover
@@ -55,12 +71,15 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
         gsap.from(iconRef.current, { scale: 0, duration: 0.5, ease: "back.out(2)" });
     }, []);
 
-    // stagger list items on data change
+    // stagger list items on data change — use fromTo with overwrite to prevent mid-fade glitches
     useEffect(() => {
         if (!listRef.current || transactions.length === 0) return;
-        gsap.from(listRef.current.querySelectorAll(".tx-item"), {
-            opacity: 0, x: -16, duration: 0.3, stagger: 0.06, ease: "power3.out",
-        });
+        const items = listRef.current.querySelectorAll(".tx-item");
+        const tween = gsap.fromTo(items,
+            { opacity: 0, x: -16 },
+            { opacity: 1, x: 0, duration: 0.3, stagger: 0.06, ease: "power3.out", overwrite: true }
+        );
+        return () => { tween.kill(); };
     }, [transactions]);
 
     function formatTime(timestamp: string) {

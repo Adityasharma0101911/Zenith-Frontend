@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { HeartPulse, Dumbbell, Moon, Apple } from "lucide-react";
 import JarvisDashboard from "@/components/JarvisDashboard";
 import PageTransition from "@/components/PageTransition";
+import { VitalsUtilities } from "@/components/UtilityToolkit";
 import type { StatDef, RingDef } from "@/components/JarvisDashboard";
 
 // stat cards derived from survey data
@@ -50,6 +51,7 @@ export default function VitalsPage() {
                     stats={STATS}
                     rings={RINGS}
                     placeholder="Ask Vitals about your health..."
+                    utilities={<VitalsUtilities accentText="text-m3-on-secondary-container" />}
                 />
             </main>
         </PageTransition>

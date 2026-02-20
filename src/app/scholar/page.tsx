@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { GraduationCap, Lightbulb, Target, Layers } from "lucide-react";
 import JarvisDashboard from "@/components/JarvisDashboard";
 import PageTransition from "@/components/PageTransition";
+import { ScholarUtilities } from "@/components/UtilityToolkit";
 import type { StatDef, RingDef } from "@/components/JarvisDashboard";
 
 // stat cards derived from survey data
@@ -55,6 +56,7 @@ export default function ScholarPage() {
                     stats={STATS}
                     rings={RINGS}
                     placeholder="Ask Scholar anything..."
+                    utilities={<ScholarUtilities accentText="text-m3-on-tertiary-container" />}
                 />
             </main>
         </PageTransition>

@@ -53,38 +53,53 @@ export default function DashboardPage() {
 
     useEffect(() => { fetchUserData(); }, [fetchUserData]);
 
-    // stagger entrance with more dramatic reveal
+    // stagger entrance with more dramatic reveal — kills old triggers on re-run to prevent memory leaks
     useEffect(() => {
         if (!containerRef.current || !userData) return;
+
+        // kill any existing ScrollTriggers before creating new ones
+        ScrollTrigger.getAll().forEach(t => t.kill());
+
         const widgets = containerRef.current.querySelectorAll(".dash-widget");
-        gsap.from(widgets, {
-            opacity: 0, y: 40, scale: 0.95, rotationX: -8, duration: 0.55, stagger: 0.12, delay: 0.15, ease: "power3.out",
-            transformPerspective: 800,
-        });
+        const entranceTween = gsap.fromTo(widgets,
+            { opacity: 0, y: 40, scale: 0.95, rotationX: -8 },
+            { opacity: 1, y: 0, scale: 1, rotationX: 0, duration: 0.55, stagger: 0.12, delay: 0.15, ease: "power3.out", transformPerspective: 800, overwrite: true }
+        );
 
         // ScrollTrigger reveal for widgets below the fold
+        const triggers: globalThis.ScrollTrigger[] = [];
         widgets.forEach((widget, i) => {
             if (i < 2) return; // first two animate on load
-            ScrollTrigger.create({
+            const st = ScrollTrigger.create({
                 trigger: widget,
                 start: "top 90%",
                 onEnter: () => {
-                    gsap.from(widget, {
-                        opacity: 0, y: 30, scale: 0.97, duration: 0.5, ease: "power3.out",
-                    });
+                    gsap.fromTo(widget,
+                        { opacity: 0, y: 30, scale: 0.97 },
+                        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out", overwrite: true }
+                    );
                 },
                 once: true,
             });
+            triggers.push(st);
         });
+
+        // cleanup: kill all triggers and tweens when userData changes or unmounts
+        return () => {
+            entranceTween.kill();
+            triggers.forEach(t => t.kill());
+        };
     }, [userData]);
 
-    // welcome card inner animations
+    // welcome card inner animations — use fromTo with overwrite to prevent stacking on re-renders
     useEffect(() => {
         if (!userData) return;
-        if (greetingRef.current) gsap.from(greetingRef.current, { opacity: 0, scale: 0.9, duration: 0.5, delay: 0.35, ease: "back.out(1.5)" });
-        if (balanceRef.current) gsap.from(balanceRef.current, { opacity: 0, duration: 0.3, delay: 0.5 });
-        if (badgeRef.current) gsap.from(badgeRef.current, { scale: 0, duration: 0.4, delay: 0.6, ease: "back.out(1.5)" });
-        if (wellnessRef.current) gsap.from(wellnessRef.current, { opacity: 0, y: 8, duration: 0.3, delay: 0.7 });
+        const tweens: gsap.core.Tween[] = [];
+        if (greetingRef.current) tweens.push(gsap.fromTo(greetingRef.current, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, delay: 0.35, ease: "back.out(1.5)", overwrite: true }));
+        if (balanceRef.current) tweens.push(gsap.fromTo(balanceRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3, delay: 0.5, overwrite: true }));
+        if (badgeRef.current) tweens.push(gsap.fromTo(badgeRef.current, { scale: 0 }, { scale: 1, duration: 0.4, delay: 0.6, ease: "back.out(1.5)", overwrite: true }));
+        if (wellnessRef.current) tweens.push(gsap.fromTo(wellnessRef.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, delay: 0.7, overwrite: true }));
+        return () => { tweens.forEach(t => t.kill()); };
     }, [userData]);
 
     // heart pulse

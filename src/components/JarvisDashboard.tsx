@@ -18,6 +18,7 @@ interface JarvisDashboardProps {
     title: string; subtitle: string; headerIcon: LucideIcon;
     accentContainer: string; accentText: string; accentBorder: string;
     stats: StatDef[]; rings: RingDef[]; placeholder?: string;
+    utilities?: React.ReactNode;
 }
 
 function parseBrief(raw: string) {
@@ -64,6 +65,7 @@ function ProgressRing({ percent, label, color, delay = 0 }: { percent: number; l
 export default function JarvisDashboard({
     section, title, subtitle, headerIcon: HeaderIcon,
     accentContainer, accentText, accentBorder, stats, rings, placeholder = "Ask me anything...",
+    utilities,
 }: JarvisDashboardProps) {
     const [survey, setSurvey] = useState<Record<string, unknown> | null>(null);
     const [brief, setBrief] = useState<string | null>(null);
@@ -357,6 +359,9 @@ export default function JarvisDashboard({
                         ) : null}
                     </div>
                 </div>
+
+                {/* utility tools */}
+                {utilities}
 
                 {/* responses */}
                 <div ref={responsesRef}>

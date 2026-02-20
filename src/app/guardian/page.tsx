@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Wallet, TrendingUp, PiggyBank, Target } from "lucide-react";
 import JarvisDashboard from "@/components/JarvisDashboard";
 import PageTransition from "@/components/PageTransition";
+import { GuardianUtilities } from "@/components/UtilityToolkit";
 import type { StatDef, RingDef } from "@/components/JarvisDashboard";
 
 // stat cards derived from survey data
@@ -55,6 +56,7 @@ export default function GuardianPage() {
                     stats={STATS}
                     rings={RINGS}
                     placeholder="Ask Guardian about your finances..."
+                    utilities={<GuardianUtilities accentText="text-m3-on-primary-container" />}
                 />
             </main>
         </PageTransition>
