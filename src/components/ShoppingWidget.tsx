@@ -13,6 +13,8 @@ import {
     Package,
     MessageSquare,
 } from "lucide-react";
+import InteractiveCard from "./InteractiveCard";
+import MotionButton from "./MotionButton";
 import { API_URL } from "@/utils/api";
 
 export default function ShoppingWidget({ refreshData }: { refreshData: () => void }) {
@@ -91,15 +93,37 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
 
     return (
         <>
-            <motion.div
-                whileHover={{ y: -3, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-                className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full transition-shadow hover:shadow-m3-2"
+            <InteractiveCard
+                className="p-6 w-full relative overflow-hidden"
+                glowColor="rgba(var(--m3-primary), 0.15)"
             >
-                <div className="flex items-center gap-2.5 mb-4">
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 15 }} className="p-1.5 rounded-m3-full bg-m3-primary-container">
-                        <ShoppingCart className="text-m3-on-primary-container" size={16} />
-                    </motion.div>
-                    <h2 className="text-m3-title-medium text-m3-on-surface">Smart Purchase</h2>
+                <div className="flex items-center gap-3 mb-5">
+                    <div className="relative w-10 h-10 flex items-center justify-center">
+                        {/* Static track */}
+                        <svg className="absolute inset-0 w-full h-full -rotate-90">
+                            <circle cx="20" cy="20" r="18" fill="none" className="stroke-m3-surface-container-high" strokeWidth="3" />
+                        </svg>
+
+                        {/* Animated Gamified Progress Ring (Idea #13) */}
+                        <motion.svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-[0_0_4px_rgba(var(--m3-primary),0.5)]">
+                            <motion.circle
+                                cx="20" cy="20" r="18" fill="none"
+                                className="stroke-m3-primary" strokeWidth="3" strokeLinecap="round"
+                                initial={{ strokeDasharray: "0 113" }}
+                                animate={{ strokeDasharray: "113 113" }}
+                                transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+                            />
+                        </motion.svg>
+
+                        {/* Inner Icon */}
+                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.8 }} className="relative z-10 w-7 h-7 flex items-center justify-center rounded-full bg-m3-surface">
+                            <ShoppingCart className="text-m3-primary" size={14} />
+                        </motion.div>
+                    </div>
+                    <div>
+                        <h2 className="text-m3-title-medium text-m3-on-surface leading-tight">Smart Purchase</h2>
+                        <p className="text-[10px] text-m3-on-surface-variant font-medium uppercase tracking-wider">AI Guardrail</p>
+                    </div>
                 </div>
 
                 {!verdict ? (
@@ -118,9 +142,9 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                             <MessageSquare size={14} className="absolute left-3 top-3 text-m3-on-surface-variant/50" />
                             <input type="text" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Why do you need this? (optional)" className="w-full pl-9 pr-3 py-2.5 rounded-m3-lg bg-m3-surface-container text-m3-on-surface text-sm outline-none border border-m3-outline-variant/30 focus:border-m3-primary transition-colors" />
                         </div>
-                        <motion.button type="submit" disabled={evaluating || !itemName.trim() || !amount.trim()} whileHover={{ scale: evaluating ? 1 : 1.03 }} whileTap={{ scale: evaluating ? 1 : 0.95 }} className="m3-btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-70">
+                        <MotionButton type="submit" disabled={evaluating || !itemName.trim() || !amount.trim()} className="w-full mt-4">
                             {evaluating ? (<><Loader2 size={16} className="animate-spin" />AI Evaluating...</>) : (<><ShoppingCart size={16} />Evaluate Purchase</>)}
-                        </motion.button>
+                        </MotionButton>
                     </form>
                 ) : (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
@@ -133,16 +157,16 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                             </div>
                             <p className="text-m3-body-small text-m3-on-surface leading-relaxed">{verdict.analysis}</p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 mt-4">
                             {verdict.verdict === "approve" && (
-                                <motion.button onClick={handleExecute} disabled={executing} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }} className="flex-1 m3-btn-filled flex items-center justify-center gap-2 disabled:opacity-70">
+                                <MotionButton onClick={handleExecute} disabled={executing} className="flex-1 text-sm bg-m3-primary text-m3-on-primary">
                                     {executing ? <Loader2 size={16} className="animate-spin" /> : <ShoppingCart size={16} />}
                                     {executing ? "Processing..." : `Buy $${verdict.amount.toFixed(2)}`}
-                                </motion.button>
+                                </MotionButton>
                             )}
-                            <motion.button onClick={handleCancel} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }} className={`${verdict.verdict === "approve" ? "" : "flex-1"} m3-btn-tonal flex items-center justify-center gap-2`}>
+                            <MotionButton onClick={handleCancel} className={`flex items-center justify-center gap-2 px-4 py-2 rounded-m3-full text-sm font-medium transition-colors ${verdict.verdict === "approve" ? "bg-m3-surface-container-high text-m3-on-surface" : "flex-1 bg-m3-surface-container-high text-m3-on-surface"}`}>
                                 <X size={16} />{verdict.verdict === "approve" ? "Cancel" : "Go Back"}
-                            </motion.button>
+                            </MotionButton>
                         </div>
                     </motion.div>
                 )}
@@ -153,7 +177,7 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                 <AnimatePresence>
                     {error && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-3 text-center text-sm font-medium text-m3-error">{error}</motion.p>}
                 </AnimatePresence>
-            </motion.div>
+            </InteractiveCard>
 
             <AnimatePresence>
                 {showBlocked && (
@@ -167,9 +191,9 @@ export default function ShoppingWidget({ refreshData }: { refreshData: () => voi
                             </div>
                             <h2 className="text-m3-title-large text-m3-on-error-container">Transaction Blocked</h2>
                             <p className="text-m3-body-medium text-m3-on-error-container/80 mt-3">{blockedReason}</p>
-                            <motion.button onClick={() => setShowBlocked(false)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.93 }} className="mt-6 px-8 py-3 rounded-m3-full bg-m3-error text-m3-on-error font-medium text-sm flex items-center gap-2 mx-auto">
+                            <MotionButton onClick={() => setShowBlocked(false)} className="mt-6 mx-auto bg-m3-error text-m3-on-error">
                                 <X size={16} />Dismiss
-                            </motion.button>
+                            </MotionButton>
                         </motion.div>
                     </motion.div>
                 )}

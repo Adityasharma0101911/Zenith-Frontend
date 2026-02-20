@@ -13,21 +13,24 @@ import { ShieldX, CheckCircle, FileText } from "lucide-react";
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
+import InteractiveCard from "./InteractiveCard";
+
 // m3 standard easing
 const m3Ease = [0.2, 0, 0, 1] as const;
 
 // stagger container for list items
 const listStagger = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, perspective: 1000 },
     visible: {
         opacity: 1,
-        transition: { staggerChildren: 0.06 },
+        transition: { staggerChildren: 0.08 },
     },
 };
 
+// Idea #9: Staggered 3D Card Flips
 const listItem = {
-    hidden: { opacity: 0, x: -16 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: m3Ease } },
+    hidden: { opacity: 0, y: 20, rotateX: -15, transformOrigin: "top" },
+    visible: { opacity: 1, y: 0, rotateX: 0, transition: { duration: 0.4, ease: m3Ease } },
 };
 
 // define the shape of a transaction
@@ -74,9 +77,9 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
     }
 
     return (
-        <motion.div
-            whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-            className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full transition-shadow hover:shadow-m3-2"
+        <InteractiveCard
+            className="p-6 w-full"
+            glowColor="rgba(var(--m3-primary), 0.1)"
         >
             {/* title with ledger icon */}
             <div className="flex items-center gap-2.5 mb-4">
@@ -113,11 +116,10 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                             key={index}
                             variants={listItem}
                             whileHover={{ x: 3, transition: { duration: 0.15 } }}
-                            className={`flex items-center justify-between p-3.5 rounded-m3-lg transition-shadow hover:shadow-m3-1 ${
-                                tx.status === "BLOCKED"
+                            className={`flex items-center justify-between p-3.5 rounded-m3-lg transition-shadow hover:shadow-m3-1 ${tx.status === "BLOCKED"
                                     ? "bg-m3-error-container/40"
                                     : "bg-m3-surface-container"
-                            }`}
+                                }`}
                         >
                             {/* icon and item name */}
                             <div className="flex items-center gap-3">
@@ -133,9 +135,8 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                                     <CheckCircle className="text-m3-primary" size={20} />
                                 )}
                                 <div>
-                                    <p className={`text-m3-label-large ${
-                                        tx.status === "BLOCKED" ? "text-m3-on-error-container" : "text-m3-on-surface"
-                                    }`}>
+                                    <p className={`text-m3-label-large ${tx.status === "BLOCKED" ? "text-m3-on-error-container" : "text-m3-on-surface"
+                                        }`}>
                                         {tx.item_name}
                                     </p>
                                     <p className="text-m3-label-small text-m3-on-surface-variant">{formatTime(tx.timestamp)}</p>
@@ -145,9 +146,8 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                             {/* amount and status */}
                             <div className="text-right">
                                 <p className="text-m3-label-large text-m3-on-surface">${tx.amount.toFixed(2)}</p>
-                                <p className={`text-m3-label-small ${
-                                    tx.status === "BLOCKED" ? "text-m3-error" : "text-m3-primary"
-                                }`}>
+                                <p className={`text-m3-label-small ${tx.status === "BLOCKED" ? "text-m3-error" : "text-m3-primary"
+                                    }`}>
                                     {tx.status}
                                 </p>
                             </div>
@@ -155,6 +155,6 @@ export default function HistoryLog({ refreshTrigger }: { refreshTrigger: number 
                     ))}
                 </motion.div>
             )}
-        </motion.div>
+        </InteractiveCard>
     );
 }

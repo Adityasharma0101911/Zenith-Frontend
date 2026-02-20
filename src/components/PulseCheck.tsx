@@ -10,6 +10,10 @@ import { motion, AnimatePresence } from "framer-motion";
 // import activity icon for the pulse branding
 import { Activity, Check } from "lucide-react";
 
+// import custom interactive components
+import InteractiveCard from "./InteractiveCard";
+import MotionButton from "./MotionButton";
+
 // import the api url from our utils
 import { API_URL } from "@/utils/api";
 
@@ -69,9 +73,9 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
     }
 
     return (
-        <motion.div
-            whileHover={{ y: -3, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-            className="bg-m3-surface-container-low rounded-m3-xl shadow-m3-1 p-6 w-full transition-shadow hover:shadow-m3-2"
+        <InteractiveCard
+            className="p-6 w-full"
+            glowColor="rgba(var(--m3-primary), 0.15)"
         >
             {/* title with activity icon in tonal container and bounce entrance */}
             <div className="flex items-center gap-2.5">
@@ -116,32 +120,69 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
                 </AnimatePresence>
             </div>
 
-            {/* range slider with m3 styling */}
-            <input
-                type="range"
-                min={1}
-                max={10}
-                value={stress}
-                onChange={(e) => setStress(Number(e.target.value))}
-                className="w-full mt-5 accent-m3-primary h-1.5 rounded-full bg-m3-surface-container-highest"
-            />
+            {/* dynamic stroke color based on stress */}
+            <motion.div
+                className="flex flex-col items-center gap-3 mt-6 mb-4"
+                animate={{ color: getStressColor(stress) }}
+                transition={{ duration: 0.3 }}
+            >
+                <div className="text-5xl font-bold tracking-tighter">
+                    {stress}
+                    <span className="text-xl text-m3-on-surface-variant font-normal">/10</span>
+                </div>
 
-            {/* slider endpoint labels */}
-            <div className="flex justify-between text-m3-label-small text-m3-on-surface-variant mt-1">
-                <span>1</span>
-                <span>10</span>
-            </div>
+                <div className="w-full h-16 relative flex items-center mb-6">
+                    <motion.svg
+                        viewBox="0 0 100 20"
+                        className="w-full h-full overflow-visible drop-shadow-md"
+                        preserveAspectRatio="none"
+                    >
+                        <motion.path
+                            d={`M 0 10 Q 20 ${10 - (stress * 1.5)} 30 10 T 50 10 Q 70 ${10 + (stress * 1.5)} 80 10 T 100 10`}
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{ pathLength: 1, opacity: 1 }}
+                            transition={{ duration: 1, ease: "easeInOut" }}
+                        />
+                        {/* Animated dot following path */}
+                        <motion.circle
+                            r="2.5"
+                            fill="currentColor"
+                            animate={{
+                                cx: [0, 30, 50, 80, 100],
+                                cy: [10, 10 - (stress * 1.5), 10, 10 + (stress * 1.5), 10]
+                            }}
+                            transition={{
+                                repeat: Infinity,
+                                duration: Math.max(0.5, 2 - (stress * 0.15)),
+                                ease: "linear"
+                            }}
+                        />
+                    </motion.svg>
 
-            {/* log pulse button with spring hover */}
-            <motion.button
+                    {/* the invisible range input overlay */}
+                    <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        value={stress}
+                        onChange={(e) => setStress(parseInt(e.target.value))}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                </div>
+            </motion.div>
+
+            {/* log pulse button with spring hover and magnetic pull */}
+            <MotionButton
                 onClick={handleUpdateStress}
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="m3-btn-tonal w-full mt-5"
+                variant="tonal"
+                className="w-full mt-5"
             >
                 Log Pulse
-            </motion.button>
+            </MotionButton>
 
             {/* animated success feedback */}
             <AnimatePresence>
@@ -171,6 +212,6 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
                     </motion.p>
                 )}
             </AnimatePresence>
-        </motion.div>
+        </InteractiveCard>
     );
 }
