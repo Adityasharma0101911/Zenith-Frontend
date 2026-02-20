@@ -13,6 +13,7 @@ import {
 import { API_URL } from "@/utils/api";
 import SdgBadge from "@/components/SdgBadge";
 import ThemePicker from "@/components/ThemePicker";
+import DarkModeToggle from "@/components/DarkModeToggle";
 
 const HIDDEN_PAGES = ["/", "/login", "/register", "/survey", "/onboarding"];
 const NAV_ITEMS = [
@@ -182,6 +183,7 @@ export default function Sidebar() {
             <div className="flex flex-col gap-2 mt-auto">
                 {expanded && <div className="px-2 py-1"><SdgBadge /></div>}
                 <ThemePicker expanded={expanded} />
+                <DarkModeToggle expanded={expanded} />
                 <button onClick={handleLogout} className="flex justify-start items-center gap-3 px-3 py-2.5 rounded-m3-full text-m3-error hover:bg-m3-error-container transition-colors bg-transparent shadow-none w-full">
                     <LogOut size={20} className="shrink-0" />
                     <span ref={logoutLabelRef} className="text-m3-label-large whitespace-nowrap overflow-hidden" style={{ width: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }}>Logout</span>

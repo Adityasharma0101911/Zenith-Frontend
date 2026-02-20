@@ -4,6 +4,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { Heart, Wallet } from "lucide-react";
 import { API_URL } from "@/utils/api";
 import ShoppingWidget from "@/components/ShoppingWidget";
@@ -13,6 +14,12 @@ import HistoryLog from "@/components/HistoryLog";
 import MainframeLog from "@/components/MainframeLog";
 import PageTransition from "@/components/PageTransition";
 import ContextualSpotlight from "@/components/ContextualSpotlight";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import ScrollProgress from "@/components/ScrollProgress";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 function SkeletonCard({ className = "" }: { className?: string }) {
     return (<div className={`bg-m3-surface-container rounded-m3-xl overflow-hidden ${className}`}><div className="m3-shimmer h-full w-full" /></div>);
@@ -46,11 +53,28 @@ export default function DashboardPage() {
 
     useEffect(() => { fetchUserData(); }, [fetchUserData]);
 
-    // stagger entrance
+    // stagger entrance with more dramatic reveal
     useEffect(() => {
         if (!containerRef.current || !userData) return;
-        gsap.from(containerRef.current.querySelectorAll(".dash-widget"), {
-            opacity: 0, y: 28, scale: 0.97, duration: 0.45, stagger: 0.1, delay: 0.15, ease: "power3.out",
+        const widgets = containerRef.current.querySelectorAll(".dash-widget");
+        gsap.from(widgets, {
+            opacity: 0, y: 40, scale: 0.95, rotationX: -8, duration: 0.55, stagger: 0.12, delay: 0.15, ease: "power3.out",
+            transformPerspective: 800,
+        });
+
+        // ScrollTrigger reveal for widgets below the fold
+        widgets.forEach((widget, i) => {
+            if (i < 2) return; // first two animate on load
+            ScrollTrigger.create({
+                trigger: widget,
+                start: "top 90%",
+                onEnter: () => {
+                    gsap.from(widget, {
+                        opacity: 0, y: 30, scale: 0.97, duration: 0.5, ease: "power3.out",
+                    });
+                },
+                once: true,
+            });
         });
     }, [userData]);
 
@@ -82,7 +106,7 @@ export default function DashboardPage() {
                                 <h1 ref={greetingRef} className="text-m3-headline-medium text-m3-on-primary-container">Welcome, {userData.name}</h1>
                                 <div ref={balanceRef} className="flex items-center justify-center gap-2 mt-2">
                                     <Wallet size={20} className="text-m3-on-primary-container/70" />
-                                    <span className="text-m3-title-large text-m3-on-primary-container/80">${(Number(userData.balance) || 0).toFixed(2)}</span>
+                                    <AnimatedCounter value={Number(userData.balance) || 0} prefix="$" className="text-m3-title-large text-m3-on-primary-container/80" duration={1.5} />
                                 </div>
                                 {userData.spending_profile && (
                                     <span ref={badgeRef} className="inline-block mt-2 px-3 py-1 rounded-m3-full bg-m3-surface text-m3-on-surface text-m3-label-medium">{userData.spending_profile}</span>
@@ -112,6 +136,7 @@ export default function DashboardPage() {
                     )}
                 </div>
                 <ContextualSpotlight />
+                <ScrollProgress />
             </main>
         </PageTransition>
     );

@@ -11,6 +11,7 @@ import {
 import { API_URL } from "@/utils/api";
 import toast from "react-hot-toast";
 import PageTransition from "@/components/PageTransition";
+import FloatingParticles from "@/components/FloatingParticles";
 
 const TOTAL_STEPS = 5;
 const STEP_META = [
@@ -171,6 +172,7 @@ export default function SurveyPage() {
 
     return (
         <PageTransition>
+            <FloatingParticles count={12} />
             <main className="min-h-screen flex items-center justify-center px-4 py-10 overflow-y-auto">
                 <div className="w-full max-w-md">
                     <div ref={dotsRef} className="flex items-center gap-2 mb-6 justify-center">

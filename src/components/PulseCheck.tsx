@@ -57,13 +57,13 @@ export default function PulseCheck({ triggerRefresh }: { triggerRefresh: () => v
     // animate stress number change
     useEffect(() => {
         if (!numberRef.current) return;
-        gsap.from(numberRef.current, { scale: 0.8, opacity: 0, y: -15, duration: 0.35, ease: "back.out(1.5)" });
+        gsap.fromTo(numberRef.current, { scale: 0.8, opacity: 0, y: -15 }, { scale: 1, opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.5)", overwrite: true });
     }, [stress]);
 
     // animate label change
     useEffect(() => {
         if (!labelRef.current) return;
-        gsap.from(labelRef.current, { opacity: 0, duration: 0.2 });
+        gsap.fromTo(labelRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, overwrite: true });
     }, [stress]);
 
     // button hover

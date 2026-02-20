@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { API_URL } from "@/utils/api";
 import SdgBadge from "@/components/SdgBadge";
+import DarkModeToggle from "@/components/DarkModeToggle";
 
 async function handleDemoMode() {
     const token = localStorage.getItem("token");
@@ -102,6 +103,7 @@ export default function Navbar() {
                     <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" />
                     <div className="hidden md:flex"><SdgBadge /></div>
                     <NavItem href="/login" icon={User} label="Account" />
+                    <DarkModeToggle expanded={false} />
                     <button onClick={handleDemoMode} className="bg-m3-surface-container-highest text-m3-on-surface-variant text-xs px-2.5 py-1 rounded-m3-sm flex items-center gap-1 hover:bg-m3-surface-container-high transition-colors">
                         <Terminal size={12} />Dev
                     </button>

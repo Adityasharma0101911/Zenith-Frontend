@@ -8,6 +8,7 @@ import { ShieldCheck, Scale, Zap, Rocket, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { API_URL } from "@/utils/api";
 import PageTransition from "@/components/PageTransition";
+import FloatingParticles from "@/components/FloatingParticles";
 
 export default function OnboardingPage() {
     const [step, setStep] = useState(1);
@@ -84,6 +85,7 @@ export default function OnboardingPage() {
 
     return (
         <PageTransition>
+            <FloatingParticles count={12} />
             <main className="min-h-screen flex items-center justify-center px-6">
                 <div className="w-full max-w-sm">
                     <div ref={dotsRef} className="flex items-center justify-center gap-2 mb-6">
