@@ -1,0 +1,22 @@
+ M src/app/dashboard/page.tsx
+ M src/app/globals.css
+ M src/app/layout.tsx
+ M src/app/login/page.tsx
+ M src/app/register/page.tsx
+ M src/app/survey/page.tsx
+ M src/components/AnimatedCounter.tsx
+ M src/components/HistoryLog.tsx
+ M src/components/MainframeLog.tsx
+ M src/components/PulseCheck.tsx
+ M src/components/ShoppingWidget.tsx
+ M src/components/Sidebar.tsx
+ M src/components/ThemePicker.tsx
+?? src/components/CalendarHeatmap.tsx
+?? src/components/ContextualSpotlight.tsx
+?? src/components/GlobalCommandPalette.tsx
+?? src/components/InteractiveCard.tsx
+?? src/components/MeshBackground.tsx
+?? src/components/MotionButton.tsx
+?? src/components/SpendingParticles.tsx
+?? src/components/ZenithEasterEgg.tsx
+?? status.txt
