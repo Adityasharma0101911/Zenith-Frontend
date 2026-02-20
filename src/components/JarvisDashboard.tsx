@@ -4,8 +4,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import gsap from "gsap";
 import {
-    Bot, Send, Loader2, Sparkles, CheckCircle2, ArrowRight, RefreshCw, RotateCcw,
-    Wifi, WifiOff, type LucideIcon,
+    Bot, Send, Loader2, Sparkles, ArrowRight, RefreshCw, RotateCcw,
+    Wifi, WifiOff, MessageCircle, type LucideIcon,
 } from "lucide-react";
 import { API_URL } from "@/utils/api";
 
@@ -342,12 +342,12 @@ export default function JarvisDashboard({
                                 )}
                                 {parsed.actions.length > 0 && (
                                     <div className="space-y-2">
-                                        <p className="brief-line text-m3-label-small text-m3-on-surface-variant uppercase tracking-wider">This Week</p>
+                                        <p className="brief-line text-m3-label-small text-m3-on-surface-variant uppercase tracking-wider">Try Asking</p>
                                         {parsed.actions.map((act, i) => (
-                                            <div key={i} className="brief-line flex gap-2.5 items-start">
-                                                <CheckCircle2 size={14} className="text-m3-primary mt-0.5 shrink-0" />
+                                            <button key={i} onClick={() => setQuery(act)} className="brief-line flex gap-2.5 items-start w-full text-left group hover:bg-m3-surface-container-high rounded-m3-lg px-2 py-1.5 -mx-2 transition-colors">
+                                                <MessageCircle size={14} className={`${accentText} mt-0.5 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity`} />
                                                 <p className="text-m3-body-medium text-m3-on-surface leading-relaxed">{act}</p>
-                                            </div>
+                                            </button>
                                         ))}
                                     </div>
                                 )}

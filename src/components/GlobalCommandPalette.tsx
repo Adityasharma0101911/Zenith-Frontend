@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { Sparkles, X, Loader2, Bot } from "lucide-react";
 import { API_URL } from "@/utils/api";
@@ -13,6 +14,8 @@ export default function GlobalCommandPalette() {
     const [response, setResponse] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const backdropRef = useRef<HTMLDivElement>(null);
+    const pathname = usePathname();
+    const section = pathname.startsWith("/scholar") ? "scholar" : pathname.startsWith("/vitals") ? "vitals" : "guardian";
     const paletteRef = useRef<HTMLDivElement>(null);
     const responseRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +62,7 @@ export default function GlobalCommandPalette() {
             const res = await fetch(`${API_URL}/api/ai/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ section: "guardian", message: query }),
+                body: JSON.stringify({ section, message: query }),
             });
             if (!res.ok) throw new Error("Request failed");
             const data = await res.json();

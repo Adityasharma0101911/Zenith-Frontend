@@ -88,8 +88,8 @@ export default function LoginPage() {
         setLoading(true); setButtonText("Authenticating...");
         try {
             const res = await fetch(`${API_URL}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
-            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
+            if (!res.ok) { setButtonText("Sign in"); toast.error(data.error || "Login failed. Check your username and password."); setLoading(false); return; }
             if (data.success) {
                 localStorage.setItem("token", data.token); setButtonText("Decrypting Vault..."); setSuccess(true);
                 setTimeout(() => router.push("/dashboard"), 1500);

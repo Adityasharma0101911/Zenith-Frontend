@@ -17,12 +17,20 @@ function ToolSection({ title, icon: Icon, children, accentText }: {
     const bodyRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
+    // animate open/close, then set height:auto so content can grow when results appear
     useEffect(() => {
         if (!bodyRef.current || !contentRef.current) return;
         if (open) {
             const h = contentRef.current.scrollHeight;
-            gsap.fromTo(bodyRef.current, { height: 0, opacity: 0 }, { height: h, opacity: 1, duration: 0.35, ease: "power3.out" });
+            gsap.fromTo(bodyRef.current, { height: 0, opacity: 0 }, {
+                height: h, opacity: 1, duration: 0.35, ease: "power3.out",
+                onComplete: () => { if (bodyRef.current) bodyRef.current.style.height = "auto"; },
+            });
         } else {
+            // capture current height before animating to 0
+            if (bodyRef.current.style.height === "auto") {
+                bodyRef.current.style.height = `${bodyRef.current.scrollHeight}px`;
+            }
             gsap.to(bodyRef.current, { height: 0, opacity: 0, duration: 0.25, ease: "power3.in" });
         }
     }, [open]);
@@ -72,7 +80,9 @@ function CompoundInterestCalc({ accentText }: { accentText: string }) {
     const [principal, setPrincipal] = useState(""); const [rate, setRate] = useState(""); const [years, setYears] = useState(""); const [monthly, setMonthly] = useState("");
     const p = parseFloat(principal) || 0; const r = (parseFloat(rate) || 0) / 100; const y = parseFloat(years) || 0; const m = parseFloat(monthly) || 0;
     const monthlyRate = r / 12; const months = y * 12;
-    const futureValue = months > 0 ? p * Math.pow(1 + monthlyRate, months) + m * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) : p;
+    const futureValue = months > 0
+        ? p * Math.pow(1 + monthlyRate, months) + (monthlyRate > 0 ? m * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) : m * months)
+        : p;
     const totalContributed = p + (m * months); const interestEarned = futureValue - totalContributed;
     return (
         <ToolSection title="Compound Interest Calculator" icon={Calculator} accentText={accentText}>
@@ -135,16 +145,23 @@ function TrueCostConverter({ accentText }: { accentText: string }) {
 
 function BMICalculator({ accentText }: { accentText: string }) {
     const [weight, setWeight] = useState(""); const [heightFt, setHeightFt] = useState(""); const [heightIn, setHeightIn] = useState("");
+    const [age, setAge] = useState("25"); const [gender, setGender] = useState("male");
     const w = parseFloat(weight) || 0; const totalIn = ((parseFloat(heightFt) || 0) * 12) + (parseFloat(heightIn) || 0);
+    const a = parseFloat(age) || 25; const genderFactor = gender === "male" ? 1 : 0;
     const bmi = totalIn > 0 ? (w / (totalIn * totalIn)) * 703 : 0;
-    const bf = bmi > 0 ? (1.2 * bmi + 0.23 * 25 - 5.4 - 10.8 * 1) : 0; // rough estimate assuming male age 25
+    const bf = bmi > 0 ? (1.2 * bmi + 0.23 * a - 5.4 - 10.8 * genderFactor) : 0;
     const category = bmi < 18.5 ? "Underweight" : bmi < 25 ? "Normal" : bmi < 30 ? "Overweight" : "Obese";
     return (
         <ToolSection title="BMI & Body Fat Estimator" icon={Scale} accentText={accentText}>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
                 <ToolInput label="Weight (lbs)" value={weight} onChange={setWeight} />
+                <ToolInput label="Age" value={age} onChange={setAge} />
                 <ToolInput label="Height (ft)" value={heightFt} onChange={setHeightFt} />
                 <ToolInput label="Height (in)" value={heightIn} onChange={setHeightIn} />
+            </div>
+            <div className="flex gap-2">
+                <button onClick={() => setGender("male")} className={`flex-1 py-1.5 rounded-m3-full text-m3-label-medium border transition-colors ${gender === "male" ? "bg-m3-primary text-m3-on-primary border-m3-primary" : "border-m3-outline-variant text-m3-on-surface-variant"}`}>Male</button>
+                <button onClick={() => setGender("female")} className={`flex-1 py-1.5 rounded-m3-full text-m3-label-medium border transition-colors ${gender === "female" ? "bg-m3-primary text-m3-on-primary border-m3-primary" : "border-m3-outline-variant text-m3-on-surface-variant"}`}>Female</button>
             </div>
             {bmi > 0 && <div className="grid grid-cols-3 gap-2">
                 <ToolResult label="BMI" value={bmi.toFixed(1)} accent />
@@ -215,9 +232,9 @@ function WaterIntakeCalc({ accentText }: { accentText: string }) {
 function CaffeineTracker({ accentText }: { accentText: string }) {
     const [mg, setMg] = useState(""); const [hour, setHour] = useState("8");
     const caffeine = parseFloat(mg) || 0; const startHr = parseFloat(hour) || 8;
-    // caffeine half-life ~5 hours
-    const hoursUntil10pm = 22 - startHr; const remaining = caffeine * Math.pow(0.5, hoursUntil10pm / 5);
-    const at6pm = caffeine * Math.pow(0.5, (18 - startHr) / 5);
+    // caffeine half-life ~5 hours — clamp to avoid impossible values when consumed after target time
+    const hoursUntil10pm = Math.max(0, 22 - startHr); const remaining = hoursUntil10pm > 0 ? caffeine * Math.pow(0.5, hoursUntil10pm / 5) : caffeine;
+    const hoursUntil6pm = Math.max(0, 18 - startHr); const at6pm = hoursUntil6pm > 0 ? caffeine * Math.pow(0.5, hoursUntil6pm / 5) : caffeine;
     return (
         <ToolSection title="Caffeine & Heart Rate Zones" icon={Coffee} accentText={accentText}>
             <div className="grid grid-cols-2 gap-2">
@@ -226,8 +243,8 @@ function CaffeineTracker({ accentText }: { accentText: string }) {
             </div>
             {caffeine > 0 && <div className="space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                    <ToolResult label="At 6 PM" value={`${at6pm.toFixed(0)} mg left`} />
-                    <ToolResult label="At 10 PM" value={`${remaining.toFixed(0)} mg left`} accent />
+                    <ToolResult label={startHr >= 18 ? "Now" : "At 6 PM"} value={`${at6pm.toFixed(0)} mg left`} />
+                    <ToolResult label={startHr >= 22 ? "Now" : "At 10 PM"} value={`${remaining.toFixed(0)} mg left`} accent />
                 </div>
                 <p className="text-m3-body-small text-m3-on-surface-variant">{remaining > 100 ? "High caffeine at bedtime — may disrupt sleep." : remaining > 50 ? "Moderate caffeine remaining — sleep may be affected." : "Low caffeine by bedtime — you should sleep fine."}</p>
             </div>}

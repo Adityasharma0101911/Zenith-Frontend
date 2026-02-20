@@ -77,8 +77,8 @@ export default function RegisterPage() {
         setLoading(true); setButtonText("Generating Secure Keys...");
         try {
             const res = await fetch(`${API_URL}/api/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
-            if (!res.ok) throw new Error("Request failed");
             const data = await res.json();
+            if (!res.ok) { setButtonText("Create Account"); toast.error(data.error || "Registration failed. Try a different username."); setLoading(false); return; }
             if (data.token || data.message) {
                 if (data.token) localStorage.setItem("token", data.token);
                 setSuccess(true); setButtonText("Vault Created!");
